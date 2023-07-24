@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Memotion_FRONT</string>
+    <string name="menu_home">홈</string>
+    <string name="menu_search">검색</string>
+    <string name="menu_route">루트</string>
+    <string name="menu_mypage">마이페이지</string>
+</resources>

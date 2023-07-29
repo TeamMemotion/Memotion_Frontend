@@ -246,7 +246,7 @@
         />
 
     <Button
-        android:id="@+id/btnNext"
+        android:id="@+id/btnOK"
         android:layout_width="230dp"
         android:layout_height="43dp"
         android:text="확인"

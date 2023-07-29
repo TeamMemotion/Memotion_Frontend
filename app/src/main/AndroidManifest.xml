@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- application 상속 + 등록 = 전역변수화 -->
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Memotion_FRONT"
+        android:name=".NetworkModule"
         tools:targetApi="31">
         <activity
             android:name=".IntroActivity"
@@ -22,9 +24,21 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"/>
-        <activity android:name=".account.LoginActivity"/>
+        <activity android:name=".account.login.LoginActivity"/>
         <activity android:name=".account.SignUpActivity"/>
         <activity android:name=".account.SearchPwdActivity"/>
+        <!-- Kakao Login -->
+        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Kakao Native App Key -->
+                <data android:host="oauth"
+                    android:scheme="@string/kakao_native_key" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

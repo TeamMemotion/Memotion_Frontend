@@ -3,7 +3,12 @@ package com.example.memotion;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.memotion.databinding.ActivityMainBinding;
@@ -12,6 +17,10 @@ import com.example.memotion.mypage.MypageFragment;
 import com.example.memotion.route.RouteFragment;
 import com.example.memotion.search.SearchFragment;
 import com.google.android.material.navigation.NavigationBarView;
+import com.kakao.sdk.common.KakaoSdk;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        KakaoSdk.init(this, this.getString(R.string.kakao_native_key));
+
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
 

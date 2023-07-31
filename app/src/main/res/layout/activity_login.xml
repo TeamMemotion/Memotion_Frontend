@@ -116,6 +116,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="70dp"
         android:text="로그인"
+        android:textSize="18dp"
         android:textColor="#FFFFFF"
         android:background="@drawable/btn_background_grey_color"
         android:layout_marginStart="52dp"

@@ -6,7 +6,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.memotion.account.LoginActivity;
+import com.example.memotion.account.login.LoginActivity;
 import com.example.memotion.databinding.ActivityIntroBinding;
 
 public class IntroActivity extends AppCompatActivity {

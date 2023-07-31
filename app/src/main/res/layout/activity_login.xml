@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".account.LoginActivity"
+    tools:context=".account.login.LoginActivity"
     android:background="#F5F5F5">
 
     <ImageView
@@ -177,5 +177,20 @@
         android:textColor="#AEAEAE"
 
         />
+
+    <TextView
+        android:id="@+id/loginError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:gravity="center"
+        android:text="test"
+        android:textColor="#000000"
+        android:textSize="13dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnKakaoLogin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

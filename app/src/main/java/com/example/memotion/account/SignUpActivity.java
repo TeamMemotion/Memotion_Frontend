@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.memotion.account.login.LoginActivity;
 import com.example.memotion.databinding.ActivitySignUpBinding;
 
 public class SignUpActivity extends AppCompatActivity {

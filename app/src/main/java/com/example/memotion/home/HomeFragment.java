@@ -1,5 +1,7 @@
 package com.example.memotion.home;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,13 +13,22 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.memotion.R;
 import com.example.memotion.databinding.FragmentHomeBinding;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 //zimnii
 import android.widget.Toast;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class HomeFragment extends Fragment {
     FragmentHomeBinding homeBinding;
-    private CalendarView calendarView;
+    private MaterialCalendarView calendarView;
     private TextView dateText;
     String dateClicked = null;
 
@@ -27,14 +38,30 @@ public class HomeFragment extends Fragment {
 
         calendarView = homeBinding.calendarView;
         dateText = homeBinding.dateText;
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                dateClicked = String.format("%d / %d / %d", year, month + 1, dayOfMonth);
-                Log.i("TAG", dateClicked);
-                dateText.setText(dateClicked);
-            }
+
+        calendarView.setOnDateChangedListener((widget, date, selected) -> {
+            dateClicked = String.format("%d / %d / %d", date.getYear(), date.getMonth() + 1, date.getDay());
+            Log.i("TAG", dateClicked);
+            dateText.setText(dateClicked);
         });
+
+        //날짜 누르면 사진 띄움
+        SelectorDecorator selectorDecorator = new SelectorDecorator(getActivity());
+        calendarView.addDecorator(selectorDecorator);
+
+        //오늘 날짜에 빨간점 등장
+        calendarView.addDecorator(new EventDecorator(Color.RED, Collections.singleton(CalendarDay.today())));
+
+        //이모지 등장
+        Drawable image1 = getResources().getDrawable(R.drawable.smile);
+        Drawable image2 = getResources().getDrawable(R.drawable.sad);
+
+        Set<CalendarDay> datesWithImages = new HashSet<>();
+        datesWithImages.add(CalendarDay.from(2023, 8, 2));
+        datesWithImages.add(CalendarDay.from(2023, 8, 3));
+
+        ImageDecorator imageDecorator = new ImageDecorator(image1, datesWithImages);
+        calendarView.addDecorator(imageDecorator);
 
         return homeBinding.getRoot();
     }

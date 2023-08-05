@@ -34,7 +34,6 @@ public class FindPwdFragment extends Fragment implements FindPwdPostResult {
             @Override
             public void onClick(View view) {
                 email = findPwdBinding.etInputEmail.getText().toString();
-                Log.d("이메일:: " , email);
                 findPwd();
             }
         });
@@ -64,7 +63,6 @@ public class FindPwdFragment extends Fragment implements FindPwdPostResult {
     //비밀번호 찾기 api
     private FindPwdPostRequest findPwdPostRequest() {
         email = findPwdBinding.etInputEmail.getText().toString();
-        Log.d("이메일 ::: ", email);
         return new FindPwdPostRequest(email);
     }
 

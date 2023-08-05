@@ -1,5 +1,7 @@
 package com.example.memotion.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +37,11 @@ public class HomeFragment extends Fragment {
                 dateText.setText(dateClicked);
             }
         });
+
+        //토큰 확인
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
+        Log.d("home_accessToken::", sharedPreferences.getString("accessToken", ""));
+        Log.d("home_refreshToken::", sharedPreferences.getString("refreshToken", ""));
 
         return homeBinding.getRoot();
     }

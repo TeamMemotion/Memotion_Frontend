@@ -1,11 +1,13 @@
 package com.example.memotion.account.login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,10 +28,14 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginResult {
     private String TAG = "LoginActivity";
     private ActivityLoginBinding loginBinding;
     private LoginService loginService;
+
+    private String email = "";
+    private String password = "";
+    private SharedPreferences preferences;
 
     private Pattern emailValidation = Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 
@@ -42,8 +48,10 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                email = loginBinding.etEmailId.getText().toString();
+                password = loginBinding.etPassword.getText().toString();
+
+                login();
             }
         });
 
@@ -63,6 +71,23 @@ public class LoginActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 //text가 변경된 후 호출
                 //charSequence에는 변경 후의 문자열이 담겨있음
+            }
+        });
+
+        loginBinding.etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                checkNull();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -115,6 +140,56 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    //로그인 api
+    private LoginRequest loginRequest() {
+        email = loginBinding.etEmailId.getText().toString();
+        password = loginBinding.etPassword.getText().toString();
+        return new LoginRequest(email, password);
+    }
+
+    private void login() {
+        LoginService loginService1 = new LoginService();
+        loginService1.setLoginResult(this);
+        loginService1.login(loginRequest());
+    }
+
+    @Override
+    public void loginSuccess(int code, LoginResponse.Result result) {
+        Log.d("accessToken: ", result.getAccessToken());
+        Log.d("refreshToken: ", result.getRefreshToken());
+
+        //토큰 저장
+        preferences = getSharedPreferences("token", MODE_PRIVATE); //accessToken이름으로 이 앱 내에서 사용
+        SharedPreferences.Editor editor = preferences.edit(); //sharedPreferences를 제어할 editor를 선언
+        editor.putString("accessToken", result.getAccessToken());
+        editor.putString("refreshToken", result.getRefreshToken());
+        editor.commit();
+
+        Toast.makeText(getApplicationContext(), "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void loginFailure(int code, String message) {
+        if(code == 500){
+            if(message.contains("[must be a well-formed email address]")) {
+                Toast.makeText(getApplicationContext(), "이메일 형식이 잘못 되었습니다.", Toast.LENGTH_SHORT).show();
+            } else if (message.contains("[비밀번호는 8~20자 영문 대/소문자, 숫자를 사용하세요.]")) {
+                Toast.makeText(getApplicationContext(), "비밀번호 형식이 잘못 되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+        } else if (code == 2001) {
+            if(message.equals("잘못된 이메일 입니다.")) {
+                Toast.makeText(getApplicationContext(), "존재하지 않는 회원입니다.", Toast.LENGTH_SHORT).show();
+            } else if (message.equals("잘못된 비밀번호 입니다.")) {
+                Toast.makeText(getApplicationContext(), "잘못된 비밀번호 입니다.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.d("로그인 응답 실패: ", message);
+        }
+    }
+
     private void updateKakaoLoginUi() {
         UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
             @Override
@@ -159,4 +234,21 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    private boolean checkNull() {
+        String email = loginBinding.etEmailId.getText().toString().trim();  //공백 제거
+        String password = loginBinding.etPassword.getText().toString().trim();
+
+        if(!email.isEmpty() && !password.isEmpty()) {
+            loginBinding.btnLogin.setEnabled(true);
+            loginBinding.btnLogin.setBackgroundResource(R.drawable.btn_pink_background);
+            return true;
+        } else {
+            loginBinding.btnLogin.setEnabled(false);
+            loginBinding.btnLogin.setBackgroundResource(R.drawable.btn_background_grey_color);
+            return false;
+        }
+    }
+
+
 }

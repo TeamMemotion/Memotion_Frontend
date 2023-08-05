@@ -1,12 +1,17 @@
 package com.example.memotion.account.auth.findPwd;
 
 import static android.content.ContentValues.TAG;
+import static com.example.memotion.NetworkModule.errorParsing;
 import static com.example.memotion.NetworkModule.getRetrofit;
 
 import android.util.Log;
 
+import com.example.memotion.NetworkModule;
+
+import java.io.IOException;
 import java.time.LocalDate;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,14 +31,16 @@ public class FindPwdPostService {
                 Log.d("FIND-PWD-SUCCESS", response.toString());
                 FindPwdPostResponse resp = response.body();
 
-                Log.d("response: ", String.valueOf(response.isSuccessful()));
-                Log.d("response: ", response.message());
-                Log.d("response: ", String.valueOf(response.code()));
-                Log.d("response body: ", String.valueOf(response.body()));
-                Log.d("response body==: ", String.valueOf(response.body().getCode()));
-
-                Log.d("resp:", resp.toString());
-
+                if(resp == null) {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.d("ErrorBody : ", errorBody);
+                        Log.d("errorCode: ", String.valueOf(errorParsing(errorBody).getCode()));
+                        Log.d("errorMessage: ", errorParsing(errorBody).getMessage());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if(Integer.valueOf(resp.getCode()) != null) {
                     switch (resp.getCode()) {
                         case 1000:

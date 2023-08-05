@@ -2,6 +2,8 @@ package com.example.memotion.account.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 
@@ -9,13 +11,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.memotion.MainActivity;
 import com.example.memotion.R;
-import com.example.memotion.account.SearchPwdActivity;
+import com.example.memotion.account.FindPwdActivity;
 import com.example.memotion.account.SignUpActivity;
 import com.example.memotion.databinding.ActivityLoginBinding;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.common.KakaoSdk;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -25,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     private String TAG = "LoginActivity";
     private ActivityLoginBinding loginBinding;
     private LoginService loginService;
+
+    private Pattern emailValidation = Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +44,25 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        loginBinding.etEmailId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //text가 변경되기 전 호출
+                //charSequence에는 변경 전 문자열이 담겨 있음.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                checkEmail();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //text가 변경된 후 호출
+                //charSequence에는 변경 후의 문자열이 담겨있음
             }
         });
 
@@ -73,8 +99,9 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding.tbFindPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SearchPwdActivity.class);
+                Intent intent = new Intent(getApplicationContext(), FindPwdActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -83,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
             }
         });
     }
@@ -118,5 +146,17 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
         });
+    }
+
+    private boolean checkEmail() {
+        String email = loginBinding.etEmailId.getText().toString().trim();  //공백 제거
+        Matcher matcher = emailValidation.matcher(email);
+        if(matcher.find()) {
+            loginBinding.tvEmailCheck.setText("");
+            return true;
+        } else {
+            loginBinding.tvEmailCheck.setText("이메일을 입력하세요.");
+            return false;
+        }
     }
 }

@@ -54,12 +54,12 @@
         android:id="@+id/tvEmailCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#C854FF"
+        android:textColor="#E15F81"
         android:textSize="13dp"
         android:text=""
         app:layout_constraintStart_toStartOf="@id/etEmailId"
         app:layout_constraintTop_toBottomOf="@id/etEmailId"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="0dp"
         />
 
@@ -73,7 +73,7 @@
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/etEmailId"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="25dp"
         android:layout_marginStart="26dp"
         />
 
@@ -99,12 +99,12 @@
         android:id="@+id/tvPasswordCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#C854FF"
+        android:textColor="#E15F81"
         android:textSize="13dp"
         android:text=""
         app:layout_constraintStart_toStartOf="@id/etPassword"
         app:layout_constraintTop_toBottomOf="@id/etPassword"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="5dp"
         />
 
     <Button

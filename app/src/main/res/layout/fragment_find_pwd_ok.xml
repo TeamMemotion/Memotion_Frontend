@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".account.SearchPwdActivity"
+    tools:context=".account.FindPwdOkFragment"
     android:background="#F5F5F5">
 
     <ImageView
@@ -32,8 +32,8 @@
         android:layout_marginStart="30dp"
         />
 
-    <EditText
-        android:id="@+id/etEmailId"
+    <TextView
+        android:id="@+id/etInputEmail"
         android:layout_width="match_parent"
         android:layout_height="37dp"
         android:layout_marginTop="5dp"
@@ -44,8 +44,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/edit_text_box"
-        android:hint="이메일을 입력해주세요"
+        android:gravity="fill_vertical"
+        android:text=""
         android:textSize="14dp"
+        android:textColor="@color/black"
         android:paddingLeft="16.5dp"
         android:inputType="textEmailAddress"
         />
@@ -54,30 +56,30 @@
         android:id="@+id/tvEmailCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#C854FF"
+        android:textColor="#557AFF"
         android:textSize="13dp"
-        android:text=""
-        app:layout_constraintStart_toStartOf="@id/etEmailId"
-        app:layout_constraintTop_toBottomOf="@id/etEmailId"
-        android:layout_marginStart="16dp"
+        android:text="해당 메일로 임시 비밀번호가 전송되었습니다"
+        app:layout_constraintStart_toStartOf="@id/etInputEmail"
+        app:layout_constraintTop_toBottomOf="@id/etInputEmail"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="0dp"
         />
 
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnOk"
         android:layout_width="match_parent"
         android:layout_height="43dp"
         android:layout_marginStart="52dp"
         android:layout_marginTop="70dp"
         android:layout_marginEnd="52dp"
-        android:background="@drawable/btn_background_grey_color"
-        android:text="로그인"
+        android:background="@drawable/btn_pink_background"
+        android:text="확인"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etEmailId" />
+        app:layout_constraintTop_toBottomOf="@id/etInputEmail" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.memotion.databinding.FragmentSearchBinding;
 
-
 public class SearchFragment extends Fragment {
 
     FragmentSearchBinding searchBinding;

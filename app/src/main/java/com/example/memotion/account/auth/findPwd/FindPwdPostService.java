@@ -29,29 +29,29 @@ public class FindPwdPostService {
             @Override
             public void onResponse(Call<FindPwdPostResponse> call, Response<FindPwdPostResponse> response) {
                 Log.d("FIND-PWD-SUCCESS", response.toString());
-                FindPwdPostResponse resp = response.body();
+                //FindPwdPostResponse resp = response.body();
 
-                if(resp == null) {
+                if(response.isSuccessful()) {
+                    if(response.body().getCode() == 1000) {
+                        findPwdPostResult.findPwdSuccess(response.body().getCode(), response.body().getResult());
+                    }
+                } else {        //400이상 에러시 response.body가 null로 처리됨. 따라서 errorBody로 받아야함.
                     try {
                         String errorBody = response.errorBody().string();
+                        NetworkModule.ErrorResponse errorResponse = errorParsing(errorBody);
+
                         Log.d("ErrorBody : ", errorBody);
-                        Log.d("errorCode: ", String.valueOf(errorParsing(errorBody).getCode()));
-                        Log.d("errorMessage: ", errorParsing(errorBody).getMessage());
+                        Log.d("errorCode: ", String.valueOf(errorResponse.getCode()));
+                        Log.d("errorMessage: ", errorResponse.getMessage());
+
+                        switch (errorResponse.getCode()) {
+                            case 2001:
+                                findPwdPostResult.findPwdFailure(errorResponse.getCode(), errorResponse.getMessage());
+                                break;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-                if(Integer.valueOf(resp.getCode()) != null) {
-                    switch (resp.getCode()) {
-                        case 1000:
-                            findPwdPostResult.findPwdSuccess(resp.getCode(), resp.getResult());
-                            break;
-                        default:
-                            findPwdPostResult.findPwdFailure(resp.getCode(), resp.getMessage());
-                            break;
-                    }
-                } else {
-                    Log.d("onfailure code: ", "응답 실패");
                 }
             }
 

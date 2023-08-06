@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- application 상속 + 등록 = 전역변수화 -->
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -26,7 +27,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".account.login.LoginActivity"/>
         <activity android:name=".account.SignUpActivity"/>
-        <activity android:name=".account.SearchPwdActivity"/>
+        <activity android:name=".account.FindPwdActivity"/>
         <!-- Kakao Login -->
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

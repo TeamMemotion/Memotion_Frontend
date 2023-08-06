@@ -3,17 +3,13 @@ package com.example.memotion.account.login;
 import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse {
-    @SerializedName("isSuccess")
-    private Boolean isSuccess;
+    @SerializedName(value = "isSuccess") private Boolean isSuccess;
 
-    @SerializedName("code")
-    private int code;
+    @SerializedName(value = "code") private int code;
 
-    @SerializedName("message")
-    private String message;
+    @SerializedName(value = "message") private String message;
 
-    @SerializedName("result")
-    private Result result;
+    @SerializedName(value = "result") private Result result;
 
     public int getCode() {
         return this.code;
@@ -28,10 +24,15 @@ public class LoginResponse {
     }
 
     static class Result {
-        @SerializedName("access_token")
-        private String accessToken;
+        @SerializedName(value = "accessToken") private String accessToken;
+        @SerializedName(value = "refreshToken") private String refreshToken;
 
-        @SerializedName("refresh_token")
-        private String refreshToken;
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
     }
 }

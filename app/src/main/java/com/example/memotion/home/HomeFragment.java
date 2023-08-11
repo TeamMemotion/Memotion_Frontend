@@ -39,12 +39,12 @@ public class HomeFragment extends Fragment {
         homeBinding = FragmentHomeBinding.inflate(inflater, container, false);
 
         calendarView = homeBinding.calendarView;
-        dateText = homeBinding.dateText;
+        //dateText = homeBinding.dateText;
 
         calendarView.setOnDateChangedListener((widget, date, selected) -> {
-            dateClicked = String.format("%d / %d / %d", date.getYear(), date.getMonth() + 1, date.getDay());
+            dateClicked = String.format("%d / %d / %d", date.getYear(), date.getMonth(), date.getDay());
             Log.i("TAG", dateClicked);
-            dateText.setText(dateClicked);
+            //dateText.setText(dateClicked);
         });
 
         //날짜 누르면 사진 띄움

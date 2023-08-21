@@ -28,6 +28,7 @@
         <activity android:name=".account.login.LoginActivity"/>
         <activity android:name=".account.SignUpActivity"/>
         <activity android:name=".account.FindPwdActivity"/>
+        <activity android:name=".diary.DiaryActivity"/>
         <!-- Kakao Login -->
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

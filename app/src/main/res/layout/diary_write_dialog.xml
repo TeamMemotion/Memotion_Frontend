@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="316dp"
-    android:layout_height="552dp">
+    android:layout_height="552dp"
+    tools:context=".diary.PlaceAddDialog">
 
     <ImageView
         android:id="@+id/imageView"
@@ -212,7 +213,7 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/button_round_13"
         android:backgroundTint="#CCC854FF"
-        android:text="저장하기"
+        android:text="삭제하기"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
         android:textStyle="bold"

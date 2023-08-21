@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#F5F5F5"
-    tools:context=".diary.DiaryFragment">
+    tools:context=".diary.DiaryActivity">
 
     <include
         android:id="@+id/include"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/selected_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
@@ -34,7 +34,7 @@
         android:background="@drawable/btn_light_pink_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/selected_date"
         android:layout_marginTop="20dp"/>
 
     <TextView
@@ -49,7 +49,7 @@
         app:layout_constraintTop_toTopOf="@+id/todayRoute" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/close_btn"
+        android:id="@+id/addDiary"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginEnd="10dp"
@@ -96,14 +96,14 @@
         android:id="@+id/diaryTitle"
         android:layout_width="300dp"
         android:layout_height="30dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/light_pink_background"
         android:hint="다이어리의 제목을 작성해주세요 (선택사항)"
         android:paddingLeft="16.5dp"
         android:singleLine="true"
-        android:textSize="13dp"
         android:textColor="#CC000000"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="8dp"
+        android:textSize="13dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 

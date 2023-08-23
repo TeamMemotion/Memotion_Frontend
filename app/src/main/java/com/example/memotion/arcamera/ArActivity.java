@@ -16,6 +16,8 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.memotion.databinding.ActivityArBinding;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.ArCoreApk.Availability;
@@ -161,11 +163,13 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
     private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
     private final float[] viewLightDirection = new float[4]; // view x world light direction
 
+    ActivityArBinding viewBinding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        surfaceView = findViewById(R.id.surfaceview);
+        viewBinding = ActivityArBinding.inflate(getLayoutInflater());
+        setContentView(viewBinding.getRoot());
+        surfaceView = viewBinding.surfaceview;
         displayRotationHelper = new DisplayRotationHelper(/* context= */ this);
 
         // Set up touch listener.
@@ -179,30 +183,30 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
 
         depthSettings.onCreate(this);
         instantPlacementSettings.onCreate(this);
-        ImageButton settingsButton = findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PopupMenu popup = new PopupMenu(ArActivity.this, v);
-                        popup.setOnMenuItemClickListener(ArActivity.this::settingsMenuClick);
-                        popup.inflate(R.menu.settings_menu);
-                        popup.show();
-                    }
-                });
+        ImageButton settingsButton = viewBinding.settingsButton;
+//        settingsButton.setOnClickListener(
+//                new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        PopupMenu popup = new PopupMenu(ArActivity.this, v);
+//                        popup.setOnMenuItemClickListener(ArActivity.this::settingsMenuClick);
+//                        popup.inflate(R.menu.settings_menu);
+//                        popup.show();
+//                    }
+//                });
     }
 
     /** Menu button to launch feature specific settings. */
-    protected boolean settingsMenuClick(MenuItem item) {
-        if (item.getItemId() == R.id.depth_settings) {
-            launchDepthSettingsMenuDialog();
-            return true;
-        } else if (item.getItemId() == R.id.instant_placement_settings) {
-            launchInstantPlacementSettingsMenuDialog();
-            return true;
-        }
-        return false;
-    }
+//    protected boolean settingsMenuClick(MenuItem item) {
+//        if (item.getItemId() == R.id.depth_settings) {
+//            launchDepthSettingsMenuDialog();
+//            return true;
+//        } else if (item.getItemId() == R.id.instant_placement_settings) {
+//            launchInstantPlacementSettingsMenuDialog();
+//            return true;
+//        }
+//        return false;
+//    }
 
     @Override
     protected void onDestroy() {
@@ -487,16 +491,16 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
         // used to draw the background camera image.
         backgroundRenderer.updateDisplayGeometry(frame);
 
-        if (camera.getTrackingState() == TrackingState.TRACKING
-                && (depthSettings.useDepthForOcclusion()
-                || depthSettings.depthColorVisualizationEnabled())) {
-            try (Image depthImage = frame.acquireDepthImage16Bits()) {
-                backgroundRenderer.updateCameraDepthTexture(depthImage);
-            } catch (NotYetAvailableException e) {
-                // This normally means that depth data is not available yet. This is normal so we will not
-                // spam the logcat with this.
-            }
-        }
+//        if (camera.getTrackingState() == TrackingState.TRACKING
+//                && (depthSettings.useDepthForOcclusion()
+//                || depthSettings.depthColorVisualizationEnabled())) {
+//            try (Image depthImage = frame.acquireDepthImage16Bits()) {
+//                backgroundRenderer.updateCameraDepthTexture(depthImage);
+//            } catch (NotYetAvailableException e) {
+//                // This normally means that depth data is not available yet. This is normal so we will not
+//                // spam the logcat with this.
+//            }
+//        }
 
         // Handle one tap per frame.
         handleTap(frame, camera);
@@ -645,7 +649,7 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
                     wrappedAnchors.add(new WrappedAnchor(hit.createAnchor(), trackable));
                     // For devices that support the Depth API, shows a dialog to suggest enabling
                     // depth-based occlusion. This dialog needs to be spawned on the UI thread.
-                    this.runOnUiThread(this::showOcclusionDialogIfNeeded);
+//                    this.runOnUiThread(this::showOcclusionDialogIfNeeded);
 
                     // Hits are sorted by depth. Consider only closest hit on a plane, Oriented Point, or
                     // Instant Placement Point.
@@ -659,45 +663,45 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
      * Shows a pop-up dialog on the first call, determining whether the user wants to enable
      * depth-based occlusion. The result of this dialog can be retrieved with useDepthForOcclusion().
      */
-    private void showOcclusionDialogIfNeeded() {
-        boolean isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC);
-        if (!depthSettings.shouldShowDepthEnableDialog() || !isDepthSupported) {
-            return; // Don't need to show dialog.
-        }
-
-        // Asks the user whether they want to use depth-based occlusion.
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.options_title_with_depth)
-                .setMessage(R.string.depth_use_explanation)
-                .setPositiveButton(
-                        R.string.button_text_enable_depth,
-                        (DialogInterface dialog, int which) -> {
-                            depthSettings.setUseDepthForOcclusion(true);
-                        })
-                .setNegativeButton(
-                        R.string.button_text_disable_depth,
-                        (DialogInterface dialog, int which) -> {
-                            depthSettings.setUseDepthForOcclusion(false);
-                        })
-                .show();
-    }
+//    private void showOcclusionDialogIfNeeded() {
+//        boolean isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC);
+//        if (!depthSettings.shouldShowDepthEnableDialog() || !isDepthSupported) {
+//            return; // Don't need to show dialog.
+//        }
+//
+//        // Asks the user whether they want to use depth-based occlusion.
+//        new AlertDialog.Builder(this)
+//                .setTitle(R.string.options_title_with_depth)
+//                .setMessage(R.string.depth_use_explanation)
+//                .setPositiveButton(
+//                        R.string.button_text_enable_depth,
+//                        (DialogInterface dialog, int which) -> {
+//                            depthSettings.setUseDepthForOcclusion(true);
+//                        })
+//                .setNegativeButton(
+//                        R.string.button_text_disable_depth,
+//                        (DialogInterface dialog, int which) -> {
+//                            depthSettings.setUseDepthForOcclusion(false);
+//                        })
+//                .show();
+//    }
 
     private void launchInstantPlacementSettingsMenuDialog() {
         resetSettingsMenuDialogCheckboxes();
         Resources resources = getResources();
         new AlertDialog.Builder(this)
-                .setTitle(R.string.options_title_instant_placement)
-                .setMultiChoiceItems(
-                        resources.getStringArray(R.array.instant_placement_options_array),
-                        instantPlacementSettingsMenuDialogCheckboxes,
-                        (DialogInterface dialog, int which, boolean isChecked) ->
-                                instantPlacementSettingsMenuDialogCheckboxes[which] = isChecked)
-                .setPositiveButton(
-                        R.string.done,
-                        (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-                .setNegativeButton(
-                        android.R.string.cancel,
-                        (DialogInterface dialog, int which) -> resetSettingsMenuDialogCheckboxes())
+//                .setTitle(R.string.options_title_instant_placement)
+//                .setMultiChoiceItems(
+//                        resources.getStringArray(R.array.instant_placement_options_array),
+//                        instantPlacementSettingsMenuDialogCheckboxes,
+//                        (DialogInterface dialog, int which, boolean isChecked) ->
+//                                instantPlacementSettingsMenuDialogCheckboxes[which] = isChecked)
+//                .setPositiveButton(
+//                        R.string.done,
+//                        (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
+//                .setNegativeButton(
+//                        android.R.string.cancel,
+//                        (DialogInterface dialog, int which) -> resetSettingsMenuDialogCheckboxes())
                 .show();
     }
 
@@ -710,28 +714,28 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
         Resources resources = getResources();
         if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
             // With depth support, the user can select visualization options.
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.options_title_with_depth)
-                    .setMultiChoiceItems(
-                            resources.getStringArray(R.array.depth_options_array),
-                            depthSettingsMenuDialogCheckboxes,
-                            (DialogInterface dialog, int which, boolean isChecked) ->
-                                    depthSettingsMenuDialogCheckboxes[which] = isChecked)
-                    .setPositiveButton(
-                            R.string.done,
-                            (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-                    .setNegativeButton(
-                            android.R.string.cancel,
-                            (DialogInterface dialog, int which) -> resetSettingsMenuDialogCheckboxes())
-                    .show();
+//            new AlertDialog.Builder(this)
+//                    .setTitle(R.string.options_title_with_depth)
+//                    .setMultiChoiceItems(
+//                            resources.getStringArray(R.array.depth_options_array),
+//                            depthSettingsMenuDialogCheckboxes,
+//                            (DialogInterface dialog, int which, boolean isChecked) ->
+//                                    depthSettingsMenuDialogCheckboxes[which] = isChecked)
+//                    .setPositiveButton(
+//                            R.string.done,
+//                            (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
+//                    .setNegativeButton(
+//                            android.R.string.cancel,
+//                            (DialogInterface dialog, int which) -> resetSettingsMenuDialogCheckboxes())
+//                    .show();
         } else {
             // Without depth support, no settings are available.
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.options_title_without_depth)
-                    .setPositiveButton(
-                            R.string.done,
-                            (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-                    .show();
+//            new AlertDialog.Builder(this)
+//                    .setTitle(R.string.options_title_without_depth)
+//                    .setPositiveButton(
+//                            R.string.done,
+//                            (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
+//                    .show();
         }
     }
 

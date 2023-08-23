@@ -53,4 +53,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0' //Circle ImageView
+
+    implementation 'de.javagl:obj:0.4.0'
+    implementation 'com.google.ar:core:1.27.0'
+
 }

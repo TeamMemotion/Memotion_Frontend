@@ -23,12 +23,12 @@ import android.opengl.GLES30;
 import android.util.Log;
 
 import com.google.ar.core.ImageFormat;
-import com.google.ar.core.examples.java.common.samplerender.GLError;
-import com.google.ar.core.examples.java.common.samplerender.Mesh;
-import com.google.ar.core.examples.java.common.samplerender.SampleRender;
-import com.google.ar.core.examples.java.common.samplerender.Shader;
-import com.google.ar.core.examples.java.common.samplerender.Texture;
-import com.google.ar.core.examples.java.common.samplerender.VertexBuffer;
+import com.example.memotion.arcamera.common.samplerender.GLError;
+import com.example.memotion.arcamera.common.samplerender.Mesh;
+import com.example.memotion.arcamera.common.samplerender.SampleRender;
+import com.example.memotion.arcamera.common.samplerender.Shader;
+import com.example.memotion.arcamera.common.samplerender.Texture;
+import com.example.memotion.arcamera.common.samplerender.VertexBuffer;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -226,15 +226,15 @@ public class SpecularCubemapFilter implements Closeable {
     }
   }
 
-  /**
-   * Updates and filters the provided cubemap textures from ARCore.
-   *
-   * <p>This method should be called every frame with the result of {@link
-   * com.google.ar.core.LightEstimate.acquireEnvironmentalHdrCubeMap()} to update the filtered
-   * cubemap texture, accessible via {@link getFilteredCubemapTexture()}.
-   *
-   * <p>The given {@link Image}s will be closed by this method, even if an exception occurs.
-   */
+//  /**
+//   * Updates and filters the provided cubemap textures from ARCore.
+//   *
+//   * <p>This method should be called every frame with the result of {@link
+//   * com.google.ar.core.LightEstimate.acquireEnvironmentalHdrCubeMap()} to update the filtered
+//   * cubemap texture, accessible via {@link getFilteredCubemapTexture()}.
+//   *
+//   * <p>The given {@link Image}s will be closed by this method, even if an exception occurs.
+//   */
   public void update(Image[] images) {
     try {
       GLES30.glBindTexture(GLES30.GL_TEXTURE_CUBE_MAP, radianceCubemap.getTextureId());

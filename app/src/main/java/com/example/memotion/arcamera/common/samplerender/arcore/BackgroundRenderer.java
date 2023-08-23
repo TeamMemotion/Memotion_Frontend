@@ -20,12 +20,12 @@ import android.opengl.GLES30;
 
 import com.google.ar.core.Coordinates2d;
 import com.google.ar.core.Frame;
-import com.google.ar.core.examples.java.common.samplerender.Framebuffer;
-import com.google.ar.core.examples.java.common.samplerender.Mesh;
-import com.google.ar.core.examples.java.common.samplerender.SampleRender;
-import com.google.ar.core.examples.java.common.samplerender.Shader;
-import com.google.ar.core.examples.java.common.samplerender.Texture;
-import com.google.ar.core.examples.java.common.samplerender.VertexBuffer;
+import com.example.memotion.arcamera.common.samplerender.Framebuffer;
+import com.example.memotion.arcamera.common.samplerender.Mesh;
+import com.example.memotion.arcamera.common.samplerender.SampleRender;
+import com.example.memotion.arcamera.common.samplerender.Shader;
+import com.example.memotion.arcamera.common.samplerender.Texture;
+import com.example.memotion.arcamera.common.samplerender.VertexBuffer;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -76,11 +76,11 @@ public class BackgroundRenderer {
   private boolean useOcclusion;
   private float aspectRatio;
 
-  /**
-   * Allocates and initializes OpenGL resources needed by the background renderer. Must be called
-   * during a {@link SampleRender.Renderer} callback, typically in {@link
-   * SampleRender.Renderer#onSurfaceCreated()}.
-   */
+//  /**
+//   * Allocates and initializes OpenGL resources needed by the background renderer. Must be called
+//   * during a {@link SampleRender.Renderer} callback, typically in {@link
+//   * SampleRender.Renderer#onSurfaceCreated()}.
+//   */
   public BackgroundRenderer(SampleRender render) {
     cameraColorTexture =
         new Texture(
@@ -182,12 +182,12 @@ public class BackgroundRenderer {
     }
   }
 
-  /**
-   * Updates the display geometry. This must be called every frame before calling either of
-   * BackgroundRenderer's draw methods.
-   *
-   * @param frame The current {@code Frame} as returned by {@link Session#update()}.
-   */
+//  /**
+//   * Updates the display geometry. This must be called every frame before calling either of
+//   * BackgroundRenderer's draw methods.
+//   *
+//   * @param frame The current {@code Frame} as returned by {@link Session#update()}.
+//   */
   public void updateDisplayGeometry(Frame frame) {
     if (frame.hasDisplayGeometryChanged()) {
       // If display rotation changed (also includes view size change), we need to re-query the UV
@@ -224,21 +224,20 @@ public class BackgroundRenderer {
   /**
    * Draws the AR background image. The image will be drawn such that virtual content rendered with
    * the matrices provided by {@link com.google.ar.core.Camera#getViewMatrix(float[], int)} and
-   * {@link com.google.ar.core.Camera#getProjectionMatrix(float[], int, float, float)} will
    * accurately follow static physical objects.
    */
   public void drawBackground(SampleRender render) {
     render.draw(mesh, backgroundShader);
   }
 
-  /**
-   * Draws the virtual scene. Any objects rendered in the given {@link Framebuffer} will be drawn
-   * given the previously specified {@link OcclusionMode}.
-   *
-   * <p>Virtual content should be rendered using the matrices provided by {@link
-   * com.google.ar.core.Camera#getViewMatrix(float[], int)} and {@link
-   * com.google.ar.core.Camera#getProjectionMatrix(float[], int, float, float)}.
-   */
+//  /**
+//   * Draws the virtual scene. Any objects rendered in the given {@link Framebuffer} will be drawn
+//   * given the previously specified {@link OcclusionMode}.
+//   *
+//   * <p>Virtual content should be rendered using the matrices provided by {@link
+//   * com.google.ar.core.Camera#getViewMatrix(float[], int)} and {@link
+//   * com.google.ar.core.Camera#getProjectionMatrix(float[], int, float, float)}.
+//   */
   public void drawVirtualScene(
       SampleRender render, Framebuffer virtualSceneFramebuffer, float zNear, float zFar) {
     occlusionShader.setTexture(

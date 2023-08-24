@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/include"
-        layout="@layout/actionbar_text_top"
+        layout="@layout/actionbar_signup_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements LoginResult {
         loginBinding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("LoginActivity", "로그인 버튼 클릭");
                 email = loginBinding.etEmailId.getText().toString();
                 password = loginBinding.etPassword.getText().toString();
 

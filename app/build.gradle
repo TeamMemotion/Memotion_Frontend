@@ -45,18 +45,20 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    //MaterialCalendarView
+    // MaterialCalendarView
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation 'de.hdodenhof:circleimageview:3.1.0' //Circle ImageView
+    // Circle ImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    //    구글 지도 및 장소 관련
+    // 구글 지도 및 장소 관련
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.android.libraries.places:places:2.7.0'
 
-    implementation 'com.google.android.gms:play-services-location:18.0.0' // 위치정보 라이브러리
+    // 위치정보 라이브러리
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
 }

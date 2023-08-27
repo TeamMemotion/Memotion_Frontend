@@ -5,4 +5,5 @@
     <string name="menu_route">루트</string>
     <string name="menu_mypage">마이페이지</string>
     <string name="kakao_native_key">88f1ba69e48b9431157ed84367e172cb</string>
+    <string name="google_api_key">AIzaSyC9mOwtHNaRkPFKlVWOkYQXyKyFfHNAmvQ</string>
 </resources>

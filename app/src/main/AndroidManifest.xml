@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.ar"/>
+
     <!-- application 상속 + 등록 = 전역변수화 -->
     <application
         android:usesCleartextTraffic="true"
@@ -50,6 +54,8 @@
                     android:scheme="@string/kakao_native_key" />
             </intent-filter>
         </activity>
+
+        <meta-data android:name="com.google.ar.core" android:value="required"/>
     </application>
 
 </manifest>

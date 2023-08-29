@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".mypage.MyDiaryActivity">
+
+    <include
+        android:id="@+id/action_mydiary"
+        layout="@layout/action_inner_bar_top"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="72dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnHappy"
+            android:layout_width="90sp"
+            android:layout_height="90sp"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="76sp"
+            android:background="@drawable/happy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSmile"
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:background="@drawable/smile"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnHappy" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnNotbad"
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:background="@drawable/notbad"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSmile" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSad"
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:background="@drawable/sad"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnNotbad" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnUpset"
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:background="@drawable/upset"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSad" />
+
+        <Spinner
+            android:id="@+id/spinner_btn"
+            android:layout_width="85dp"
+            android:layout_height="23dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/spinner_border_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/frame_layout_default"
+            android:layout_width="260dp"
+            android:layout_height="530dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="20dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_btn">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/mydiary_background"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_new"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                tools:listitem="@layout/item_my_diary"
+                app:layout_constraintTop_toBottomOf="@id/spinner_btn"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frame_layout_latest"
+            android:layout_width="260dp"
+            android:layout_height="530sp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="20dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_btn">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/mydiary_background"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_latest"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                tools:listitem="@layout/item_my_diary"
+                app:layout_constraintTop_toBottomOf="@id/spinner_btn"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

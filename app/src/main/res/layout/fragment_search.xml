@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="390dp"
-        android:layout_height="37dp"
+        android:layout_width="370dp"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.476"
@@ -23,26 +23,24 @@
 
     <ImageView
         android:id="@+id/searchMic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
         app:layout_constraintTop_toTopOf="@+id/imageView3"
-        app:srcCompat="@drawable/mic"
-        tools:ignore="MissingConstraints" />
+        app:srcCompat="@drawable/mic" />
 
     <ImageView
         android:id="@+id/searchBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_marginEnd="16dp"
         android:onClick="onClick"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toTopOf="@+id/imageView3"
-        app:srcCompat="@drawable/search_icon"
-        tools:ignore="MissingConstraints" />
+        app:srcCompat="@drawable/search_icon" />
 
     <EditText
         android:id="@+id/editTextText2"
@@ -58,18 +56,64 @@
         app:layout_constraintStart_toEndOf="@+id/searchMic"
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="374dp"
-        android:layout_height="545dp"
-        android:layout_marginStart="10dp"
+    <Spinner
+        android:id="@+id/spinner_btn"
+        android:layout_width="85dp"
+        android:layout_height="23dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="32dp"
+        android:visibility="visible"
+        android:background="@drawable/spinner_border_layout"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:layout_constraintBottom_toTopOf="@+id/frame_layout_new"
+        tools:layout_editor_absoluteX="305dp"
+        tools:ignore="MissingConstraints" />
+
+    <FrameLayout
+        android:id="@+id/frame_layout_latest"
+        android:layout_width="366dp"
+        android:layout_height="575dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        tools:listitem="@layout/item_search" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView3">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:listitem="@layout/item_search" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_layout_new"
+        android:layout_width="366dp"
+        android:layout_height="560dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_btn"
+        app:layout_constraintVertical_bias="0.891">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:listitem="@layout/item_search" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

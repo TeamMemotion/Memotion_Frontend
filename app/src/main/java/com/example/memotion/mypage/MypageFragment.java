@@ -30,7 +30,8 @@ public class MypageFragment extends Fragment {
         mypageBinding.myDiary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Intent intent = new Intent(getContext(), )
+                 Intent intent = new Intent(getContext(), MyDiaryActivity.class);
+                 startActivity(intent);
             }
         });
 

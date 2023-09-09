@@ -1,5 +1,6 @@
 package com.example.memotion.arcamera;
 
+import android.Manifest;
 import android.content.res.Resources;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -38,7 +39,6 @@ import com.google.ar.core.ArCoreApk.Availability;
 import com.google.ar.core.Camera;
 import com.google.ar.core.Config;
 import com.google.ar.core.Config.InstantPlacementMode;
-import com.google.ar.core.DepthPoint;
 import com.google.ar.core.Frame;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.InstantPlacementPoint;
@@ -46,7 +46,6 @@ import com.google.ar.core.LightEstimate;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Point;
 import com.google.ar.core.Point.OrientationMode;
-import com.google.ar.core.PointCloud;
 import com.google.ar.core.Session;
 import com.google.ar.core.Trackable;
 import com.google.ar.core.TrackingFailureReason;
@@ -65,11 +64,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * This is a simple example that shows how to create an augmented reality (AR) application using the
- * ARCore API. The application will display any detected planes and will allow the user to tap on a
- * plane to place a 3D model.
- */
 public class ArActivity extends AppCompatActivity implements SampleRender.Renderer {
 
     private static final String TAG = ArActivity.class.getSimpleName();
@@ -77,8 +71,6 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
     private static final String SEARCHING_PLANE_MESSAGE = "Searching for surfaces...";
     private static final String WAITING_FOR_TAP_MESSAGE = "Tap on a surface to place an object.";
 
-    // See the definition of updateSphericalHarmonicsCoefficients for an explanation of these
-    // constants.
     private static final float[] sphericalHarmonicFactors = {
             0.282095f,
             -0.325735f,
@@ -114,27 +106,13 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
     private Framebuffer virtualSceneFramebuffer;
     private boolean hasSetTextureNames = false;
 
-    private final DepthSettings depthSettings = new DepthSettings();
+    //    private final DepthSettings depthSettings = new DepthSettings();
     private boolean[] depthSettingsMenuDialogCheckboxes = new boolean[2];
 
     private final InstantPlacementSettings instantPlacementSettings = new InstantPlacementSettings();
     private boolean[] instantPlacementSettingsMenuDialogCheckboxes = new boolean[1];
-    // Assumed distance from the device camera to the surface on which user will try to place objects.
-    // This value affects the apparent scale of objects while the tracking method of the
-    // Instant Placement point is SCREENSPACE_WITH_APPROXIMATE_DISTANCE.
-    // Values in the [0.2, 2.0] meter range are a good choice for most AR experiences. Use lower
-    // values for AR experiences where users are expected to place objects on surfaces close to the
-    // camera. Use larger values for experiences where the user will likely be standing and trying to
-    // place an object on the ground or floor in front of them.
-    private static final float APPROXIMATE_DISTANCE_METERS = 2.0f;
 
-    // Point Cloud
-    private VertexBuffer pointCloudVertexBuffer;
-    private Mesh pointCloudMesh;
-    private Shader pointCloudShader;
-    // Keep track of the last point cloud rendered to avoid updating the VBO if point cloud
-    // was not changed.  Do this using the timestamp since we can't compare PointCloud objects.
-    private long lastPointCloudTimestamp = 0;
+    private static final float APPROXIMATE_DISTANCE_METERS = 2.0f;
 
     // Virtual object (ARCore pawn)
     private Mesh virtualObjectMesh;
@@ -160,6 +138,7 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
     private final float[] viewLightDirection = new float[4]; // view x world light direction
 
     ActivityArBinding viewBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -177,22 +156,18 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
 
         installRequested = false;
 
-        depthSettings.onCreate(this);
         instantPlacementSettings.onCreate(this);
-        ImageButton settingsButton = viewBinding.settingsButton;
-//        settingsButton.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        PopupMenu popup = new PopupMenu(ArActivity.this, v);
-//                        popup.setOnMenuItemClickListener(ArActivity.this::settingsMenuClick);
-//                        popup.inflate(R.menu.settings_menu);
-//                        popup.show();
-//                    }
-//                });
+
+        String[] permissions = getAdditionalPermissions();
     }
 
-    /** Menu button to launch feature specific settings. */
+    private String[] getAdditionalPermissions() {
+        return new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+    }
+
+    /**
+     * Menu button to launch feature specific settings.
+     */
 //    protected boolean settingsMenuClick(MenuItem item) {
 //        if (item.getItemId() == R.id.depth_settings) {
 //            launchDepthSettingsMenuDialog();
@@ -203,14 +178,9 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
 //        }
 //        return false;
 //    }
-
     @Override
     protected void onDestroy() {
         if (session != null) {
-            // Explicitly close ARCore Session to release native resources.
-            // Review the API reference for important considerations before calling close() in apps with
-            // more complicated lifecycle requirements:
-            // https://developers.google.com/ar/reference/java/arcore/reference/com/google/ar/core/Session#close()
             session.close();
             session = null;
         }
@@ -277,12 +247,6 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
         // Note that order matters - see the note in onPause(), the reverse applies here.
         try {
             configureSession();
-            // To record a live camera session for later playback, call
-            // `session.startRecording(recordingConfig)` at anytime. To playback a previously recorded AR
-            // session instead of using the live camera feed, call
-            // `session.setPlaybackDatasetUri(Uri)` before calling `session.resume()`. To
-            // learn more about recording and playback, see:
-            // https://developers.google.com/ar/develop/java/recording-and-playback
             session.resume();
         } catch (CameraNotAvailableException e) {
             messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
@@ -298,9 +262,6 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
     public void onPause() {
         super.onPause();
         if (session != null) {
-            // Note that the order matters - GLSurfaceView is paused first so that it does not try
-            // to query the session. If Session is paused before GLSurfaceView, GLSurfaceView may
-            // still call session.update() and get a SessionPausedException.
             displayRotationHelper.onPause();
             surfaceView.onPause();
             session.pause();
@@ -372,24 +333,6 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
                     buffer);
             GLError.maybeThrowGLException("Failed to populate DFG texture", "glTexImage2D");
 
-            // Point cloud
-            pointCloudShader =
-                    Shader.createFromAssets(
-                                    render,
-                                    "shaders/point_cloud.vert",
-                                    "shaders/point_cloud.frag",
-                                    /* defines= */ null)
-                            .setVec4(
-                                    "u_Color", new float[] {31.0f / 255.0f, 188.0f / 255.0f, 210.0f / 255.0f, 1.0f})
-                            .setFloat("u_PointSize", 5.0f);
-            // four entries per vertex: X, Y, Z, confidence
-            pointCloudVertexBuffer =
-                    new VertexBuffer(render, /* numberOfEntriesPerVertex= */ 4, /* entries= */ null);
-            final VertexBuffer[] pointCloudVertexBuffers = {pointCloudVertexBuffer};
-            pointCloudMesh =
-                    new Mesh(
-                            render, Mesh.PrimitiveMode.POINTS, /* indexBuffer= */ null, pointCloudVertexBuffers);
-
             // Virtual object to render (ARCore pawn)
             virtualObjectAlbedoTexture =
                     Texture.createFromAsset(
@@ -445,24 +388,12 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
             return;
         }
 
-        // Texture names should only be set once on a GL thread unless they change. This is done during
-        // onDrawFrame rather than onSurfaceCreated since the session is not guaranteed to have been
-        // initialized during the execution of onSurfaceCreated.
-        if (!hasSetTextureNames) {
+         if (!hasSetTextureNames) {
             session.setCameraTextureNames(
-                    new int[] {backgroundRenderer.getCameraColorTexture().getTextureId()});
+                    new int[]{backgroundRenderer.getCameraColorTexture().getTextureId()});
             hasSetTextureNames = true;
         }
 
-        // -- Update per-frame state
-
-        // Notify ARCore session that the view size changed so that the perspective matrix and
-        // the video background can be properly adjusted.
-        displayRotationHelper.updateSessionIfNeeded(session);
-
-        // Obtain the current frame from the AR Session. When the configuration is set to
-        // UpdateMode.BLOCKING (it is by default), this will throttle the rendering to the
-        // camera framerate.
         Frame frame;
         try {
             frame = session.update();
@@ -473,30 +404,8 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
         }
         Camera camera = frame.getCamera();
 
-        // Update BackgroundRenderer state to match the depth settings.
-        try {
-            backgroundRenderer.setUseDepthVisualization(
-                    render, depthSettings.depthColorVisualizationEnabled());
-            backgroundRenderer.setUseOcclusion(render, depthSettings.useDepthForOcclusion());
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to read a required asset file", e);
-            messageSnackbarHelper.showError(this, "Failed to read a required asset file: " + e);
-            return;
-        }
-        // BackgroundRenderer.updateDisplayGeometry must be called every frame to update the coordinates
-        // used to draw the background camera image.
         backgroundRenderer.updateDisplayGeometry(frame);
 
-//        if (camera.getTrackingState() == TrackingState.TRACKING
-//                && (depthSettings.useDepthForOcclusion()
-//                || depthSettings.depthColorVisualizationEnabled())) {
-//            try (Image depthImage = frame.acquireDepthImage16Bits()) {
-//                backgroundRenderer.updateCameraDepthTexture(depthImage);
-//            } catch (NotYetAvailableException e) {
-//                // This normally means that depth data is not available yet. This is normal so we will not
-//                // spam the logcat with this.
-//            }
-//        }
 
         // Handle one tap per frame.
         handleTap(frame, camera);
@@ -539,25 +448,11 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
             return;
         }
 
-        // -- Draw non-occluded virtual objects (planes, point cloud)
-
         // Get projection matrix.
         camera.getProjectionMatrix(projectionMatrix, 0, Z_NEAR, Z_FAR);
 
         // Get camera matrix and draw.
         camera.getViewMatrix(viewMatrix, 0);
-
-        // Visualize tracked points.
-        // Use try-with-resources to automatically release the point cloud.
-        try (PointCloud pointCloud = frame.acquirePointCloud()) {
-            if (pointCloud.getTimestamp() > lastPointCloudTimestamp) {
-                pointCloudVertexBuffer.set(pointCloud.getPoints());
-                lastPointCloudTimestamp = pointCloud.getTimestamp();
-            }
-            Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-            pointCloudShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
-            render.draw(pointCloudMesh, pointCloudShader);
-        }
 
         // Visualize planes.
         planeRenderer.drawPlanes(
@@ -592,15 +487,11 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
             virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
             virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
 
-            if (trackable instanceof InstantPlacementPoint
-                    && ((InstantPlacementPoint) trackable).getTrackingMethod()
-                    == InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE) {
-                virtualObjectShader.setTexture(
-                        "u_AlbedoTexture", virtualObjectAlbedoInstantPlacementTexture);
+            if (trackable instanceof InstantPlacementPoint) {
+                virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoInstantPlacementTexture);
             } else {
                 virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
             }
-
             render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
         }
 
@@ -623,130 +514,40 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
                 // If any plane, Oriented Point, or Instant Placement Point was hit, create an anchor.
                 Trackable trackable = hit.getTrackable();
                 // If a plane was hit, check that it was hit inside the plane polygon.
-                // DepthPoints are only returned if Config.DepthMode is set to AUTOMATIC.
                 if ((trackable instanceof Plane
-                        && ((Plane) trackable).isPoseInPolygon(hit.getHitPose())
-                        && (PlaneRenderer.calculateDistanceToPlane(hit.getHitPose(), camera.getPose()) > 0))
+                        && ((Plane) trackable).isPoseInPolygon(hit.getHitPose()))
                         || (trackable instanceof Point
                         && ((Point) trackable).getOrientationMode()
                         == OrientationMode.ESTIMATED_SURFACE_NORMAL)
-                        || (trackable instanceof InstantPlacementPoint)
-                        || (trackable instanceof DepthPoint)) {
+                        || (trackable instanceof InstantPlacementPoint)) {
                     // Cap the number of objects created. This avoids overloading both the
                     // rendering system and ARCore.
                     if (wrappedAnchors.size() >= 20) {
                         wrappedAnchors.get(0).getAnchor().detach();
                         wrappedAnchors.remove(0);
                     }
-
-                    // Adding an Anchor tells ARCore that it should track this position in
-                    // space. This anchor is created on the Plane to place the 3D model
-                    // in the correct position relative both to the world and to the plane.
                     wrappedAnchors.add(new WrappedAnchor(hit.createAnchor(), trackable));
-                    // For devices that support the Depth API, shows a dialog to suggest enabling
-                    // depth-based occlusion. This dialog needs to be spawned on the UI thread.
-//                    this.runOnUiThread(this::showOcclusionDialogIfNeeded);
 
-                    // Hits are sorted by depth. Consider only closest hit on a plane, Oriented Point, or
-                    // Instant Placement Point.
                     break;
                 }
             }
         }
     }
 
-    /**
-     * Shows a pop-up dialog on the first call, determining whether the user wants to enable
-     * depth-based occlusion. The result of this dialog can be retrieved with useDepthForOcclusion().
-     */
-//    private void showOcclusionDialogIfNeeded() {
-//        boolean isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC);
-//        if (!depthSettings.shouldShowDepthEnableDialog() || !isDepthSupported) {
-//            return; // Don't need to show dialog.
-//        }
-//
-//        // Asks the user whether they want to use depth-based occlusion.
-//        new AlertDialog.Builder(this)
-//                .setTitle(R.string.options_title_with_depth)
-//                .setMessage(R.string.depth_use_explanation)
-//                .setPositiveButton(
-//                        R.string.button_text_enable_depth,
-//                        (DialogInterface dialog, int which) -> {
-//                            depthSettings.setUseDepthForOcclusion(true);
-//                        })
-//                .setNegativeButton(
-//                        R.string.button_text_disable_depth,
-//                        (DialogInterface dialog, int which) -> {
-//                            depthSettings.setUseDepthForOcclusion(false);
-//                        })
-//                .show();
-//    }
-
     private void launchInstantPlacementSettingsMenuDialog() {
         resetSettingsMenuDialogCheckboxes();
         Resources resources = getResources();
-        new AlertDialog.Builder(this)
-//                .setTitle(R.string.options_title_instant_placement)
-//                .setMultiChoiceItems(
-//                        resources.getStringArray(R.array.instant_placement_options_array),
-//                        instantPlacementSettingsMenuDialogCheckboxes,
-//                        (DialogInterface dialog, int which, boolean isChecked) ->
-//                                instantPlacementSettingsMenuDialogCheckboxes[which] = isChecked)
-//                .setPositiveButton(
-//                        R.string.done,
-//                        (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-//                .setNegativeButton(
-//                        android.R.string.cancel,
-//                        (DialogInterface dialog, int which) -> resetSettingsMenuDialogCheckboxes())
-                .show();
-    }
-
-    /** Shows checkboxes to the user to facilitate toggling of depth-based effects. */
-    private void launchDepthSettingsMenuDialog() {
-        // Retrieves the current settings to show in the checkboxes.
-        resetSettingsMenuDialogCheckboxes();
-
-        // Shows the dialog to the user.
-        Resources resources = getResources();
-        if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-            // With depth support, the user can select visualization options.
-//            new AlertDialog.Builder(this)
-//                    .setTitle(R.string.options_title_with_depth)
-//                    .setMultiChoiceItems(
-//                            resources.getStringArray(R.array.depth_options_array),
-//                            depthSettingsMenuDialogCheckboxes,
-//                            (DialogInterface dialog, int which, boolean isChecked) ->
-//                                    depthSettingsMenuDialogCheckboxes[which] = isChecked)
-//                    .setPositiveButton(
-//                            R.string.done,
-//                            (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-//                    .setNegativeButton(
-//                            android.R.string.cancel,
-//                            (DialogInterface dialog, int which) -> resetSettingsMenuDialogCheckboxes())
-//                    .show();
-        } else {
-            // Without depth support, no settings are available.
-//            new AlertDialog.Builder(this)
-//                    .setTitle(R.string.options_title_without_depth)
-//                    .setPositiveButton(
-//                            R.string.done,
-//                            (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-//                    .show();
-        }
+        new AlertDialog.Builder(this).show();
     }
 
     private void applySettingsMenuDialogCheckboxes() {
-        depthSettings.setUseDepthForOcclusion(depthSettingsMenuDialogCheckboxes[0]);
-        depthSettings.setDepthColorVisualizationEnabled(depthSettingsMenuDialogCheckboxes[1]);
         instantPlacementSettings.setInstantPlacementEnabled(
                 instantPlacementSettingsMenuDialogCheckboxes[0]);
         configureSession();
     }
 
     private void resetSettingsMenuDialogCheckboxes() {
-        depthSettingsMenuDialogCheckboxes[0] = depthSettings.useDepthForOcclusion();
-        depthSettingsMenuDialogCheckboxes[1] = depthSettings.depthColorVisualizationEnabled();
-        instantPlacementSettingsMenuDialogCheckboxes[0] =
+instantPlacementSettingsMenuDialogCheckboxes[0] =
                 instantPlacementSettings.isInstantPlacementEnabled();
     }
 
@@ -791,20 +592,6 @@ public class ArActivity extends AppCompatActivity implements SampleRender.Render
     }
 
     private void updateSphericalHarmonicsCoefficients(float[] coefficients) {
-        // Pre-multiply the spherical harmonics coefficients before passing them to the shader. The
-        // constants in sphericalHarmonicFactors were derived from three terms:
-        //
-        // 1. The normalized spherical harmonics basis functions (y_lm)
-        //
-        // 2. The lambertian diffuse BRDF factor (1/pi)
-        //
-        // 3. A <cos> convolution. This is done to so that the resulting function outputs the irradiance
-        // of all incoming light over a hemisphere for a given surface normal, which is what the shader
-        // (environmental_hdr.frag) expects.
-        //
-        // You can read more details about the math here:
-        // https://google.github.io/filament/Filament.html#annex/sphericalharmonics
-
         if (coefficients.length != 9 * 3) {
             throw new IllegalArgumentException(
                     "The given coefficients array must be of length 27 (3 components per 9 coefficients");

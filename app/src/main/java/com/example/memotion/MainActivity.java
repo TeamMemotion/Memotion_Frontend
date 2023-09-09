@@ -3,6 +3,7 @@ package com.example.memotion;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -11,12 +12,14 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.memotion.arcamera.ArActivity;
 import com.example.memotion.databinding.ActivityMainBinding;
 import com.example.memotion.home.HomeFragment;
 import com.example.memotion.mypage.MypageFragment;
 import com.example.memotion.route.RouteFragment;
 import com.example.memotion.search.SearchFragment;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.ar.sceneform.ux.ArFragment;
 import com.kakao.sdk.common.KakaoSdk;
 
 import java.security.MessageDigest;
@@ -53,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.menu_mypage) {
                     getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new MypageFragment()).commit();
+                    return true;
+                } else if (itemId == R.id.menu_ar) {
+                    getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new ArFragment()).commit();
                     return true;
                 }
                 return false;

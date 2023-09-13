@@ -1,10 +1,14 @@
 package com.example.memotion.diary;
 
+
+import static android.content.Intent.getIntent;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -54,6 +58,7 @@ public class PlaceAddDialog {
     final String TAG = "PlaceAddDialog";
     final static int PERMISSION_REQ_CODE = 100;
 
+    private Intent intent;
     private Context context;
     private Dialog dialog;
     private FusedLocationProviderClient flpClient;
@@ -95,6 +100,15 @@ public class PlaceAddDialog {
                     executeReverseGeocoding(inputLocation);
                 else
                     Toast.makeText(context, "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 저장 버튼
+        dialog.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String date = DiaryActivity.date; // 선택한 날짜
+                EditText emotion = dialog.findViewById(R.id.keyword);   // 감정
             }
         });
 

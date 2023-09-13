@@ -11,6 +11,7 @@ import com.example.memotion.databinding.ActivityDiaryBinding;
 public class DiaryActivity extends AppCompatActivity {
 
     ActivityDiaryBinding diaryBinding;
+    public static String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +20,7 @@ public class DiaryActivity extends AppCompatActivity {
         setContentView(diaryBinding.getRoot());
 
         Intent intent = getIntent();
-        String date = intent.getStringExtra("date");
+        date = intent.getStringExtra("date");
 
         diaryBinding.selectedDate.setText(date);
 

@@ -30,6 +30,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.memotion.R;
+import com.example.memotion.account.login.LoginRequest;
+import com.example.memotion.account.login.LoginService;
+import com.example.memotion.diary.post.emotion.PostEmotionRequest;
+import com.example.memotion.diary.post.emotion.PostEmotionResult;
+import com.example.memotion.diary.post.emotion.PostEmotionService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -54,11 +59,10 @@ import java.util.Locale;
 import javax.xml.transform.Result;
 
 // 23.08.24 : 지도 API 추가
-public class PlaceAddDialog {
+public class PlaceAddDialog implements PostEmotionResult {
     final String TAG = "PlaceAddDialog";
     final static int PERMISSION_REQ_CODE = 100;
 
-    private Intent intent;
     private Context context;
     private Dialog dialog;
     private FusedLocationProviderClient flpClient;
@@ -68,6 +72,9 @@ public class PlaceAddDialog {
 
     private Double mLat = 360.0;    // 위도 초기값
     private Double mLng = 360.0;    // 경도 초기값
+    private String mLastEmotion;
+    private boolean mLastShare = true;
+
     public PlaceAddDialog(Context context) {
         this.context = context;
     }
@@ -103,12 +110,60 @@ public class PlaceAddDialog {
             }
         });
 
+        dialog.findViewById(R.id.btnHappy).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                mLastEmotion = "happy";
+            }
+        });
+
+        dialog.findViewById(R.id.btnSmile).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                mLastEmotion = "smile";
+            }
+        });
+
+        dialog.findViewById(R.id.btnNotbad).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                mLastEmotion = "notbad";
+            }
+        });
+
+        dialog.findViewById(R.id.btnSad).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                mLastEmotion = "sad";
+            }
+        });
+
+        dialog.findViewById(R.id.btnUpset).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLastEmotion = "upset";
+            }
+        });
+
+        dialog.findViewById(R.id.btnShare).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(mLastShare == true)
+                    mLastShare = false;
+                else
+                    mLastShare = true;
+            }
+        });
+
         // 저장 버튼
         dialog.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String date = DiaryActivity.date; // 선택한 날짜
-                EditText emotion = dialog.findViewById(R.id.keyword);   // 감정
+                Log.d(TAG, "다이어리 저장 시작");
+                String createdDate = DiaryActivity.date; // 선택한 날짜
+                EditText keyWord = dialog.findViewById(R.id.keyword); // 감정
+
+                postEmotion(createdDate, keyWord.getText().toString());
             }
         });
 
@@ -123,6 +178,25 @@ public class PlaceAddDialog {
                 Looper.getMainLooper ()
         );
         dialog.show();
+    }
+
+    // 다이어리 저장 API 호출
+    private void postEmotion(String createdDate, String keyWord) {
+        Log.d(TAG, "API 호출");
+        PostEmotionService postEmotionService = new PostEmotionService();
+        postEmotionService.setPostEmotionResult(this);
+        postEmotionService.postEmotion(new PostEmotionRequest(mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastEmotion, keyWord, createdDate, mLastShare));
+    }
+
+    @Override
+    public void postEmotionSuccess(int code, Long result) {
+        Log.d(TAG, "다이어리 저장 성공");
+        // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
+    }
+
+    @Override
+    public void postEmotionFailure(int code, String message) {
+        Log.d(TAG, "다이어리 저장 실패");
     }
 
     // 권한 체크

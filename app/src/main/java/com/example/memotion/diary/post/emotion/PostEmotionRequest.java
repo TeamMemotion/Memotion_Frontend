@@ -3,8 +3,6 @@ package com.example.memotion.diary.post.emotion;
 import com.google.gson.annotations.SerializedName;
 
 public class PostEmotionRequest {
-    @SerializedName(value = "diaryId")
-    private Long diaryId;
     @SerializedName(value = "latitude")
     private Double latitude;
     @SerializedName(value = "longitude")
@@ -18,8 +16,7 @@ public class PostEmotionRequest {
     @SerializedName(value = "share")
     private boolean share;
 
-    public PostEmotionRequest(Long diaryId, Double latitude, Double longitude, String emotion, String keyWord, String createdDate, boolean share) {
-        this.diaryId = diaryId;
+    public PostEmotionRequest(Double latitude, Double longitude, String emotion, String keyWord, String createdDate, boolean share) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.emotion = emotion;

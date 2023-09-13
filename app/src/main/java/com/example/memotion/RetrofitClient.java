@@ -28,15 +28,12 @@ public class RetrofitClient {
     private static String TAG = "RetrofitClient";
     private static String BASE_URL = "http://43.200.86.191:9000/";
     private static Retrofit retrofit;
-    private static Context context;
-
-    public RetrofitClient(Context context) {
-        this.context = context;
-    }
+    private static Context context = MainActivity.context;
 
     // SharedPreference에서 accessToken 추출
     public static String getAccessToken() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        Log.d(TAG, "액세스 : " + sharedPreferences.getString("accessToken", ""));
         return sharedPreferences.getString("accessToken", "");
     }
 
@@ -62,6 +59,7 @@ public class RetrofitClient {
                         return chain.proceed(original);
 
                     } else {
+
                         Request newRequest = original.newBuilder()
                                 .header("Authorization", "Bearer " + getAccessToken())
                                 .build();

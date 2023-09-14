@@ -1,4 +1,4 @@
-package com.example.memotion.diary.post.content;
+package com.example.memotion.diary.patch.emotion;
 
 import static com.example.memotion.RetrofitClient.errorParsing;
 import static com.example.memotion.RetrofitClient.getClient;
@@ -13,24 +13,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostContentService {
-    private PostContentResult postContentResult;
+public class PatchEmotionService {
+    private PatchEmotionResult patchEmotionResult;
 
-    public void setPostContentResult(PostContentResult postContentResult) {
-        this.postContentResult = postContentResult;
+    public void setPatchEmotionResult(PatchEmotionResult patchEmotionResult) {
+        this.patchEmotionResult = patchEmotionResult;
     }
 
-    public void postContent(PostContentRequest postContentRequest) {
-        PostContentRetrofitInterface postContentService = getClient().create(PostContentRetrofitInterface.class);
-        postContentService.postContent(postContentRequest).enqueue(new Callback<PostContentResponse>() {
-
+    public void postEmotion(PatchEmotionRequest patchEmotionRequest) {
+        PatchEmotionRetrofitInterface patchEmotionService = getClient().create(PatchEmotionRetrofitInterface.class);
+        patchEmotionService.patchEmotion(patchEmotionRequest).enqueue(new Callback<PatchEmotionResponse>() {
             @Override
-            public void onResponse(Call<PostContentResponse> call, Response<PostContentResponse> response) {
-                Log.d("POST-CONTENT-SUCCESS", response.toString());
+            public void onResponse(Call<PatchEmotionResponse> call, Response<PatchEmotionResponse> response) {
+                Log.d("PATCH-EMOTION-SUCCESS", response.toString());
 
                 if(response.isSuccessful()) {
                     if(response.body().getCode() == 1000) {
-                        postContentResult.postContentSuccess(response.body().getCode(), response.body().getResult());
+                        patchEmotionResult.patchEmotionSuccess(response.body().getCode(), response.body().getResult());
                     }
                 } else {
                     //400이상 에러시 response.body가 null로 처리됨. 따라서 errorBody로 받아야함.
@@ -55,8 +54,8 @@ public class PostContentService {
             }
 
             @Override
-            public void onFailure(Call<PostContentResponse> call, Throwable t) {
-                Log.d("POST-CONTENT-FAILURE", t.getMessage());
+            public void onFailure(Call<PatchEmotionResponse> call, Throwable t) {
+                Log.d("PATCH-EMOTION-FAILURE", t.getMessage());
             }
         });
     }

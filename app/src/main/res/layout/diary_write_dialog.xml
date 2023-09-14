@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/diary_write_background"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="217dp" />
 
     <TextView
         android:id="@+id/textView"
@@ -175,7 +175,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView2"
         app:layout_constraintStart_toEndOf="@+id/btnSad"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        tools:visibility="visible" />
 
     <EditText
         android:id="@+id/keyword"
@@ -220,5 +221,65 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnSave"
         app:layout_constraintTop_toBottomOf="@+id/keyword" />
+
+    <ImageView
+        android:id="@+id/checkedHappy"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnHappy"
+        app:layout_constraintEnd_toEndOf="@+id/btnHappy"
+        tools:src="@drawable/is_checked" />
+
+    <ImageView
+        android:id="@+id/checkedSmile"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSmile"
+        app:layout_constraintEnd_toEndOf="@+id/btnSmile"
+        tools:src="@drawable/is_checked" />
+
+    <ImageView
+        android:id="@+id/checkedNotbad"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnNotbad"
+        app:layout_constraintEnd_toEndOf="@+id/btnNotbad"
+        tools:src="@drawable/is_checked" />
+
+    <ImageView
+        android:id="@+id/checkedSad"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSad"
+        app:layout_constraintEnd_toEndOf="@+id/btnSad"
+        tools:src="@drawable/is_checked" />
+
+    <ImageView
+        android:id="@+id/checkedUpset"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUpset"
+        app:layout_constraintEnd_toEndOf="@+id/btnUpset"
+        tools:src="@drawable/is_checked" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

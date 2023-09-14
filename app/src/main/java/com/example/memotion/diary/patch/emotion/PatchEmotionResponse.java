@@ -1,8 +1,8 @@
-package com.example.memotion.diary.post.content;
+package com.example.memotion.diary.patch.emotion;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PostContentResponse {
+public class PatchEmotionResponse {
     @SerializedName(value = "isSuccess") private Boolean isSuccess;
     @SerializedName(value = "code") private int code;
     @SerializedName(value = "message") private String message;

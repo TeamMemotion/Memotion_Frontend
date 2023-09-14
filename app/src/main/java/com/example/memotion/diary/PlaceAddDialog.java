@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -114,6 +115,11 @@ public class PlaceAddDialog implements PostEmotionResult {
             @Override
             public void onClick(View view) {
                 mLastEmotion = "happy";
+                dialog.findViewById(R.id.btnHappy).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.btnSmile).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnNotbad).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnSad).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnUpset).setVisibility(View.INVISIBLE);
             }
         });
 
@@ -121,6 +127,11 @@ public class PlaceAddDialog implements PostEmotionResult {
             @Override
             public void onClick(View view) {
                 mLastEmotion = "smile";
+                dialog.findViewById(R.id.btnHappy).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnSmile).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.btnNotbad).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnSad).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnUpset).setVisibility(View.INVISIBLE);
             }
         });
 
@@ -128,6 +139,11 @@ public class PlaceAddDialog implements PostEmotionResult {
             @Override
             public void onClick(View view) {
                 mLastEmotion = "notbad";
+                dialog.findViewById(R.id.btnHappy).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnSmile).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnNotbad).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.btnSad).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnUpset).setVisibility(View.INVISIBLE);
             }
         });
 
@@ -135,6 +151,11 @@ public class PlaceAddDialog implements PostEmotionResult {
             @Override
             public void onClick(View view) {
                 mLastEmotion = "sad";
+                dialog.findViewById(R.id.btnHappy).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnSmile).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnNotbad).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnSad).setVisibility(View.VISIBLE);
+                dialog.findViewById(R.id.btnUpset).setVisibility(View.INVISIBLE);
             }
         });
 
@@ -142,6 +163,11 @@ public class PlaceAddDialog implements PostEmotionResult {
             @Override
             public void onClick(View view) {
                 mLastEmotion = "upset";
+                dialog.findViewById(R.id.btnHappy).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnSmile).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnNotbad).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnSad).setVisibility(View.INVISIBLE);
+                dialog.findViewById(R.id.btnUpset).setVisibility(View.VISIBLE);
             }
         });
 
@@ -192,11 +218,18 @@ public class PlaceAddDialog implements PostEmotionResult {
     public void postEmotionSuccess(int code, Long result) {
         Log.d(TAG, "다이어리 저장 성공");
         // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
+        Intent intent = new Intent();
+        intent.putExtra("diaryId", result); // diaryId를 전달
+
+        // 결과를 DiaryActivity로 반환
+        ((AppCompatActivity)context).setResult(Activity.RESULT_OK, intent);
+        dialog.dismiss();
     }
 
     @Override
     public void postEmotionFailure(int code, String message) {
         Log.d(TAG, "다이어리 저장 실패");
+        Toast.makeText(context, "다이어리 저장 실패", Toast.LENGTH_SHORT).show();
     }
 
     // 권한 체크

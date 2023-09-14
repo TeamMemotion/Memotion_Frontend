@@ -1,4 +1,4 @@
-package com.example.memotion.diary.post.content;
+package com.example.memotion.diary.get.content;
 
 import static com.example.memotion.RetrofitClient.errorParsing;
 import static com.example.memotion.RetrofitClient.getClient;
@@ -6,6 +6,10 @@ import static com.example.memotion.RetrofitClient.getClient;
 import android.util.Log;
 
 import com.example.memotion.RetrofitClient;
+import com.example.memotion.diary.post.content.PostContentRequest;
+import com.example.memotion.diary.post.content.PostContentResponse;
+import com.example.memotion.diary.post.content.PostContentResult;
+import com.example.memotion.diary.post.content.PostContentRetrofitInterface;
 
 import java.io.IOException;
 
@@ -13,24 +17,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostContentService {
-    private PostContentResult postContentResult;
+public class GetContentService {
+    private GetContentResult getContentResult;
 
-    public void setPostContentResult(PostContentResult postContentResult) {
-        this.postContentResult = postContentResult;
+    public void setGetContentResult(GetContentResult getContentResult) {
+        this.getContentResult = getContentResult;
     }
 
-    public void postContent(PostContentRequest postContentRequest) {
-        PostContentRetrofitInterface postContentService = getClient().create(PostContentRetrofitInterface.class);
-        postContentService.postContent(postContentRequest).enqueue(new Callback<PostContentResponse>() {
+    public void getContent(String date) {
+        GetContentRetrofitInterface getContentService = getClient().create(GetContentRetrofitInterface.class);
+        getContentService.getContent(date).enqueue(new Callback<GetContentResponse>() {
 
             @Override
-            public void onResponse(Call<PostContentResponse> call, Response<PostContentResponse> response) {
-                Log.d("POST-CONTENT-SUCCESS", response.toString());
+            public void onResponse(Call<GetContentResponse> call, Response<GetContentResponse> response) {
+                Log.d("GET-CONTENT-SUCCESS", response.toString());
 
                 if(response.isSuccessful()) {
                     if(response.body().getCode() == 1000) {
-                        postContentResult.postContentSuccess(response.body().getCode(), response.body().getResult());
+                        getContentResult.getContentSuccess(response.body().getCode(), response.body().getResult());
                     }
                 } else {
                     //400이상 에러시 response.body가 null로 처리됨. 따라서 errorBody로 받아야함.
@@ -55,8 +59,8 @@ public class PostContentService {
             }
 
             @Override
-            public void onFailure(Call<PostContentResponse> call, Throwable t) {
-                Log.d("POST-CONTENT-FAILURE", t.getMessage());
+            public void onFailure(Call<GetContentResponse> call, Throwable t) {
+                Log.d("GET-CONTENT-FAILURE", t.getMessage());
             }
         });
     }

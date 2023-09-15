@@ -5,17 +5,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.memotion.databinding.ActivityDiaryBinding;
+import com.example.memotion.diary.get.content.GetContentResponse;
+import com.example.memotion.diary.get.content.GetContentResult;
+import com.example.memotion.diary.get.content.GetContentService;
 import com.example.memotion.diary.post.content.PostContentRequest;
 import com.example.memotion.diary.post.content.PostContentResult;
 import com.example.memotion.diary.post.content.PostContentService;
 import com.example.memotion.diary.post.emotion.PostEmotionRequest;
 import com.example.memotion.diary.post.emotion.PostEmotionService;
 
-public class DiaryActivity extends AppCompatActivity implements PostContentResult {
+public class DiaryActivity extends AppCompatActivity implements PostContentResult, GetContentResult {
     private static String TAG = "DiaryActivity";
     ActivityDiaryBinding diaryBinding;
     public static String date;
@@ -30,6 +34,9 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
         date = intent.getStringExtra("date");
 
         diaryBinding.selectedDate.setText(date);
+
+        // 오늘의 다이어리 조회
+        todayDiary();
 
         // 창 닫기
         diaryBinding.include.appbarBackBtn.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +97,7 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
                 // diaryId가 -1이 아니면 아래 내용 함수화하기
                 // 1. 오늘의 루트 전체 가져와서 화면에 띄우기
                 // 2. 오늘의 다이어리 가져와서 화면에 띄우기
+                todayDiary();
             }
         }
     }
@@ -99,8 +107,29 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
 
     }
 
-    // 오늘의 다이어리 조회 후 화면에 출력 (다이어리 내용)
+    // 오늘의 다이어리 조회
     protected void todayDiary() {
+        GetContentService getContentService = new GetContentService();
+        getContentService.setGetContentResult(this);
+        getContentService.getContent(date);
+    }
 
+    // 오늘의 다이어리 조회 성공 -> 다이어리 내용 화면에 출력
+    @Override
+    public void getContentSuccess(int code, GetContentResponse.Result result) {
+        Log.d(TAG, "오늘의 다이어리 조회 성공");
+        EditText diaryTitle = diaryBinding.diaryTitle;
+        EditText diaryContent = diaryBinding.diaryContent;
+
+        // 다이어리 내용 화면에 출력
+        diaryTitle.setText(result.getTitle());
+        diaryContent.setText(result.getContent());
+    }
+
+    // 오늘의 다이어리 조회 실패
+    @Override
+    public void getContentFailure(int code, String message) {
+        Log.d(TAG, "오늘의 다이어리 조회 실패");
+        Toast.makeText(this, "오늘의 다이어리 조회 실패", Toast.LENGTH_SHORT).show();
     }
 }

@@ -1,4 +1,4 @@
 package com.example.memotion.diary.get.emotion;
 
-public class GetEmotionRequest {
+public interface GetEmotionRetrofitInterface {
 }

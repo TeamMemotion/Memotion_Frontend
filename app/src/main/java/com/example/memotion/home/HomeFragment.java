@@ -88,7 +88,13 @@ public class HomeFragment extends Fragment {
 
         calendarView.setOnDateChangedListener((widget, date, selected) -> {
             dateClicked = String.format("%d.%d.%d", date.getYear(), date.getMonth(), date.getDay());
-            dateFormat = String.format("%d-%d-%d", date.getYear(), date.getMonth(), date.getDay());
+
+            // 달, 월 10 미만이면 0을 붙여주기
+            String year = String.format("%d", date.getYear());
+            String month = (date.getMonth() < 10 ? String.format("-0%d", date.getMonth()) : String.format("-%d", date.getMonth()));
+            String day = (date.getDay() < 10 ? String.format("-0%d", date.getDay()) : String.format("-%d", date.getDay()));
+
+            dateFormat = year + month + day;
             Log.i("TAG", dateClicked);
 
             homeBinding.selectedDate.setText(dateClicked);

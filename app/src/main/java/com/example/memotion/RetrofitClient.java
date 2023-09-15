@@ -59,7 +59,6 @@ public class RetrofitClient {
                         return chain.proceed(original);
 
                     } else {
-
                         Request newRequest = original.newBuilder()
                                 .header("Authorization", "Bearer " + getAccessToken())
                                 .build();
@@ -123,6 +122,8 @@ public class RetrofitClient {
             public void onFailure(Call<TokenResponse> call, Throwable t) {
                 Log.d(TAG, "토큰 갱신에 실패했습니다.");
                 Log.d(TAG, t.getMessage());
+
+                // TO DO : 23.09.15 refresh도 만료된 경우 -> 로그아웃 코드 추가
             }
         });
     }
@@ -160,10 +161,14 @@ public class RetrofitClient {
         // JSON 문자열을 JsonObject로 파싱
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(errorBodyString).getAsJsonObject();
+        String errorMessage = null;
 
         // JsonObject에서 "code" 속성 값을 가져옴
         int errorCode = jsonObject.get("code").getAsInt();
-        String errorMessage = jsonObject.get("message").getAsString();
+
+        // null 에러 처리 추가
+        if(!jsonObject.get("message").isJsonNull())
+            errorMessage = jsonObject.get("message").getAsString();
 
         return RetrofitClient.ErrorResponse.of(errorCode, errorMessage);
     }

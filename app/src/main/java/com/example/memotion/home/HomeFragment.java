@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,8 +25,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
+import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 //zimnii
 import android.widget.Toast;
+
+import org.threeten.bp.LocalDate;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,6 +43,8 @@ public class HomeFragment extends Fragment {
     private MaterialCalendarView calendarView;
     String dateClicked = null;
 
+    CalendarDay today = null;
+
     int SUBACTIITY_REQUEST_CODE = 100;
 
     @Override
@@ -46,6 +53,38 @@ public class HomeFragment extends Fragment {
 
         calendarView = homeBinding.calendarView;
         //dateText = homeBinding.dateText;
+
+        // 좌우 화살표 가운데의 연/월이 보이는 방식 커스텀
+        calendarView.setTitleFormatter(new TitleFormatter() {
+            @Override
+            public CharSequence format(CalendarDay day) {
+                // CalendarDay라는 클래스는 LocalDate 클래스를 기반으로 만들어진 클래스다
+                // 때문에 MaterialCalendarView에서 연/월 보여주기를 커스텀하려면 CalendarDay 객체의 getDate()로 연/월을 구한 다음 LocalDate 객체에 넣어서
+                // LocalDate로 변환하는 처리가 필요하다
+                LocalDate inputText = day.getDate();
+                String[] calendarHeaderElements = inputText.toString().split("-");
+                StringBuilder calendarHeaderBuilder = new StringBuilder();
+                calendarHeaderBuilder.append(calendarHeaderElements[0])
+                        .append(" ")
+                        .append(calendarHeaderElements[1]);
+                return calendarHeaderBuilder.toString();
+            }
+        });
+
+        // 달 별 이동
+        calendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
+            @Override
+            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+                // date 객체에서 현재 표시된 월을 가져옵니다.
+                int year = date.getYear();
+                int month = date.getMonth(); // 0부터 시작하므로 1을 더해야 합니다.
+
+                // year와 month를 사용하여 현재 표시된 월을 알 수 있습니다.
+                String currentMonth = year + "-" + (month + 1);
+
+                Log.d("Calendar", "현재 월: " + currentMonth);
+            }
+        });
 
         calendarView.setOnDateChangedListener((widget, date, selected) -> {
             dateClicked = String.format("%d.%d.%d", date.getYear(), date.getMonth(), date.getDay());
@@ -101,4 +140,5 @@ public class HomeFragment extends Fragment {
 
         return homeBinding.getRoot();
     }
+
 }

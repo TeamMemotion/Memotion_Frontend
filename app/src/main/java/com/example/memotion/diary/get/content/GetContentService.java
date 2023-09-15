@@ -44,7 +44,7 @@ public class GetContentService {
 
                         Log.d("ErrorBody : ", errorBody);
                         Log.d("errorCode: ", String.valueOf(errorResponse.getCode()));
-                        Log.d("errorMessage: ", errorResponse.getMessage());
+                        Log.d("errorMessage: ", errorResponse.getMessage()!=null && !errorResponse.getMessage().isEmpty() ? errorResponse.getMessage() : " ");
 
                         switch (errorResponse.getCode()) {
                             case 500:

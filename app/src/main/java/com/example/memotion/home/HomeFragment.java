@@ -41,8 +41,8 @@ import java.util.Set;
 public class HomeFragment extends Fragment {
     FragmentHomeBinding homeBinding;
     private MaterialCalendarView calendarView;
-    String dateClicked = null;
-
+    private String dateClicked = null;
+    private String dateFormat = null;
     CalendarDay today = null;
 
     int SUBACTIITY_REQUEST_CODE = 100;
@@ -88,6 +88,7 @@ public class HomeFragment extends Fragment {
 
         calendarView.setOnDateChangedListener((widget, date, selected) -> {
             dateClicked = String.format("%d.%d.%d", date.getYear(), date.getMonth(), date.getDay());
+            dateFormat = String.format("%d-%d-%d", date.getYear(), date.getMonth(), date.getDay());
             Log.i("TAG", dateClicked);
 
             homeBinding.selectedDate.setText(dateClicked);
@@ -107,7 +108,7 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), DiaryActivity.class);
-                    intent.putExtra("date", dateClicked);
+                    intent.putExtra("date", dateFormat);
                     startActivityForResult(intent, SUBACTIITY_REQUEST_CODE);
                     getActivity().overridePendingTransition(0, 0);
                 }

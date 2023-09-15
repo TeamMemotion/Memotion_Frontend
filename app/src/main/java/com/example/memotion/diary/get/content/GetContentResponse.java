@@ -20,12 +20,12 @@ public class GetContentResponse {
         return result;
     }
 
-    static class Result {
+    public static class Result {
         @SerializedName(value = "diaryContentId") private Long diaryContentId;
         @SerializedName(value = "createdDate") private String createdDate;
         @SerializedName(value = "title") private String title;
         @SerializedName(value = "content") private String content;
-        @SerializedName(value = "title") private String keyWord;
+        @SerializedName(value = "keyWord") private String keyWord;  // 감정분석 결과
         @SerializedName(value = "memberId") private Long memberId;
 
         public Long getDiaryContentId() {

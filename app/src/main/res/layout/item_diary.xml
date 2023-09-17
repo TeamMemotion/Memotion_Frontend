@@ -7,13 +7,24 @@
     android:orientation="vertical"
     >
 
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30"
+            android:textColor="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/reviewText"
             android:layout_width="210dp"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
+            android:layout_marginStart="30dp"
             android:text="동덕여대 인문관"
-            android:layout_marginStart="20dp"
+            android:textColor="#000000"
+            android:textSize="8sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

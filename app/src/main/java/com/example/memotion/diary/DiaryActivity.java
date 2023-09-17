@@ -1,28 +1,49 @@
 package com.example.memotion.diary;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.memotion.R;
 import com.example.memotion.databinding.ActivityDiaryBinding;
 import com.example.memotion.diary.get.content.GetContentResponse;
 import com.example.memotion.diary.get.content.GetContentResult;
 import com.example.memotion.diary.get.content.GetContentService;
+import com.example.memotion.diary.get.emotion.GetEmotionResponse;
+import com.example.memotion.diary.get.emotion.GetEmotionResult;
+import com.example.memotion.diary.get.emotion.GetEmotionService;
 import com.example.memotion.diary.post.content.PostContentRequest;
 import com.example.memotion.diary.post.content.PostContentResult;
 import com.example.memotion.diary.post.content.PostContentService;
 import com.example.memotion.diary.post.emotion.PostEmotionRequest;
 import com.example.memotion.diary.post.emotion.PostEmotionService;
+import com.google.android.gms.maps.model.LatLng;
 
-public class DiaryActivity extends AppCompatActivity implements PostContentResult, GetContentResult {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+public class DiaryActivity extends AppCompatActivity implements PostContentResult, GetContentResult, GetEmotionResult {
     private static String TAG = "DiaryActivity";
-    ActivityDiaryBinding diaryBinding;
+    private ActivityDiaryBinding diaryBinding;
     public static String date;
+    private RecyclerView recyclerView;
+    private DiaryRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +55,14 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
         date = intent.getStringExtra("date");
 
         diaryBinding.selectedDate.setText(date);
+
+        recyclerView = diaryBinding.reviewList;
+        adapter = new DiaryRecyclerAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // 오늘의 루트 전체 조회
+        todayRouteList();
 
         // 오늘의 다이어리 조회
         todayDiary();
@@ -59,9 +88,13 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
         diaryBinding.btnDiarySave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText diaryTitle = diaryBinding.diaryTitle;
-                EditText diaryContent = diaryBinding.diaryContent;
-                postContent(diaryTitle.getText().toString(), diaryContent.getText().toString());
+                String diaryTitle = diaryBinding.diaryTitle.getText().toString();
+                String diaryContent = diaryBinding.diaryContent.getText().toString();
+
+                if(diaryTitle.equals("") || diaryContent.equals(""))
+                    Toast.makeText(getApplicationContext(), "다이어리 제목과 내용을 입력하세요", Toast.LENGTH_SHORT).show();
+                else
+                    postContent(diaryTitle, diaryContent);
             }
         });
     }
@@ -94,17 +127,40 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
 
             // 데이터를 사용하여 화면을 업데이트하거나 필요한 작업을 수행
             if (diaryId != -1) {
-                // diaryId가 -1이 아니면 아래 내용 함수화하기
                 // 1. 오늘의 루트 전체 가져와서 화면에 띄우기
+                todayRouteList();
                 // 2. 오늘의 다이어리 가져와서 화면에 띄우기
                 todayDiary();
             }
         }
     }
 
-    // 오늘의 루트 전체 조회 후 화면에 출력 (다이어리 장소 전체)
+    // 오늘의 루트 전체 조회 (다이어리 장소 전체)
     protected void todayRouteList() {
+        GetEmotionService getEmotionService = new GetEmotionService();
+        getEmotionService.setGetEmotionResult(this);
+        getEmotionService.getEmotion(date);
+    }
 
+    // 오늘의 루트 전체 조회 성공 -> 다이어리 장소 전체 화면에 출력
+    @Override
+    public void getEmotionSuccess(int code, ArrayList<GetEmotionResponse.Result> result) {
+        Log.d(TAG, "오늘의 루트 전체 조회 성공");
+
+        // TO DO: 반복문 돌려서 하나씩 꺼내 화면에 출력
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ArrayList<DiaryItem> diaryList = (ArrayList<DiaryItem>) result.stream()
+                    .map(r -> new DiaryItem(r.getDiaryId(), r.getLatitude(), r.getLongitude(), r.getEmotion(), r.getKeyWord()))
+                    .collect(Collectors.toList());
+            adapter.setDiaryList(diaryList);
+        }
+    }
+
+    // 오늘의 루트 전체 조회 실패
+    @Override
+    public void getEmotionFailure(int code, String message) {
+        Log.d(TAG, "오늘의 루트 전체 조회 실패");
+        Toast.makeText(this, "오늘의 루트 전체 조회 실패", Toast.LENGTH_SHORT).show();
     }
 
     // 오늘의 다이어리 조회

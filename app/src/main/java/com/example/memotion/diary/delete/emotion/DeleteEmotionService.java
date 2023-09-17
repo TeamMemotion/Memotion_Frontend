@@ -1,4 +1,4 @@
-package com.example.memotion.diary.patch.emotion;
+package com.example.memotion.diary.delete.emotion;
 
 import static com.example.memotion.RetrofitClient.errorParsing;
 import static com.example.memotion.RetrofitClient.getClient;
@@ -6,6 +6,10 @@ import static com.example.memotion.RetrofitClient.getClient;
 import android.util.Log;
 
 import com.example.memotion.RetrofitClient;
+import com.example.memotion.diary.patch.emotion.PatchEmotionRequest;
+import com.example.memotion.diary.patch.emotion.PatchEmotionResponse;
+import com.example.memotion.diary.patch.emotion.PatchEmotionResult;
+import com.example.memotion.diary.patch.emotion.PatchEmotionRetrofitInterface;
 
 import java.io.IOException;
 
@@ -13,23 +17,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PatchEmotionService {
-    private PatchEmotionResult patchEmotionResult;
+public class DeleteEmotionService {
+    private DeleteEmotionResult deleteEmotionResult;
 
-    public void setPatchEmotionResult(PatchEmotionResult patchEmotionResult) {
-        this.patchEmotionResult = patchEmotionResult;
+    public void setDeleteEmotionResult(DeleteEmotionResult deleteEmotionResult) {
+        this.deleteEmotionResult = deleteEmotionResult;
     }
 
-    public void patchEmotion(Long diaryId, PatchEmotionRequest patchEmotionRequest) {
-        PatchEmotionRetrofitInterface patchEmotionService = getClient().create(PatchEmotionRetrofitInterface.class);
-        patchEmotionService.patchEmotion(diaryId, patchEmotionRequest).enqueue(new Callback<PatchEmotionResponse>() {
+    public void deleteEmotion(Long diaryId) {
+        DeleteEmotionRetrofitInterface deleteEmotionService = getClient().create(DeleteEmotionRetrofitInterface.class);
+        deleteEmotionService.deleteEmotion(diaryId).enqueue(new Callback<DeleteEmotionResponse>() {
             @Override
-            public void onResponse(Call<PatchEmotionResponse> call, Response<PatchEmotionResponse> response) {
-                Log.d("PATCH-EMOTION-SUCCESS", response.toString());
+            public void onResponse(Call<DeleteEmotionResponse> call, Response<DeleteEmotionResponse> response) {
+                Log.d("DELETE-EMOTION-SUCCESS", response.toString());
 
                 if(response.isSuccessful()) {
                     if(response.body().getCode() == 1000) {
-                        patchEmotionResult.patchEmotionSuccess(response.body().getCode(), response.body().getResult());
+                        deleteEmotionResult.deleteEmotionSuccess(response.body().getCode(), response.body().getResult());
                     }
                 } else {
                     //400이상 에러시 response.body가 null로 처리됨. 따라서 errorBody로 받아야함.
@@ -54,8 +58,8 @@ public class PatchEmotionService {
             }
 
             @Override
-            public void onFailure(Call<PatchEmotionResponse> call, Throwable t) {
-                Log.d("PATCH-EMOTION-FAILURE", t.getMessage());
+            public void onFailure(Call<DeleteEmotionResponse> call, Throwable t) {
+                Log.d("DELETE-EMOTION-FAILURE", t.getMessage());
             }
         });
     }

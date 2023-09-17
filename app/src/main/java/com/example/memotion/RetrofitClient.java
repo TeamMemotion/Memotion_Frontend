@@ -1,12 +1,14 @@
 package com.example.memotion;
 
-import android.app.Application;
+import static java.lang.Thread.sleep;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.memotion.account.token.TokenResponse;
-import com.example.memotion.account.token.TokenRetrofitInterface;
+import com.example.memotion.account.token.TokenResult;
+import com.example.memotion.account.token.TokenService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -19,8 +21,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -43,6 +43,28 @@ public class RetrofitClient {
         return sharedPreferences.getString("refreshToken", "");
     }
 
+    // getClient() 메서드 내에서 호출할 수 있도록 (기존 방식은 호출하는 메소드가 public static이라 setTokenService에 context 주입 불가)
+    private static class TokenServiceHandler implements TokenResult {
+        // 토큰 재발급 성공 -> 재발급 받은 토큰으로 SharedPreference에 저장된 값 수정
+        @Override
+        public void regenerateTokenSuccess(int code, TokenResponse.Result result) {
+            Log.d(TAG, "토큰 재발급 성공");
+            Log.d(TAG, "재발급 받은 accessToken: " + result.getAccessToken());
+            Log.d(TAG, "재발급 받은 refreshToken: " + result.getRefreshToken());
+
+            SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("accessToken", result.getAccessToken());
+            editor.putString("refreshToken", result.getRefreshToken());
+            editor.apply();
+        }
+
+        @Override
+        public void regenerateTokenFailure(int code, String message) {
+            Log.d(TAG, "토큰 재발급 실패");
+        }
+    }
+    
     // header의 Bearer 토큰을 Interceptor로 처리한 Retrofit을 반환
     public static Retrofit getClient() {
         if (retrofit == null) {
@@ -55,7 +77,8 @@ public class RetrofitClient {
                     // 로그아웃은 interceptor 사용하지 말고 직접 refreshToken 넣어주기
                     if (original.url().encodedPath().equalsIgnoreCase("member/signup")
                             || original.url().encodedPath().equalsIgnoreCase("member/login")
-                            || original.url().encodedPath().equalsIgnoreCase("member/logout")) {
+                            || original.url().encodedPath().equalsIgnoreCase("member/logout")
+                            || original.url().encodedPath().equalsIgnoreCase("member/regenerate-token")) {
                         return chain.proceed(original);
 
                     } else {
@@ -77,13 +100,18 @@ public class RetrofitClient {
                                     Log.d(TAG, "Bearer 토큰이 만료되었습니다. 재발급이 필요합니다.");
 
                                     // refreshToken -> accessToken 재발급 + SharedPreference 갱신
-                                    regenerateToken();
-                                    newRequest = original.newBuilder()
+                                    regenerateToken(chain);
+
+                                    Thread.sleep(2000);
+                                    newRequest = chain.request().newBuilder()
                                             .header("Authorization", "Bearer " + getAccessToken())
                                             .build();
+                                    Log.d(TAG, "New Request: " + newRequest.toString());
                                     response = chain.proceed(newRequest);
                                 }
                             } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -101,40 +129,11 @@ public class RetrofitClient {
         return retrofit;
     }
 
-    // refreshToken -> accesssToken 재발급 + SharedPreference 갱신
-    public static void regenerateToken() {
-        TokenRetrofitInterface tokenService = RetrofitClient.getClient().create(TokenRetrofitInterface.class);
-        Call<TokenResponse> call = tokenService.regenerateToken("Bearer " + getRefreshToken());
-        call.enqueue(new Callback<TokenResponse>() {
-            @Override
-            public void onResponse(Call<TokenResponse> call, retrofit2.Response<TokenResponse> response) {
-                if (response.isSuccessful()) {
-                    TokenResponse tokenResponse = response.body();
-                    // 1. 새로운 토큰을 저장
-                    saveToken(tokenResponse.getResult());
-                } else {
-                    // 토큰 갱신에 실패한 경우에 대한 처리
-                    Log.d(TAG, "토큰 갱신에 실패했습니다.");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TokenResponse> call, Throwable t) {
-                Log.d(TAG, "토큰 갱신에 실패했습니다.");
-                Log.d(TAG, t.getMessage());
-
-                // TO DO : 23.09.15 refresh도 만료된 경우 -> 로그아웃 코드 추가
-            }
-        });
-    }
-
-    // 재발급 받은 토큰으로 SharedPreference에 저장된 값 수정
-    public static void saveToken(TokenResponse.Result result) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("accessToken", result.getAccessToken());
-        editor.putString("refreshToken", result.getRefreshToken());
-        editor.apply();
+    private static void regenerateToken(Interceptor.Chain chain) {
+        TokenServiceHandler handler = new TokenServiceHandler();
+        TokenService tokenService = new TokenService();
+        tokenService.setTokenResult(handler);
+        tokenService.refreshToken();
     }
 
     public static class ErrorResponse {
@@ -161,14 +160,9 @@ public class RetrofitClient {
         // JSON 문자열을 JsonObject로 파싱
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(errorBodyString).getAsJsonObject();
-        String errorMessage = null;
 
-        // JsonObject에서 "code" 속성 값을 가져옴
-        int errorCode = jsonObject.get("code").getAsInt();
-
-        // null 에러 처리 추가
-        if(!jsonObject.get("message").isJsonNull())
-            errorMessage = jsonObject.get("message").getAsString();
+        String errorMessage = !jsonObject.get("message").isJsonNull() ? jsonObject.get("message").getAsString() : null;
+        int errorCode = jsonObject.get("code") !=null && !jsonObject.get("code").isJsonNull() ? jsonObject.get("code").getAsInt() : -1;
 
         return RetrofitClient.ErrorResponse.of(errorCode, errorMessage);
     }

@@ -1,21 +1,15 @@
 package com.example.memotion.diary;
 
-
-import static android.content.Intent.getIntent;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
@@ -31,11 +25,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.memotion.R;
-import com.example.memotion.account.login.LoginRequest;
-import com.example.memotion.account.login.LoginService;
-import com.example.memotion.diary.post.emotion.PostEmotionRequest;
-import com.example.memotion.diary.post.emotion.PostEmotionResult;
-import com.example.memotion.diary.post.emotion.PostEmotionService;
+import com.example.memotion.diary.delete.emotion.DeleteEmotionResult;
+import com.example.memotion.diary.delete.emotion.DeleteEmotionService;
+import com.example.memotion.diary.patch.emotion.PatchEmotionRequest;
+import com.example.memotion.diary.patch.emotion.PatchEmotionResult;
+import com.example.memotion.diary.patch.emotion.PatchEmotionService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -43,7 +37,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -53,15 +46,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 
-import javax.xml.transform.Result;
-
-// 23.08.24 : 지도 API 추가
-public class PlaceAddDialog implements PostEmotionResult {
-    final String TAG = "PlaceAddDialog";
+public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult {
+    final String TAG = "PlaceEditDialog";
     final static int PERMISSION_REQ_CODE = 100;
 
     private Context context;
@@ -75,9 +64,11 @@ public class PlaceAddDialog implements PostEmotionResult {
     private Double mLng = 360.0;    // 경도 초기값
     private String mLastEmotion;
     private boolean mLastShare = true;
+    private DiaryItem item;
 
-    public PlaceAddDialog(Context context) {
+    public PlaceEditDialog(Context context, DiaryItem item) {
         this.context = context;
+        this.item = item;
     }
 
     public void start() {
@@ -87,6 +78,9 @@ public class PlaceAddDialog implements PostEmotionResult {
         dialog.setContentView(R.layout.diary_write_dialog);
         dialog.setCanceledOnTouchOutside(true); //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히게 설정
         dialog.setCancelable(true);    // 취소가 가능하도록 하는 코드
+
+        EditText keyword = dialog.findViewById(R.id.keyword);
+        keyword.setText(item.getKeyword());
 
         // 닫기 버튼
         dialog.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
@@ -181,15 +175,24 @@ public class PlaceAddDialog implements PostEmotionResult {
             }
         });
 
+        // 삭제 버튼
+        dialog.findViewById(R.id.btnDelete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "다이어리 삭제 시작");
+                deleteEmotion();
+            }
+        });
+        
         // 저장 버튼
         dialog.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "다이어리 저장 시작");
+                Log.d(TAG, "다이어리 수정 시작");
                 String createdDate = DiaryActivity.date; // 선택한 날짜
                 EditText keyWord = dialog.findViewById(R.id.keyword); // 감정
 
-                postEmotion(createdDate, keyWord.getText().toString());
+                patchEmotion(createdDate, keyWord.getText().toString());
             }
         });
 
@@ -203,20 +206,30 @@ public class PlaceAddDialog implements PostEmotionResult {
                 mLocCallback,
                 Looper.getMainLooper ()
         );
+
+        // 이전에 저장된 다이어리에서 위도 경도 추출
+        mLastLocation.setLatitude(item.getLatitude());
+        mLastLocation.setLongitude(item.getLongitude());
+        LatLng currentLoc = new LatLng(item.getLatitude(), item.getLongitude());
+
+        // 지도 위치 이동 -> geocoding 수행
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom (currentLoc, 15));
+        mCenterMarker.setPosition(currentLoc);
+        executeGeocoding(currentLoc);
         dialog.show();
     }
 
-    // 다이어리 저장 API 호출
-    private void postEmotion(String createdDate, String keyWord) {
-        Log.d(TAG, "API 호출");
-        PostEmotionService postEmotionService = new PostEmotionService();
-        postEmotionService.setPostEmotionResult(this);
-        postEmotionService.postEmotion(new PostEmotionRequest(mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastEmotion, keyWord, createdDate, mLastShare));
+    // 다이어리 장소 수정 호출
+    public void patchEmotion(String createdDate, String keyWord){
+        PatchEmotionService patchEmotionService = new PatchEmotionService();
+        patchEmotionService.setPatchEmotionResult(this);
+        patchEmotionService.patchEmotion(item.getDiaryId(), new PatchEmotionRequest(mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastEmotion, keyWord, createdDate, mLastShare));
     }
 
+    // 다이어리 장소 수정 성공
     @Override
-    public void postEmotionSuccess(int code, Long result) {
-        Log.d(TAG, "다이어리 저장 성공");
+    public void patchEmotionSuccess(int code, Long result) {
+        Log.d(TAG, "다이어리 수정 성공");
         // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
         Intent intent = new Intent();
         intent.putExtra("diaryId", result); // diaryId를 전달
@@ -227,11 +240,38 @@ public class PlaceAddDialog implements PostEmotionResult {
     }
 
     @Override
-    public void postEmotionFailure(int code, String message) {
-        Log.d(TAG, "다이어리 저장 실패");
-        Toast.makeText(context, "다이어리 저장 실패", Toast.LENGTH_SHORT).show();
+    public void patchEmotionFailure(int code, String message) {
+        Log.d(TAG, "다이어리 수정 실패");
+        Toast.makeText(context, "다이어리 수정 실패", Toast.LENGTH_SHORT).show();
+    }
+    
+    // 다이어리 장소 등록 삭제 호출
+    public void deleteEmotion() {
+        DeleteEmotionService deleteEmotionService = new DeleteEmotionService();
+        deleteEmotionService.setDeleteEmotionResult(this);
+        deleteEmotionService.deleteEmotion(item.getDiaryId());
     }
 
+    // 다이어리 장소 등록 삭제 성공
+    @Override
+    public void deleteEmotionSuccess(int code, Long result) {
+        Log.d(TAG, "다이어리 삭제 성공");
+        // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
+        Intent intent = new Intent();
+        intent.putExtra("diaryId", result); // diaryId를 전달
+
+        // 결과를 DiaryActivity로 반환
+        ((AppCompatActivity)context).setResult(Activity.RESULT_OK, intent);
+        dialog.dismiss();
+    }
+
+    // 다이어리 장소 등록 삭제 실패
+    @Override
+    public void deleteEmotionFailure(int code, String message) {
+        Log.d(TAG, "다이어리 삭제 실패");
+        Toast.makeText(context, "다이어리 삭제 실패", Toast.LENGTH_SHORT).show();
+    }
+    
     // 권한 체크
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
@@ -242,7 +282,7 @@ public class PlaceAddDialog implements PostEmotionResult {
             Log.d(TAG, "권한 획득");
             Toast.makeText (context, "Permissions Granted", Toast.LENGTH_SHORT).show ();
         } else {
-           // 권한이 없는 경우 권한 요청
+            // 권한이 없는 경우 권한 요청
             ActivityCompat.requestPermissions((Activity) context,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
                             android.Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -319,7 +359,7 @@ public class PlaceAddDialog implements PostEmotionResult {
 
     private void executeGeocoding(LatLng latLng) {
         if(Geocoder.isPresent() && latLng != null)
-            new GeoTask().execute(latLng);
+            new PlaceEditDialog.GeoTask().execute(latLng);
     }
 
     class GeoTask extends AsyncTask<LatLng, Void, List<Address>> {
@@ -351,7 +391,7 @@ public class PlaceAddDialog implements PostEmotionResult {
 
     private void executeReverseGeocoding(String str) {
         if(Geocoder.isPresent() && str != null)
-            new ReverseGeoTask().execute(str);
+            new PlaceEditDialog.ReverseGeoTask().execute(str);
     }
 
     class ReverseGeoTask extends AsyncTask<String, Void, List<Address>> {
@@ -372,7 +412,7 @@ public class PlaceAddDialog implements PostEmotionResult {
         @Override
         protected void onPostExecute(List<Address> addresses) {
             if (addresses != null) {
-                if (addresses.size () == 0) { 
+                if (addresses.size () == 0) {
                     // 정확한 위치명을 입력하지 않은 경우
                     Toast.makeText (context, "정확한 위치명을 입력하세요", Toast.LENGTH_SHORT).show ();
                 } else {
@@ -386,7 +426,7 @@ public class PlaceAddDialog implements PostEmotionResult {
                     if (mLat != 360.0 && mLng != 360.0) {
                         // 지도 현재 위치 변경
                         mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (new LatLng (mLat, mLng), 15));
-                        
+
                         // 장소 검색 주소 변경
                         String markerAddress = address.getAddressLine (0);
                         TextView gpsPlaceFullName = dialog.findViewById(R.id.gpsPlaceFullName);

@@ -1,35 +1,39 @@
-package com.example.memotion.diary.patch.emotion;
+package com.example.memotion.account.token;
 
+import static com.example.memotion.NetworkModule.getRetrofit;
 import static com.example.memotion.RetrofitClient.errorParsing;
-import static com.example.memotion.RetrofitClient.getClient;
 
 import android.util.Log;
 
+import com.example.memotion.NetworkModule;
 import com.example.memotion.RetrofitClient;
 
 import java.io.IOException;
 
+import okhttp3.Interceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PatchEmotionService {
-    private PatchEmotionResult patchEmotionResult;
+public class TokenService {
+    private static String TAG = "TokenService";
+    private TokenResult tokenResult;
 
-    public void setPatchEmotionResult(PatchEmotionResult patchEmotionResult) {
-        this.patchEmotionResult = patchEmotionResult;
+    public void setTokenResult(TokenResult tokenResult) {
+        this.tokenResult = tokenResult;
     }
 
-    public void patchEmotion(Long diaryId, PatchEmotionRequest patchEmotionRequest) {
-        PatchEmotionRetrofitInterface patchEmotionService = getClient().create(PatchEmotionRetrofitInterface.class);
-        patchEmotionService.patchEmotion(diaryId, patchEmotionRequest).enqueue(new Callback<PatchEmotionResponse>() {
+    // 토큰 재발급
+    public void refreshToken() {
+        TokenRetrofitInterface tokenService = getRetrofit().create(TokenRetrofitInterface.class);
+        tokenService.regenerateToken("Bearer " + RetrofitClient.getRefreshToken()).enqueue(new Callback<TokenResponse>() {
             @Override
-            public void onResponse(Call<PatchEmotionResponse> call, Response<PatchEmotionResponse> response) {
-                Log.d("PATCH-EMOTION-SUCCESS", response.toString());
+            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
+                Log.d("REFRESH-SUCCESS", response.toString());
 
                 if(response.isSuccessful()) {
                     if(response.body().getCode() == 1000) {
-                        patchEmotionResult.patchEmotionSuccess(response.body().getCode(), response.body().getResult());
+                        tokenResult.regenerateTokenSuccess(response.body().getCode(), response.body().getResult());
                     }
                 } else {
                     //400이상 에러시 response.body가 null로 처리됨. 따라서 errorBody로 받아야함.
@@ -54,8 +58,11 @@ public class PatchEmotionService {
             }
 
             @Override
-            public void onFailure(Call<PatchEmotionResponse> call, Throwable t) {
-                Log.d("PATCH-EMOTION-FAILURE", t.getMessage());
+            public void onFailure(Call<TokenResponse> call, Throwable t) {
+                Log.d(TAG, "토큰 갱신에 실패했습니다.");
+                Log.d(TAG, t.getMessage());
+
+                // TO DO : 23.09.15 refresh도 만료된 경우 -> 로그아웃 코드 추가
             }
         });
     }

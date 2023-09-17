@@ -5,6 +5,6 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 public interface TokenRetrofitInterface {
-    @POST("auth/regenerate-token")
+    @POST("member/regenerate-token")
     Call<TokenResponse> regenerateToken(@Header("Authorization") String refreshToken);
 }

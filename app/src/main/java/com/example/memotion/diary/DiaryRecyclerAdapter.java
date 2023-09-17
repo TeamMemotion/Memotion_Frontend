@@ -69,7 +69,7 @@ public class DiaryRecyclerAdapter extends RecyclerView.Adapter<DiaryRecyclerAdap
 
                     // 데이터 리스트로부터 아이템 데이터 참조
                     if (pos != RecyclerView.NO_POSITION) {
-                        DiaryItem item = diaryList.get(pos) ;
+                        DiaryItem item = diaryList.get(pos);
                         Long diaryId = item.getDiaryId();
                         PlaceEditDialog dialog = new PlaceEditDialog(view.getContext(), item);
                         dialog.start();

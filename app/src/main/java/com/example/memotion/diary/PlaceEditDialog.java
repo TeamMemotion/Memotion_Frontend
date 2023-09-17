@@ -51,7 +51,7 @@ import java.util.Locale;
 
 public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult {
     final String TAG = "PlaceEditDialog";
-    final static int PERMISSION_REQ_CODE = 100;
+    final static int PERMISSION_REQ_CODE = 200;
 
     private Context context;
     private Dialog dialog;
@@ -207,15 +207,6 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
                 Looper.getMainLooper ()
         );
 
-        // 이전에 저장된 다이어리에서 위도 경도 추출
-        mLastLocation.setLatitude(item.getLatitude());
-        mLastLocation.setLongitude(item.getLongitude());
-        LatLng currentLoc = new LatLng(item.getLatitude(), item.getLongitude());
-
-        // 지도 위치 이동 -> geocoding 수행
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom (currentLoc, 15));
-        mCenterMarker.setPosition(currentLoc);
-        executeGeocoding(currentLoc);
         dialog.show();
     }
 
@@ -331,11 +322,13 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
             // 검색값이 있는 경우 현재 위치로 animateCamera 실행 X
             if(mLat == 360.0 && mLng == 360.0) {
                 for (Location loc : locationResult.getLocations ()) {
-                    double lat = loc.getLatitude ();
-                    double lng = loc.getLongitude ();
+                    double lat = item.getLatitude();
+                    double lng = item.getLongitude();
 
                     // 지도 위치 이동 (가장 최근 위치 기록)
                     mLastLocation = loc;
+                    mLastLocation.setLatitude(item.getLatitude());
+                    mLastLocation.setLongitude(item.getLongitude());
                     LatLng currentLoc = new LatLng (lat, lng);
 
                     // 지정한 위치로 애니메이션 이동

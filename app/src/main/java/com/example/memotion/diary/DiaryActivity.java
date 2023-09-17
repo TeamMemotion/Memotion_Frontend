@@ -121,7 +121,7 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             // PlaceAddDialog에서 전달한 데이터를 확인
             int diaryId = data.getIntExtra("diaryId", -1);
 

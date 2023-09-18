@@ -1,5 +1,8 @@
 package com.example.memotion.diary;
 
+import static com.example.memotion.MainActivity.context;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -24,6 +27,8 @@ import com.example.memotion.diary.get.content.GetContentService;
 import com.example.memotion.diary.get.emotion.GetEmotionResponse;
 import com.example.memotion.diary.get.emotion.GetEmotionResult;
 import com.example.memotion.diary.get.emotion.GetEmotionService;
+import com.example.memotion.diary.patch.emotion.PatchEmotionResponse;
+import com.example.memotion.diary.patch.emotion.PatchEmotionResult;
 import com.example.memotion.diary.post.content.PostContentRequest;
 import com.example.memotion.diary.post.content.PostContentResult;
 import com.example.memotion.diary.post.content.PostContentService;
@@ -40,6 +45,8 @@ import java.util.stream.Collectors;
 
 public class DiaryActivity extends AppCompatActivity implements PostContentResult, GetContentResult, GetEmotionResult {
     private static String TAG = "DiaryActivity";
+    private static int REQUEST_ADD_DIARY = 100;
+    private static int REQUEST_EDIT_DIARY = 200;
     private ActivityDiaryBinding diaryBinding;
     public static String date;
     private RecyclerView recyclerView;
@@ -57,7 +64,7 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
         diaryBinding.selectedDate.setText(date);
 
         recyclerView = diaryBinding.reviewList;
-        adapter = new DiaryRecyclerAdapter();
+        adapter = new DiaryRecyclerAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -99,6 +106,15 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
         });
     }
 
+//    public void onRecyclerItemClick(DiaryItem item) {
+//        // DiaryActivity에서 PlaceEditDialog 호출
+//        Intent intent = new Intent(DiaryActivity.this, PlaceEditDialog.class);
+//        //intent.putExtra("diaryItem", item); // 선택한 아이템 데이터 전달
+//        PlaceEditDialog.item = item;
+//        PlaceEditDialog.context = context;
+//        startActivityForResult(intent, REQUEST_EDIT_DIARY);
+//    }
+
     // 다이어리 내용 저장 API 호출
     private void postContent(String diaryTitle, String diaryContent) {
         Log.d(TAG, "API 호출");
@@ -116,21 +132,22 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
     public void postContentFailure(int code, String message) {
         Log.d(TAG, "다이어리 저장 실패");
     }
-    
+
     // 오늘의 루트 클릭해서 장소 등록 후 실행될 메소드
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        Log.d(TAG, "Dialog -> DiaryActivity로 이동");
+
+        if ((requestCode ==  REQUEST_ADD_DIARY || requestCode == REQUEST_EDIT_DIARY) && resultCode == RESULT_OK) {
             // PlaceAddDialog에서 전달한 데이터를 확인
             int diaryId = data.getIntExtra("diaryId", -1);
 
             // 데이터를 사용하여 화면을 업데이트하거나 필요한 작업을 수행
             if (diaryId != -1) {
-                // 1. 오늘의 루트 전체 가져와서 화면에 띄우기
                 todayRouteList();
-                // 2. 오늘의 다이어리 가져와서 화면에 띄우기
                 todayDiary();
+                adapter.notifyDataSetChanged();
             }
         }
     }

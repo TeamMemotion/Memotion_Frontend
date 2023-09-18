@@ -28,6 +28,7 @@ import com.example.memotion.R;
 import com.example.memotion.diary.delete.emotion.DeleteEmotionResult;
 import com.example.memotion.diary.delete.emotion.DeleteEmotionService;
 import com.example.memotion.diary.patch.emotion.PatchEmotionRequest;
+import com.example.memotion.diary.patch.emotion.PatchEmotionResponse;
 import com.example.memotion.diary.patch.emotion.PatchEmotionResult;
 import com.example.memotion.diary.patch.emotion.PatchEmotionService;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -53,7 +54,9 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
     final String TAG = "PlaceEditDialog";
     final static int PERMISSION_REQ_CODE = 200;
 
-    private Context context;
+    private  Context context;
+    private DiaryItem item;
+
     private Dialog dialog;
     private FusedLocationProviderClient flpClient;
     private Location mLastLocation;
@@ -64,7 +67,6 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
     private Double mLng = 360.0;    // 경도 초기값
     private String mLastEmotion;
     private boolean mLastShare = true;
-    private DiaryItem item;
 
     public PlaceEditDialog(Context context, DiaryItem item) {
         this.context = context;
@@ -219,11 +221,11 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
 
     // 다이어리 장소 수정 성공
     @Override
-    public void patchEmotionSuccess(int code, Long result) {
+    public void patchEmotionSuccess(int code, PatchEmotionResponse.Result result) {
         Log.d(TAG, "다이어리 수정 성공");
         // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
         Intent intent = new Intent();
-        intent.putExtra("diaryId", result); // diaryId를 전달
+        intent.putExtra("diaryId", result.getDiaryId()); // diaryId를 전달
 
         // 결과를 DiaryActivity로 반환
         ((AppCompatActivity)context).setResult(Activity.RESULT_OK, intent);

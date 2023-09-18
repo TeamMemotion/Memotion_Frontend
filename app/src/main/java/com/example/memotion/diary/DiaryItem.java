@@ -1,6 +1,8 @@
 package com.example.memotion.diary;
 
-public class DiaryItem {
+import java.io.Serializable;
+
+public class DiaryItem implements Serializable {
     Long diaryId;
     Double latitude;
     Double longitude;

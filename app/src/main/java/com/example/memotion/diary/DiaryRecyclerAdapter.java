@@ -1,5 +1,6 @@
 package com.example.memotion.diary;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -26,8 +27,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class DiaryRecyclerAdapter extends RecyclerView.Adapter<DiaryRecyclerAdapter.ViewHolder>{
+    private DiaryActivity diaryActivity;
     private ArrayList<DiaryItem> diaryList;
 
+    public DiaryRecyclerAdapter(DiaryActivity diaryActivity) {
+        this.diaryActivity = diaryActivity;
+    }
     @NonNull
     @Override
     public DiaryRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -70,7 +75,6 @@ public class DiaryRecyclerAdapter extends RecyclerView.Adapter<DiaryRecyclerAdap
                     // 데이터 리스트로부터 아이템 데이터 참조
                     if (pos != RecyclerView.NO_POSITION) {
                         DiaryItem item = diaryList.get(pos);
-                        Long diaryId = item.getDiaryId();
                         PlaceEditDialog dialog = new PlaceEditDialog(view.getContext(), item);
                         dialog.start();
                     }

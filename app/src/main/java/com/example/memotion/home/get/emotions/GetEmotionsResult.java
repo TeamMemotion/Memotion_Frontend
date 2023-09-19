@@ -4,5 +4,5 @@ import java.util.ArrayList;
 
 public interface GetEmotionsResult {
     void getEmotionsSuccess(int code, ArrayList<GetEmotionsResponse.Result> result);
-    void getEmotionFailure(int code, String message);
+    void getEmotionsFailure(int code, String message);
 }

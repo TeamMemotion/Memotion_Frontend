@@ -161,7 +161,7 @@ public class RetrofitClient {
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(errorBodyString).getAsJsonObject();
 
-        String errorMessage = !jsonObject.get("message").isJsonNull() ? jsonObject.get("message").getAsString() : null;
+        String errorMessage = jsonObject.get("message") != null && !jsonObject.get("message").isJsonNull() ? jsonObject.get("message").getAsString() : null;
         int errorCode = jsonObject.get("code") !=null && !jsonObject.get("code").isJsonNull() ? jsonObject.get("code").getAsInt() : -1;
 
         return RetrofitClient.ErrorResponse.of(errorCode, errorMessage);

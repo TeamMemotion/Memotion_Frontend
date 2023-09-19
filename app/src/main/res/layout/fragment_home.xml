@@ -164,7 +164,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="27dp"
-            android:text="ㅇㅇㅇㅇ"
+            android:text=""
             android:textSize="20dp"
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/start"
@@ -178,7 +178,7 @@
             android:layout_marginTop="80dp"
             android:textSize="20dp"
             android:textColor="@color/black"
-            android:text="ㅇㅇㅇㅇㅇ"
+            android:text=""
             app:layout_constraintStart_toEndOf="@+id/end"
             app:layout_constraintTop_toBottomOf="@+id/tvStart" />
 

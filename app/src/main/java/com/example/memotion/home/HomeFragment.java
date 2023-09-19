@@ -5,12 +5,17 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -18,27 +23,39 @@ import androidx.fragment.app.Fragment;
 import com.example.memotion.R;
 import com.example.memotion.databinding.FragmentHomeBinding;
 import com.example.memotion.diary.DiaryActivity;
+import com.example.memotion.diary.DiaryItem;
+import com.example.memotion.diary.PlaceAddDialog;
+import com.example.memotion.diary.get.emotion.GetEmotionResponse;
+import com.example.memotion.diary.get.emotion.GetEmotionResult;
+import com.example.memotion.diary.get.emotion.GetEmotionService;
 import com.example.memotion.home.get.emotions.GetEmotionsResponse;
 import com.example.memotion.home.get.emotions.GetEmotionsResult;
 import com.example.memotion.home.get.emotions.GetEmotionsService;
+import com.google.android.gms.maps.model.LatLng;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter;
 //zimnii
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class HomeFragment extends Fragment implements GetEmotionsResult {
+public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmotionResult {
     FragmentHomeBinding homeBinding;
     private MaterialCalendarView calendarView;
     private String dateClicked = null;
     private String dateFormat = null;
+    private static String TAG = "HomeFragment";
+    private String selectedDate = null;
 
     int SUBACTIITY_REQUEST_CODE = 100;
 
@@ -102,7 +119,12 @@ public class HomeFragment extends Fragment implements GetEmotionsResult {
             String day = (date.getDay() < 10 ? String.format("-0%d", date.getDay()) : String.format("-%d", date.getDay()));
 
             dateFormat = year + month + day;
+            selectedDate = year + month + day;
             Log.i("TAG", dateClicked);
+
+            homeBinding.tvStart.setText("");
+            homeBinding.tvEnd.setText("");
+            todayRouteList();
 
             homeBinding.selectedDate.setText(dateClicked);
             homeBinding.dateStart.setText(String.format("%d",date.getDay()));
@@ -131,10 +153,10 @@ public class HomeFragment extends Fragment implements GetEmotionsResult {
         });
 
         //날짜 누르면 사진 띄움
-        SelectorDecorator selectorDecorator = new SelectorDecorator(getActivity());
-        calendarView.addDecorator(selectorDecorator);
+//        SelectorDecorator selectorDecorator = new SelectorDecorator(getActivity());
+//        calendarView.addDecorator(selectorDecorator);
 
-        //오늘 날짜에 빨간점 등장
+        // 오늘 날짜에 빨간점 등장
         calendarView.addDecorator(new EventDecorator(Color.RED, Collections.singleton(CalendarDay.today())));
 
         //토큰 확인
@@ -145,6 +167,7 @@ public class HomeFragment extends Fragment implements GetEmotionsResult {
         return homeBinding.getRoot();
     }
 
+    // 달력에 감정 얼굴 띄우기
     private void getEmotions() {
         GetEmotionsService getEmotionsService = new GetEmotionsService();
         getEmotionsService.setGetEmotionsResult(this);
@@ -162,8 +185,8 @@ public class HomeFragment extends Fragment implements GetEmotionsResult {
         Set<CalendarDay> upsetDates = new HashSet<>();
 
         for (int i = 0; i < result.size(); i++) {
-            Log.d("=========== keyword : ", result.get(i).getKeyWord());
-            Log.d("=========== date : ", result.get(i).getCreatedDate());
+//            Log.d("=========== keyword : ", result.get(i).getKeyWord());
+//            Log.d("=========== date : ", result.get(i).getCreatedDate());
 
             String dateString = result.get(i).getCreatedDate();
             String year = dateString.substring(0, 4);
@@ -203,7 +226,73 @@ public class HomeFragment extends Fragment implements GetEmotionsResult {
     }
 
     @Override
-    public void getEmotionFailure(int code, String message) {
+    public void getEmotionsFailure(int code, String message) {
         Log.d("failure : ", "감정 분석 결과들 불러오기 실패");
+    }
+
+    // 하단 화면 장소 띄우기
+    protected void todayRouteList() {
+        GetEmotionService getEmotionService = new GetEmotionService();
+        getEmotionService.setGetEmotionResult(this);
+        getEmotionService.getEmotion(selectedDate);
+    }
+
+    // 오늘의 루트 전체 조회 성공 -> 다이어리 장소 전체 화면에 출력
+    @Override
+    public void getEmotionSuccess(int code, ArrayList<GetEmotionResponse.Result> result) {
+        Log.d(TAG, "오늘의 장소 전체 조회 성공");
+
+        // TO DO: 반복문 돌려서 하나씩 꺼내 화면에 출력
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ArrayList<DiaryItem> diaryList = (ArrayList<DiaryItem>) result.stream()
+                    .map(r -> new DiaryItem(r.getDiaryId(), r.getLatitude(), r.getLongitude(), r.getEmotion(), r.getKeyWord()))
+                    .collect(Collectors.toList());
+
+            if(diaryList.size() > 0) {
+                ArrayList<LatLng> latLngs = new ArrayList<LatLng>();
+                latLngs.add(new LatLng(diaryList.get(0).getLatitude(), diaryList.get(0).getLongitude()));
+                latLngs.add(new LatLng(diaryList.get(diaryList.size() - 1).getLatitude(), diaryList.get(diaryList.size() - 1).getLongitude()));
+
+                executeGeocoding(latLngs);
+            }
+        }
+    }
+
+    // 오늘의 루트 전체 조회 실패
+    @Override
+    public void getEmotionFailure(int code, String message) {
+        Log.d(TAG, "오늘의 장소 전체 조회 실패");
+    }
+
+    private void executeGeocoding(ArrayList<LatLng> latLng) {
+        if(Geocoder.isPresent() && latLng != null)
+            new GeoTask().execute(latLng);
+    }
+
+    class GeoTask extends AsyncTask<ArrayList<LatLng>, Void, List<Address>> {
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+        @Override
+        protected List<Address> doInBackground(ArrayList<LatLng>...latLngs) {
+            List<Address> address = new ArrayList<>();
+
+            try{
+                address.add(geocoder.getFromLocation(latLngs[0].get(0).latitude, latLngs[0].get(0).longitude, 1).get(0));
+                address.add(geocoder.getFromLocation(latLngs[0].get(1).latitude, latLngs[0].get(1).longitude, 1).get(0));
+            } catch(IOException e){
+                e.printStackTrace();
+            }
+            return address;
+        }
+
+        @Override
+        protected void onPostExecute(List<Address> addresses) {
+            if (addresses != null) {
+                Address startAddress = addresses.get(0);
+                Address endAddress = addresses.get(1);
+                homeBinding.tvStart.setText(startAddress.getAddressLine (0));
+                homeBinding.tvEnd.setText(endAddress.getAddressLine (0));
+            }
+        }
     }
 }

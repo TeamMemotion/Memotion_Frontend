@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="button_width_60sp">60sp</dimen>
+    <dimen name="button_height_60sp">60sp</dimen>
+    <dimen name="button_width_80sp">80sp</dimen>
+    <dimen name="button_height_80sp">80sp</dimen>
+</resources>

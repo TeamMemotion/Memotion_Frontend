@@ -12,8 +12,8 @@
 
     <item
         android:id="@+id/menu_ar"
-        android:icon="@drawable/ar"
-        android:title="" />
+        android:icon="@drawable/baseline_photo_camera_24"
+        android:title="AR" />
 
 
     <item

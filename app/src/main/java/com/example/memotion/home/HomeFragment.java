@@ -281,21 +281,27 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
                 address.add(geocoder.getFromLocation(latLngs[0].get(1).latitude, latLngs[0].get(1).longitude, 1).get(0));
             } catch(IOException e){
                 e.printStackTrace();
+            } catch (IndexOutOfBoundsException ie) {
+                ie.printStackTrace();
+            } catch (RuntimeException re) {
+                re.printStackTrace();
             }
             return address;
         }
 
         @Override
         protected void onPostExecute(List<Address> addresses) {
-            if (addresses != null) {
+            if (addresses != null && addresses.size() > 0) {
                 Address startAddress = addresses.get(0);
-                String startAddressName = startAddress.getAdminArea() + " " + startAddress.getLocality() + " " +
-                        startAddress.getThoroughfare() + " " + startAddress.getFeatureName();
+                String startAddressName = startAddress.getAddressLine (0);
+                String [] startAddressShortName = startAddressName.split(startAddress.getCountryName() + " ");
+
                 Address endAddress = addresses.get(1);
-                String endAddressName = endAddress.getAdminArea() + " " + endAddress.getLocality() + " " +
-                        endAddress.getThoroughfare() + " " + endAddress.getFeatureName();
-                homeBinding.tvStart.setText(startAddressName);
-                homeBinding.tvEnd.setText(endAddressName);
+                String endAddressName = endAddress.getAddressLine(0);
+                String [] endAddressShortName = endAddressName.split(endAddress.getCountryName() + " ");
+
+                homeBinding.tvStart.setText(startAddressShortName[1]);
+                homeBinding.tvEnd.setText(endAddressShortName[1]);
             }
         }
     }

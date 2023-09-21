@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
     FragmentHomeBinding homeBinding;
     private MaterialCalendarView calendarView;
     private String dateClicked = null;
-    private String dateFormat = null;
+    public static String dateFormat = null;
     private static String TAG = "HomeFragment";
     private String selectedDate = null;
 
@@ -304,5 +304,11 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
                 homeBinding.tvEnd.setText(endAddressShortName[1]);
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getEmotions();
     }
 }

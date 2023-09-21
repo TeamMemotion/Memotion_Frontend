@@ -34,6 +34,7 @@ import com.example.memotion.diary.post.content.PostContentResult;
 import com.example.memotion.diary.post.content.PostContentService;
 import com.example.memotion.diary.post.emotion.PostEmotionRequest;
 import com.example.memotion.diary.post.emotion.PostEmotionService;
+import com.example.memotion.home.HomeFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -126,6 +127,7 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
     @Override
     public void postContentSuccess(int code, Long result) {
         Log.d(TAG, "다이어리 저장 성공");
+        HomeFragment.dateFormat = date.substring(0, 7);
     }
 
     @Override

@@ -289,9 +289,13 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
         protected void onPostExecute(List<Address> addresses) {
             if (addresses != null) {
                 Address startAddress = addresses.get(0);
+                String startAddressName = startAddress.getAdminArea() + " " + startAddress.getLocality() + " " +
+                        startAddress.getThoroughfare() + " " + startAddress.getFeatureName();
                 Address endAddress = addresses.get(1);
-                homeBinding.tvStart.setText(startAddress.getAddressLine (0));
-                homeBinding.tvEnd.setText(endAddress.getAddressLine (0));
+                String endAddressName = endAddress.getAdminArea() + " " + endAddress.getLocality() + " " +
+                        endAddress.getThoroughfare() + " " + endAddress.getFeatureName();
+                homeBinding.tvStart.setText(startAddressName);
+                homeBinding.tvEnd.setText(endAddressName);
             }
         }
     }

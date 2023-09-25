@@ -4,27 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 
-import com.example.memotion.arcamera.ArActivity;
+import com.example.memotion.arcamera.ar.PlacesArFragment;
 import com.example.memotion.databinding.ActivityMainBinding;
 import com.example.memotion.home.HomeFragment;
 import com.example.memotion.mypage.MypageFragment;
 import com.example.memotion.route.RouteFragment;
 import com.example.memotion.search.SearchFragment;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.ar.sceneform.ux.ArFragment;
 import com.kakao.sdk.common.KakaoSdk;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
     public static Context context;
@@ -61,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new MypageFragment()).commit();
                     return true;
                 } else if (itemId == R.id.menu_ar) {
-                    getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new ArFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new PlacesArFragment()).commit();
                     return true;
                 }
                 return false;

@@ -1,0 +1,42 @@
+Index: app/src/main/res/layout/activity_ar.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    tools:context=\"com.example.memotion.arcamera.ArActivity\">\n\n    <android.opengl.GLSurfaceView\n        android:id=\"@+id/surfaceview\"\n        android:layout_width=\"fill_parent\"\n        android:layout_height=\"fill_parent\"\n        android:layout_gravity=\"top\"/>\n\n    <ImageButton\n        android:id=\"@+id/settings_button\"\n        android:layout_width=\"103dp\"\n        android:layout_height=\"109dp\"\n        android:layout_alignParentTop=\"true\"\n        android:layout_alignParentEnd=\"true\"\n        android:layout_marginStart=\"25dp\"\n        android:layout_marginLeft=\"25dp\"\n        android:layout_marginTop=\"25dp\"\n        android:layout_marginEnd=\"25dp\"\n        android:layout_marginRight=\"25dp\"\n        android:layout_marginBottom=\"25dp\"\n        android:background=\"@android:color/transparent\"\n        android:src=\"@drawable/ic_settings\" />\n\n</RelativeLayout>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_ar.xml b/app/src/main/res/layout/activity_ar.xml
+--- a/app/src/main/res/layout/activity_ar.xml	
++++ b/app/src/main/res/layout/activity_ar.xml	
+@@ -1,15 +1,17 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    tools:context="com.example.memotion.arcamera.ArActivity">
++    android:orientation="vertical"
++    tools:context=".MainActivity">
+ 
+-    <android.opengl.GLSurfaceView
+-        android:id="@+id/surfaceview"
+-        android:layout_width="fill_parent"
+-        android:layout_height="fill_parent"
+-        android:layout_gravity="top"/>
++    <fragment android:name="com.example.memotion.arcamera.ar.PlacesArFragment"
++        android:id="@+id/ar_fragment"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_weight="7"/>
+ 
+     <ImageButton
+         android:id="@+id/settings_button"
+@@ -26,4 +28,4 @@
+         android:background="@android:color/transparent"
+         android:src="@drawable/ic_settings" />
+ 
+-</RelativeLayout>
++</LinearLayout>
+\ No newline at end of file

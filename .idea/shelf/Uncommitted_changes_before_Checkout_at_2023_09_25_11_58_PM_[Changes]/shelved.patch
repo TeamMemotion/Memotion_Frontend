@@ -1,0 +1,779 @@
+Index: app/src/main/java/com/example/memotion/arcamera/ArActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.memotion.arcamera;\n\nimport android.Manifest;\nimport android.content.res.Resources;\nimport android.opengl.GLES30;\nimport android.opengl.GLSurfaceView;\nimport android.opengl.Matrix;\nimport android.os.Bundle;\nimport android.util.Log;\nimport android.view.MotionEvent;\nimport android.widget.ImageButton;\nimport android.widget.Toast;\n\nimport androidx.appcompat.app.AlertDialog;\nimport androidx.appcompat.app.AppCompatActivity;\n\nimport com.example.memotion.arcamera.common.helpers.CameraPermissionHelper;\nimport com.example.memotion.arcamera.common.helpers.DepthSettings;\nimport com.example.memotion.arcamera.common.helpers.DisplayRotationHelper;\nimport com.example.memotion.arcamera.common.helpers.FullScreenHelper;\nimport com.example.memotion.arcamera.common.helpers.InstantPlacementSettings;\nimport com.example.memotion.arcamera.common.helpers.SnackbarHelper;\nimport com.example.memotion.arcamera.common.helpers.TapHelper;\nimport com.example.memotion.arcamera.common.helpers.TrackingStateHelper;\nimport com.example.memotion.arcamera.common.samplerender.Framebuffer;\nimport com.example.memotion.arcamera.common.samplerender.GLError;\nimport com.example.memotion.arcamera.common.samplerender.Mesh;\nimport com.example.memotion.arcamera.common.samplerender.SampleRender;\nimport com.example.memotion.arcamera.common.samplerender.Shader;\nimport com.example.memotion.arcamera.common.samplerender.Texture;\nimport com.example.memotion.arcamera.common.samplerender.VertexBuffer;\nimport com.example.memotion.arcamera.common.samplerender.arcore.BackgroundRenderer;\nimport com.example.memotion.arcamera.common.samplerender.arcore.PlaneRenderer;\nimport com.example.memotion.arcamera.common.samplerender.arcore.SpecularCubemapFilter;\nimport com.example.memotion.databinding.ActivityArBinding;\nimport com.google.ar.core.Anchor;\nimport com.google.ar.core.ArCoreApk;\nimport com.google.ar.core.ArCoreApk.Availability;\nimport com.google.ar.core.Camera;\nimport com.google.ar.core.Config;\nimport com.google.ar.core.Config.InstantPlacementMode;\nimport com.google.ar.core.Frame;\nimport com.google.ar.core.HitResult;\nimport com.google.ar.core.InstantPlacementPoint;\nimport com.google.ar.core.LightEstimate;\nimport com.google.ar.core.Plane;\nimport com.google.ar.core.Point;\nimport com.google.ar.core.Point.OrientationMode;\nimport com.google.ar.core.Session;\nimport com.google.ar.core.Trackable;\nimport com.google.ar.core.TrackingFailureReason;\nimport com.google.ar.core.TrackingState;\nimport com.google.ar.core.exceptions.CameraNotAvailableException;\nimport com.google.ar.core.exceptions.UnavailableApkTooOldException;\nimport com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;\nimport com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;\nimport com.google.ar.core.exceptions.UnavailableSdkTooOldException;\nimport com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;\n\nimport java.io.IOException;\nimport java.io.InputStream;\nimport java.nio.ByteBuffer;\nimport java.util.ArrayList;\nimport java.util.HashMap;\nimport java.util.List;\n\npublic class ArActivity extends AppCompatActivity implements SampleRender.Renderer {\n\n    private static final String TAG = ArActivity.class.getSimpleName();\n\n    private static final String SEARCHING_PLANE_MESSAGE = \"Searching for surfaces...\";\n    private static final String WAITING_FOR_TAP_MESSAGE = \"Tap on a surface to place an object.\";\n\n    private static final float[] sphericalHarmonicFactors = {\n            0.282095f,\n            -0.325735f,\n            0.325735f,\n            -0.325735f,\n            0.273137f,\n            -0.273137f,\n            0.078848f,\n            -0.273137f,\n            0.136569f,\n    };\n\n    private static final float Z_NEAR = 0.1f;\n    private static final float Z_FAR = 100f;\n\n    private static final int CUBEMAP_RESOLUTION = 16;\n    private static final int CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES = 32;\n\n    // Rendering. The Renderers are created here, and initialized when the GL surface is created.\n    private GLSurfaceView surfaceView;\n\n    private boolean installRequested;\n\n    private Session session;\n    private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();\n    private DisplayRotationHelper displayRotationHelper;\n    private final TrackingStateHelper trackingStateHelper = new TrackingStateHelper(this);\n    private TapHelper tapHelper;\n    private SampleRender render;\n\n    private PlaneRenderer planeRenderer;\n    private BackgroundRenderer backgroundRenderer;\n    private Framebuffer virtualSceneFramebuffer;\n    private boolean hasSetTextureNames = false;\n\n    //    private final DepthSettings depthSettings = new DepthSettings();\n    private boolean[] depthSettingsMenuDialogCheckboxes = new boolean[2];\n\n    private final InstantPlacementSettings instantPlacementSettings = new InstantPlacementSettings();\n    private boolean[] instantPlacementSettingsMenuDialogCheckboxes = new boolean[1];\n\n    private static final float APPROXIMATE_DISTANCE_METERS = 2.0f;\n\n    // Virtual object (ARCore pawn)\n    private Mesh virtualObjectMesh;\n    private Shader virtualObjectShader;\n    private Texture virtualObjectAlbedoTexture;\n    private Texture virtualObjectAlbedoInstantPlacementTexture;\n\n    private final List<WrappedAnchor> wrappedAnchors = new ArrayList<>();\n\n    // Environmental HDR\n    private Texture dfgTexture;\n    private SpecularCubemapFilter cubemapFilter;\n\n    // Temporary matrix allocated here to reduce number of allocations for each frame.\n    private final float[] modelMatrix = new float[16];\n    private final float[] viewMatrix = new float[16];\n    private final float[] projectionMatrix = new float[16];\n    private final float[] modelViewMatrix = new float[16]; // view x model\n    private final float[] modelViewProjectionMatrix = new float[16]; // projection x view x model\n    private final float[] sphericalHarmonicsCoefficients = new float[9 * 3];\n    private final float[] viewInverseMatrix = new float[16];\n    private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};\n    private final float[] viewLightDirection = new float[4]; // view x world light direction\n\n    ActivityArBinding viewBinding;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        viewBinding = ActivityArBinding.inflate(getLayoutInflater());\n        setContentView(viewBinding.getRoot());\n        surfaceView = viewBinding.surfaceview;\n        displayRotationHelper = new DisplayRotationHelper(/* context= */ this);\n\n        // Set up touch listener.\n        tapHelper = new TapHelper(/* context= */ this);\n        surfaceView.setOnTouchListener(tapHelper);\n\n        // Set up renderer.\n        render = new SampleRender(surfaceView, this, getAssets());\n\n        installRequested = false;\n\n        instantPlacementSettings.onCreate(this);\n\n        String[] permissions = getAdditionalPermissions();\n    }\n\n    private String[] getAdditionalPermissions() {\n        return new String[]{Manifest.permission.ACCESS_FINE_LOCATION};\n    }\n\n    /**\n     * Menu button to launch feature specific settings.\n     */\n//    protected boolean settingsMenuClick(MenuItem item) {\n//        if (item.getItemId() == R.id.depth_settings) {\n//            launchDepthSettingsMenuDialog();\n//            return true;\n//        } else if (item.getItemId() == R.id.instant_placement_settings) {\n//            launchInstantPlacementSettingsMenuDialog();\n//            return true;\n//        }\n//        return false;\n//    }\n    @Override\n    protected void onDestroy() {\n        if (session != null) {\n            session.close();\n            session = null;\n        }\n\n        super.onDestroy();\n    }\n\n    @Override\n    protected void onResume() {\n        super.onResume();\n\n        if (session == null) {\n            Exception exception = null;\n            String message = null;\n            try {\n                // Always check the latest availability.\n                Availability availability = ArCoreApk.getInstance().checkAvailability(this);\n\n                // In all other cases, try to install ARCore and handle installation failures.\n                if (availability != Availability.SUPPORTED_INSTALLED) {\n                    switch (ArCoreApk.getInstance().requestInstall(this, !installRequested)) {\n                        case INSTALL_REQUESTED:\n                            installRequested = true;\n                            return;\n                        case INSTALLED:\n                            break;\n                    }\n                }\n\n                // ARCore requires camera permissions to operate. If we did not yet obtain runtime\n                // permission on Android M and above, now is a good time to ask the user for it.\n                if (!CameraPermissionHelper.hasCameraPermission(this)) {\n                    CameraPermissionHelper.requestCameraPermission(this);\n                    return;\n                }\n\n                // Create the session.\n                session = new Session(/* context= */ this);\n            } catch (UnavailableArcoreNotInstalledException\n                     | UnavailableUserDeclinedInstallationException e) {\n                message = \"Please install ARCore\";\n                exception = e;\n            } catch (UnavailableApkTooOldException e) {\n                message = \"Please update ARCore\";\n                exception = e;\n            } catch (UnavailableSdkTooOldException e) {\n                message = \"Please update this app\";\n                exception = e;\n            } catch (UnavailableDeviceNotCompatibleException e) {\n                message = \"This device does not support AR\";\n                exception = e;\n            } catch (Exception e) {\n                message = \"Failed to create AR session\";\n                exception = e;\n            }\n\n            if (message != null) {\n                messageSnackbarHelper.showError(this, message);\n                Log.e(TAG, \"Exception creating session\", exception);\n                return;\n            }\n        }\n\n        // Note that order matters - see the note in onPause(), the reverse applies here.\n        try {\n            configureSession();\n            session.resume();\n        } catch (CameraNotAvailableException e) {\n            messageSnackbarHelper.showError(this, \"Camera not available. Try restarting the app.\");\n            session = null;\n            return;\n        }\n\n        surfaceView.onResume();\n        displayRotationHelper.onResume();\n    }\n\n    @Override\n    public void onPause() {\n        super.onPause();\n        if (session != null) {\n            displayRotationHelper.onPause();\n            surfaceView.onPause();\n            session.pause();\n        }\n    }\n\n    @Override\n    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {\n        super.onRequestPermissionsResult(requestCode, permissions, results);\n        if (!CameraPermissionHelper.hasCameraPermission(this)) {\n            // Use toast instead of snackbar here since the activity will exit.\n            Toast.makeText(this, \"Camera permission is needed to run this application\", Toast.LENGTH_LONG)\n                    .show();\n            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {\n                // Permission denied with checking \"Do not ask again\".\n                CameraPermissionHelper.launchPermissionSettings(this);\n            }\n            finish();\n        }\n    }\n\n    @Override\n    public void onWindowFocusChanged(boolean hasFocus) {\n        super.onWindowFocusChanged(hasFocus);\n        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus);\n    }\n\n    @Override\n    public void onSurfaceCreated(SampleRender render) {\n        // Prepare the rendering objects. This involves reading shaders and 3D model files, so may throw\n        // an IOException.\n        try {\n            planeRenderer = new PlaneRenderer(render);\n            backgroundRenderer = new BackgroundRenderer(render);\n            virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);\n\n            cubemapFilter =\n                    new SpecularCubemapFilter(\n                            render, CUBEMAP_RESOLUTION, CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES);\n            // Load DFG lookup table for environmental lighting\n            dfgTexture =\n                    new Texture(\n                            render,\n                            Texture.Target.TEXTURE_2D,\n                            Texture.WrapMode.CLAMP_TO_EDGE,\n                            /* useMipmaps= */ false);\n            // The dfg.raw file is a raw half-float texture with two channels.\n            final int dfgResolution = 64;\n            final int dfgChannels = 2;\n            final int halfFloatSize = 2;\n\n            ByteBuffer buffer =\n                    ByteBuffer.allocateDirect(dfgResolution * dfgResolution * dfgChannels * halfFloatSize);\n            try (InputStream is = getAssets().open(\"models/dfg.raw\")) {\n                is.read(buffer.array());\n            }\n            // SampleRender abstraction leaks here.\n            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, dfgTexture.getTextureId());\n            GLError.maybeThrowGLException(\"Failed to bind DFG texture\", \"glBindTexture\");\n            GLES30.glTexImage2D(\n                    GLES30.GL_TEXTURE_2D,\n                    /* level= */ 0,\n                    GLES30.GL_RG16F,\n                    /* width= */ dfgResolution,\n                    /* height= */ dfgResolution,\n                    /* border= */ 0,\n                    GLES30.GL_RG,\n                    GLES30.GL_HALF_FLOAT,\n                    buffer);\n            GLError.maybeThrowGLException(\"Failed to populate DFG texture\", \"glTexImage2D\");\n\n            // Virtual object to render (ARCore pawn)\n            virtualObjectAlbedoTexture =\n                    Texture.createFromAsset(\n                            render,\n                            \"models/pawn_albedo.png\",\n                            Texture.WrapMode.CLAMP_TO_EDGE,\n                            Texture.ColorFormat.SRGB);\n            virtualObjectAlbedoInstantPlacementTexture =\n                    Texture.createFromAsset(\n                            render,\n                            \"models/pawn_albedo_instant_placement.png\",\n                            Texture.WrapMode.CLAMP_TO_EDGE,\n                            Texture.ColorFormat.SRGB);\n            Texture virtualObjectPbrTexture =\n                    Texture.createFromAsset(\n                            render,\n                            \"models/pawn_roughness_metallic_ao.png\",\n                            Texture.WrapMode.CLAMP_TO_EDGE,\n                            Texture.ColorFormat.LINEAR);\n\n            virtualObjectMesh = Mesh.createFromAsset(render, \"models/pawn.obj\");\n            virtualObjectShader =\n                    Shader.createFromAssets(\n                                    render,\n                                    \"shaders/environmental_hdr.vert\",\n                                    \"shaders/environmental_hdr.frag\",\n                                    /* defines= */ new HashMap<String, String>() {\n                                        {\n                                            put(\n                                                    \"NUMBER_OF_MIPMAP_LEVELS\",\n                                                    Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));\n                                        }\n                                    })\n                            .setTexture(\"u_AlbedoTexture\", virtualObjectAlbedoTexture)\n                            .setTexture(\"u_RoughnessMetallicAmbientOcclusionTexture\", virtualObjectPbrTexture)\n                            .setTexture(\"u_Cubemap\", cubemapFilter.getFilteredCubemapTexture())\n                            .setTexture(\"u_DfgTexture\", dfgTexture);\n        } catch (IOException e) {\n            Log.e(TAG, \"Failed to read a required asset file\", e);\n            messageSnackbarHelper.showError(this, \"Failed to read a required asset file: \" + e);\n        }\n    }\n\n    @Override\n    public void onSurfaceChanged(SampleRender render, int width, int height) {\n        displayRotationHelper.onSurfaceChanged(width, height);\n        virtualSceneFramebuffer.resize(width, height);\n    }\n\n    @Override\n    public void onDrawFrame(SampleRender render) {\n        if (session == null) {\n            return;\n        }\n\n         if (!hasSetTextureNames) {\n            session.setCameraTextureNames(\n                    new int[]{backgroundRenderer.getCameraColorTexture().getTextureId()});\n            hasSetTextureNames = true;\n        }\n\n        Frame frame;\n        try {\n            frame = session.update();\n        } catch (CameraNotAvailableException e) {\n            Log.e(TAG, \"Camera not available during onDrawFrame\", e);\n            messageSnackbarHelper.showError(this, \"Camera not available. Try restarting the app.\");\n            return;\n        }\n        Camera camera = frame.getCamera();\n\n        backgroundRenderer.updateDisplayGeometry(frame);\n\n\n        // Handle one tap per frame.\n        handleTap(frame, camera);\n\n        // Keep the screen unlocked while tracking, but allow it to lock when tracking stops.\n        trackingStateHelper.updateKeepScreenOnFlag(camera.getTrackingState());\n\n        // Show a message based on whether tracking has failed, if planes are detected, and if the user\n        // has placed any objects.\n        String message = null;\n        if (camera.getTrackingState() == TrackingState.PAUSED) {\n            if (camera.getTrackingFailureReason() == TrackingFailureReason.NONE) {\n                message = SEARCHING_PLANE_MESSAGE;\n            } else {\n                message = TrackingStateHelper.getTrackingFailureReasonString(camera);\n            }\n        } else if (hasTrackingPlane()) {\n            if (wrappedAnchors.isEmpty()) {\n                message = WAITING_FOR_TAP_MESSAGE;\n            }\n        } else {\n            message = SEARCHING_PLANE_MESSAGE;\n        }\n        if (message == null) {\n            messageSnackbarHelper.hide(this);\n        } else {\n            messageSnackbarHelper.showMessage(this, message);\n        }\n\n        // -- Draw background\n\n        if (frame.getTimestamp() != 0) {\n            // Suppress rendering if the camera did not produce the first frame yet. This is to avoid\n            // drawing possible leftover data from previous sessions if the texture is reused.\n            backgroundRenderer.drawBackground(render);\n        }\n\n        // If not tracking, don't draw 3D objects.\n        if (camera.getTrackingState() == TrackingState.PAUSED) {\n            return;\n        }\n\n        // Get projection matrix.\n        camera.getProjectionMatrix(projectionMatrix, 0, Z_NEAR, Z_FAR);\n\n        // Get camera matrix and draw.\n        camera.getViewMatrix(viewMatrix, 0);\n\n        // Visualize planes.\n        planeRenderer.drawPlanes(\n                render,\n                session.getAllTrackables(Plane.class),\n                camera.getDisplayOrientedPose(),\n                projectionMatrix);\n\n        // -- Draw occluded virtual objects\n\n        // Update lighting parameters in the shader\n        updateLightEstimation(frame.getLightEstimate(), viewMatrix);\n\n        // Visualize anchors created by touch.\n        render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f);\n        for (WrappedAnchor wrappedAnchor : wrappedAnchors) {\n            Anchor anchor = wrappedAnchor.getAnchor();\n            Trackable trackable = wrappedAnchor.getTrackable();\n            if (anchor.getTrackingState() != TrackingState.TRACKING) {\n                continue;\n            }\n\n            // Get the current pose of an Anchor in world space. The Anchor pose is updated\n            // during calls to session.update() as ARCore refines its estimate of the world.\n            anchor.getPose().toMatrix(modelMatrix, 0);\n\n            // Calculate model/view/projection matrices\n            Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);\n            Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);\n\n            // Update shader properties and draw\n            virtualObjectShader.setMat4(\"u_ModelView\", modelViewMatrix);\n            virtualObjectShader.setMat4(\"u_ModelViewProjection\", modelViewProjectionMatrix);\n\n            if (trackable instanceof InstantPlacementPoint) {\n                virtualObjectShader.setTexture(\"u_AlbedoTexture\", virtualObjectAlbedoInstantPlacementTexture);\n            } else {\n                virtualObjectShader.setTexture(\"u_AlbedoTexture\", virtualObjectAlbedoTexture);\n            }\n            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);\n        }\n\n        // Compose the virtual scene with the background.\n        backgroundRenderer.drawVirtualScene(render, virtualSceneFramebuffer, Z_NEAR, Z_FAR);\n    }\n\n    // Handle only one tap per frame, as taps are usually low frequency compared to frame rate.\n    private void handleTap(Frame frame, Camera camera) {\n        MotionEvent tap = tapHelper.poll();\n        if (tap != null && camera.getTrackingState() == TrackingState.TRACKING) {\n            List<HitResult> hitResultList;\n            if (instantPlacementSettings.isInstantPlacementEnabled()) {\n                hitResultList =\n                        frame.hitTestInstantPlacement(tap.getX(), tap.getY(), APPROXIMATE_DISTANCE_METERS);\n            } else {\n                hitResultList = frame.hitTest(tap);\n            }\n            for (HitResult hit : hitResultList) {\n                // If any plane, Oriented Point, or Instant Placement Point was hit, create an anchor.\n                Trackable trackable = hit.getTrackable();\n                // If a plane was hit, check that it was hit inside the plane polygon.\n                if ((trackable instanceof Plane\n                        && ((Plane) trackable).isPoseInPolygon(hit.getHitPose()))\n                        || (trackable instanceof Point\n                        && ((Point) trackable).getOrientationMode()\n                        == OrientationMode.ESTIMATED_SURFACE_NORMAL)\n                        || (trackable instanceof InstantPlacementPoint)) {\n                    // Cap the number of objects created. This avoids overloading both the\n                    // rendering system and ARCore.\n                    if (wrappedAnchors.size() >= 20) {\n                        wrappedAnchors.get(0).getAnchor().detach();\n                        wrappedAnchors.remove(0);\n                    }\n                    wrappedAnchors.add(new WrappedAnchor(hit.createAnchor(), trackable));\n\n                    break;\n                }\n            }\n        }\n    }\n\n    private void launchInstantPlacementSettingsMenuDialog() {\n        resetSettingsMenuDialogCheckboxes();\n        Resources resources = getResources();\n        new AlertDialog.Builder(this).show();\n    }\n\n    private void applySettingsMenuDialogCheckboxes() {\n        instantPlacementSettings.setInstantPlacementEnabled(\n                instantPlacementSettingsMenuDialogCheckboxes[0]);\n        configureSession();\n    }\n\n    private void resetSettingsMenuDialogCheckboxes() {\ninstantPlacementSettingsMenuDialogCheckboxes[0] =\n                instantPlacementSettings.isInstantPlacementEnabled();\n    }\n\n    /** Checks if we detected at least one plane. */\n    private boolean hasTrackingPlane() {\n        for (Plane plane : session.getAllTrackables(Plane.class)) {\n            if (plane.getTrackingState() == TrackingState.TRACKING) {\n                return true;\n            }\n        }\n        return false;\n    }\n\n    /** Update state based on the current frame's light estimation. */\n    private void updateLightEstimation(LightEstimate lightEstimate, float[] viewMatrix) {\n        if (lightEstimate.getState() != LightEstimate.State.VALID) {\n            virtualObjectShader.setBool(\"u_LightEstimateIsValid\", false);\n            return;\n        }\n        virtualObjectShader.setBool(\"u_LightEstimateIsValid\", true);\n\n        Matrix.invertM(viewInverseMatrix, 0, viewMatrix, 0);\n        virtualObjectShader.setMat4(\"u_ViewInverse\", viewInverseMatrix);\n\n        updateMainLight(\n                lightEstimate.getEnvironmentalHdrMainLightDirection(),\n                lightEstimate.getEnvironmentalHdrMainLightIntensity(),\n                viewMatrix);\n        updateSphericalHarmonicsCoefficients(\n                lightEstimate.getEnvironmentalHdrAmbientSphericalHarmonics());\n        cubemapFilter.update(lightEstimate.acquireEnvironmentalHdrCubeMap());\n    }\n\n    private void updateMainLight(float[] direction, float[] intensity, float[] viewMatrix) {\n        // We need the direction in a vec4 with 0.0 as the final component to transform it to view space\n        worldLightDirection[0] = direction[0];\n        worldLightDirection[1] = direction[1];\n        worldLightDirection[2] = direction[2];\n        Matrix.multiplyMV(viewLightDirection, 0, viewMatrix, 0, worldLightDirection, 0);\n        virtualObjectShader.setVec4(\"u_ViewLightDirection\", viewLightDirection);\n        virtualObjectShader.setVec3(\"u_LightIntensity\", intensity);\n    }\n\n    private void updateSphericalHarmonicsCoefficients(float[] coefficients) {\n        if (coefficients.length != 9 * 3) {\n            throw new IllegalArgumentException(\n                    \"The given coefficients array must be of length 27 (3 components per 9 coefficients\");\n        }\n\n        // Apply each factor to every component of each coefficient\n        for (int i = 0; i < 9 * 3; ++i) {\n            sphericalHarmonicsCoefficients[i] = coefficients[i] * sphericalHarmonicFactors[i / 3];\n        }\n        virtualObjectShader.setVec3Array(\n                \"u_SphericalHarmonicsCoefficients\", sphericalHarmonicsCoefficients);\n    }\n\n    /** Configures the session with feature settings. */\n    private void configureSession() {\n        Config config = session.getConfig();\n        config.setLightEstimationMode(Config.LightEstimationMode.ENVIRONMENTAL_HDR);\n        if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {\n            config.setDepthMode(Config.DepthMode.AUTOMATIC);\n        } else {\n            config.setDepthMode(Config.DepthMode.DISABLED);\n        }\n        if (instantPlacementSettings.isInstantPlacementEnabled()) {\n            config.setInstantPlacementMode(InstantPlacementMode.LOCAL_Y_UP);\n        } else {\n            config.setInstantPlacementMode(InstantPlacementMode.DISABLED);\n        }\n        session.configure(config);\n    }\n}\n\n/**\n * Associates an Anchor with the trackable it was attached to. This is used to be able to check\n * whether or not an Anchor originally was attached to an {@link InstantPlacementPoint}.\n */\nclass WrappedAnchor {\n    private Anchor anchor;\n    private Trackable trackable;\n\n    public WrappedAnchor(Anchor anchor, Trackable trackable) {\n        this.anchor = anchor;\n        this.trackable = trackable;\n    }\n\n    public Anchor getAnchor() {\n        return anchor;\n    }\n\n    public Trackable getTrackable() {\n        return trackable;\n    }\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/memotion/arcamera/ArActivity.java b/app/src/main/java/com/example/memotion/arcamera/ArActivity.java
+--- a/app/src/main/java/com/example/memotion/arcamera/ArActivity.java	
++++ b/app/src/main/java/com/example/memotion/arcamera/ArActivity.java	
+@@ -1,647 +1,153 @@
+ package com.example.memotion.arcamera;
+ 
+-import android.Manifest;
+-import android.content.res.Resources;
+-import android.opengl.GLES30;
+-import android.opengl.GLSurfaceView;
+-import android.opengl.Matrix;
++import android.app.ActivityManager;
++import android.content.Context;
+ import android.os.Bundle;
+ import android.util.Log;
+ import android.view.MotionEvent;
+-import android.widget.ImageButton;
++import android.view.View;
++import android.widget.TextView;
+ import android.widget.Toast;
+ 
+-import androidx.appcompat.app.AlertDialog;
+ import androidx.appcompat.app.AppCompatActivity;
++import androidx.fragment.app.FragmentManager;
+ 
+-import com.example.memotion.arcamera.common.helpers.CameraPermissionHelper;
+-import com.example.memotion.arcamera.common.helpers.DepthSettings;
+-import com.example.memotion.arcamera.common.helpers.DisplayRotationHelper;
+-import com.example.memotion.arcamera.common.helpers.FullScreenHelper;
+-import com.example.memotion.arcamera.common.helpers.InstantPlacementSettings;
+-import com.example.memotion.arcamera.common.helpers.SnackbarHelper;
+-import com.example.memotion.arcamera.common.helpers.TapHelper;
+-import com.example.memotion.arcamera.common.helpers.TrackingStateHelper;
+-import com.example.memotion.arcamera.common.samplerender.Framebuffer;
+-import com.example.memotion.arcamera.common.samplerender.GLError;
+-import com.example.memotion.arcamera.common.samplerender.Mesh;
+-import com.example.memotion.arcamera.common.samplerender.SampleRender;
+-import com.example.memotion.arcamera.common.samplerender.Shader;
+-import com.example.memotion.arcamera.common.samplerender.Texture;
+-import com.example.memotion.arcamera.common.samplerender.VertexBuffer;
+-import com.example.memotion.arcamera.common.samplerender.arcore.BackgroundRenderer;
+-import com.example.memotion.arcamera.common.samplerender.arcore.PlaneRenderer;
+-import com.example.memotion.arcamera.common.samplerender.arcore.SpecularCubemapFilter;
+-import com.example.memotion.databinding.ActivityArBinding;
+-import com.google.ar.core.Anchor;
+-import com.google.ar.core.ArCoreApk;
+-import com.google.ar.core.ArCoreApk.Availability;
+-import com.google.ar.core.Camera;
+-import com.google.ar.core.Config;
+-import com.google.ar.core.Config.InstantPlacementMode;
+-import com.google.ar.core.Frame;
++import com.example.memotion.R;
++import com.example.memotion.arcamera.api.PlacesService;
++import com.example.memotion.arcamera.ar.PlaceNode;
++import com.example.memotion.arcamera.model.Place;
+ import com.google.ar.core.HitResult;
+-import com.google.ar.core.InstantPlacementPoint;
+-import com.google.ar.core.LightEstimate;
+ import com.google.ar.core.Plane;
+-import com.google.ar.core.Point;
+-import com.google.ar.core.Point.OrientationMode;
+-import com.google.ar.core.Session;
+-import com.google.ar.core.Trackable;
+-import com.google.ar.core.TrackingFailureReason;
+-import com.google.ar.core.TrackingState;
+-import com.google.ar.core.exceptions.CameraNotAvailableException;
+-import com.google.ar.core.exceptions.UnavailableApkTooOldException;
+-import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
+-import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
+-import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
+-import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
++import com.google.ar.sceneform.AnchorNode;
++import com.google.ar.sceneform.Node;
++import com.google.ar.sceneform.math.Vector3;
++import com.google.ar.sceneform.ux.ArFragment;
+ 
+-import java.io.IOException;
+-import java.io.InputStream;
+-import java.nio.ByteBuffer;
+-import java.util.ArrayList;
+-import java.util.HashMap;
+ import java.util.List;
+ 
+-public class ArActivity extends AppCompatActivity implements SampleRender.Renderer {
+-
+-    private static final String TAG = ArActivity.class.getSimpleName();
+-
+-    private static final String SEARCHING_PLANE_MESSAGE = "Searching for surfaces...";
+-    private static final String WAITING_FOR_TAP_MESSAGE = "Tap on a surface to place an object.";
+-
+-    private static final float[] sphericalHarmonicFactors = {
+-            0.282095f,
+-            -0.325735f,
+-            0.325735f,
+-            -0.325735f,
+-            0.273137f,
+-            -0.273137f,
+-            0.078848f,
+-            -0.273137f,
+-            0.136569f,
+-    };
+-
+-    private static final float Z_NEAR = 0.1f;
+-    private static final float Z_FAR = 100f;
+-
+-    private static final int CUBEMAP_RESOLUTION = 16;
+-    private static final int CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES = 32;
+-
+-    // Rendering. The Renderers are created here, and initialized when the GL surface is created.
+-    private GLSurfaceView surfaceView;
+-
+-    private boolean installRequested;
+-
+-    private Session session;
+-    private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
+-    private DisplayRotationHelper displayRotationHelper;
+-    private final TrackingStateHelper trackingStateHelper = new TrackingStateHelper(this);
+-    private TapHelper tapHelper;
+-    private SampleRender render;
+-
+-    private PlaneRenderer planeRenderer;
+-    private BackgroundRenderer backgroundRenderer;
+-    private Framebuffer virtualSceneFramebuffer;
+-    private boolean hasSetTextureNames = false;
+-
+-    //    private final DepthSettings depthSettings = new DepthSettings();
+-    private boolean[] depthSettingsMenuDialogCheckboxes = new boolean[2];
++public abstract class ArActivity extends AppCompatActivity {
+ 
+-    private final InstantPlacementSettings instantPlacementSettings = new InstantPlacementSettings();
+-    private boolean[] instantPlacementSettingsMenuDialogCheckboxes = new boolean[1];
++    private static final String TAG = "ArActivity";
+ 
+-    private static final float APPROXIMATE_DISTANCE_METERS = 2.0f;
++    private PlacesService placesService;
++    private ArFragment arFragment;
+ 
+-    // Virtual object (ARCore pawn)
+-    private Mesh virtualObjectMesh;
+-    private Shader virtualObjectShader;
+-    private Texture virtualObjectAlbedoTexture;
+-    private Texture virtualObjectAlbedoInstantPlacementTexture;
+-
+-    private final List<WrappedAnchor> wrappedAnchors = new ArrayList<>();
+-
+-    // Environmental HDR
+-    private Texture dfgTexture;
+-    private SpecularCubemapFilter cubemapFilter;
+-
+-    // Temporary matrix allocated here to reduce number of allocations for each frame.
+-    private final float[] modelMatrix = new float[16];
+-    private final float[] viewMatrix = new float[16];
+-    private final float[] projectionMatrix = new float[16];
+-    private final float[] modelViewMatrix = new float[16]; // view x model
+-    private final float[] modelViewProjectionMatrix = new float[16]; // projection x view x model
+-    private final float[] sphericalHarmonicsCoefficients = new float[9 * 3];
+-    private final float[] viewInverseMatrix = new float[16];
+-    private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
+-    private final float[] viewLightDirection = new float[4]; // view x world light direction
+-
+-    ActivityArBinding viewBinding;
++    private AnchorNode anchorNode;
++    private List<Place> places;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+-        viewBinding = ActivityArBinding.inflate(getLayoutInflater());
+-        setContentView(viewBinding.getRoot());
+-        surfaceView = viewBinding.surfaceview;
+-        displayRotationHelper = new DisplayRotationHelper(/* context= */ this);
+-
+-        // Set up touch listener.
+-        tapHelper = new TapHelper(/* context= */ this);
+-        surfaceView.setOnTouchListener(tapHelper);
+-
+-        // Set up renderer.
+-        render = new SampleRender(surfaceView, this, getAssets());
+-
+-        installRequested = false;
+-
+-        instantPlacementSettings.onCreate(this);
+-
+-        String[] permissions = getAdditionalPermissions();
+-    }
+-
+-    private String[] getAdditionalPermissions() {
+-        return new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+-    }
+-
+-    /**
+-     * Menu button to launch feature specific settings.
+-     */
+-//    protected boolean settingsMenuClick(MenuItem item) {
+-//        if (item.getItemId() == R.id.depth_settings) {
+-//            launchDepthSettingsMenuDialog();
+-//            return true;
+-//        } else if (item.getItemId() == R.id.instant_placement_settings) {
+-//            launchInstantPlacementSettingsMenuDialog();
+-//            return true;
+-//        }
+-//        return false;
+-//    }
+-    @Override
+-    protected void onDestroy() {
+-        if (session != null) {
+-            session.close();
+-            session = null;
+-        }
+-
+-        super.onDestroy();
+-    }
+-
+-    @Override
+-    protected void onResume() {
+-        super.onResume();
+-
+-        if (session == null) {
+-            Exception exception = null;
+-            String message = null;
+-            try {
+-                // Always check the latest availability.
+-                Availability availability = ArCoreApk.getInstance().checkAvailability(this);
+-
+-                // In all other cases, try to install ARCore and handle installation failures.
+-                if (availability != Availability.SUPPORTED_INSTALLED) {
+-                    switch (ArCoreApk.getInstance().requestInstall(this, !installRequested)) {
+-                        case INSTALL_REQUESTED:
+-                            installRequested = true;
+-                            return;
+-                        case INSTALLED:
+-                            break;
+-                    }
+-                }
++        if (!isSupportedDevice()) {
++            return;
++        }
++        setContentView(R.layout.activity_main);
+ 
+-                // ARCore requires camera permissions to operate. If we did not yet obtain runtime
+-                // permission on Android M and above, now is a good time to ask the user for it.
+-                if (!CameraPermissionHelper.hasCameraPermission(this)) {
+-                    CameraPermissionHelper.requestCameraPermission(this);
+-                    return;
+-                }
++        FragmentManager fragmentManager = getSupportFragmentManager();
++        arFragment = (ArFragment) fragmentManager.findFragmentById(R.id.ar_fragment); // 수정: 타입 변경
+ 
+-                // Create the session.
+-                session = new Session(/* context= */ this);
+-            } catch (UnavailableArcoreNotInstalledException
+-                     | UnavailableUserDeclinedInstallationException e) {
+-                message = "Please install ARCore";
+-                exception = e;
+-            } catch (UnavailableApkTooOldException e) {
+-                message = "Please update ARCore";
+-                exception = e;
+-            } catch (UnavailableSdkTooOldException e) {
+-                message = "Please update this app";
+-                exception = e;
+-            } catch (UnavailableDeviceNotCompatibleException e) {
+-                message = "This device does not support AR";
+-                exception = e;
+-            } catch (Exception e) {
+-                message = "Failed to create AR session";
+-                exception = e;
+-            }
++//        placesService = PlacesService.Factory.create();
+ 
+-            if (message != null) {
+-                messageSnackbarHelper.showError(this, message);
+-                Log.e(TAG, "Exception creating session", exception);
+-                return;
+-            }
+-        }
++        Log.i(TAG, "AR Camera onCreate");
++        setUpAr();
++    }
+ 
+-        // Note that order matters - see the note in onPause(), the reverse applies here.
+-        try {
+-            configureSession();
+-            session.resume();
+-        } catch (CameraNotAvailableException e) {
+-            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
+-            session = null;
+-            return;
+-        }
++    private void setUpAr() {
++        arFragment.setOnTapArPlaneListener((HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
++            anchorNode = new AnchorNode();
++            anchorNode.setParent(arFragment.getArSceneView().getScene());
++//            addPlaces(anchorNode); // 수정: 주석 해제
++        });
++    }
+ 
+-        surfaceView.onResume();
+-        displayRotationHelper.onResume();
+-    }
++//    private void addPlaces(AnchorNode anchorNode) {
++//        if (places == null) {
++//            return;
++//        }
++//
++//        // TODO: places 정보를 API를 통해 가져오는 로직을 추가해야 합니다.
++//        // 예를 들어, PlacesService를 사용하여 데이터를 가져와야 합니다.
++//        // API 호출 및 응답을 처리하고, 장소 정보를 places 리스트에 할당하세요.
++//        // 아래는 임시로 예시로 표시한 부분입니다.
++//
++//        // placesService.nearbyPlaces(apiKey, latitudeLongitude, radius, type).enqueue(new Callback<NearbyPlacesResponse>() {
++//        //     @Override
++//        //     public void onResponse(@NonNull Call<NearbyPlacesResponse> call, @NonNull Response<NearbyPlacesResponse> response) {
++//        //         if (response.isSuccessful()) {
++//        //             NearbyPlacesResponse nearbyPlacesResponse = response.body();
++//        //             if (nearbyPlacesResponse != null) {
++//        //                 places = nearbyPlacesResponse.getResults();
++//        //                 // 장소 정보를 받아온 후에 AR에 표시하도록 로직을 추가하세요.
++//        //                 displayPlacesInAr(anchorNode);
++//        //             }
++//        //         } else {
++//        //             Log.e(TAG, "Failed to get nearby places");
++//        //         }
++//        //     }
++//
++//        //     @Override
++//        //     public void onFailure(@NonNull Call<NearbyPlacesResponse> call, @NonNull Throwable t) {
++//        //         Log.e(TAG, "Failed to get nearby places", t);
++//        //     }
++//        // });
++//    }
+ 
+-    @Override
+-    public void onPause() {
+-        super.onPause();
+-        if (session != null) {
+-            displayRotationHelper.onPause();
+-            surfaceView.onPause();
+-            session.pause();
+-        }
+-    }
++//    private void displayPlacesInAr(AnchorNode anchorNode) {
++//        if (places == null) {
++//            return;
++//        }
++//
++//        for (Place place : places) {
++//            PlaceNode placeNode = new PlaceNode(this, place);
++//            placeNode.setParent(anchorNode);
++//            // TODO: orientationAngles와 currentLocation.latLng에 대한 정보가 필요한 경우 수정이 필요합니다.
++//            // placeNode.setLocalPosition(place.getPositionVector(orientationAngles[0], currentLocation.latLng));
++//            placeNode.setLocalPosition(new Vector3(0, 0, -2f)); // 임시로 Z 축으로 이동하는 벡터 사용
++//        }
++//    }
+ 
+-    @Override
+-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
+-        super.onRequestPermissionsResult(requestCode, permissions, results);
+-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+-            // Use toast instead of snackbar here since the activity will exit.
+-            Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
+-                    .show();
+-            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
+-                // Permission denied with checking "Do not ask again".
+-                CameraPermissionHelper.launchPermissionSettings(this);
+-            }
++    private boolean isSupportedDevice() {
++        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
++        String openGlVersionString = activityManager.getDeviceConfigurationInfo().getGlEsVersion();
++        if (Double.parseDouble(openGlVersionString) < 3.0) {
++            Toast.makeText(this, "Sceneform requires OpenGL ES 3.0 or later", Toast.LENGTH_LONG).show();
+             finish();
++            return false;
+         }
+-    }
+-
+-    @Override
+-    public void onWindowFocusChanged(boolean hasFocus) {
+-        super.onWindowFocusChanged(hasFocus);
+-        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus);
+-    }
+-
+-    @Override
+-    public void onSurfaceCreated(SampleRender render) {
+-        // Prepare the rendering objects. This involves reading shaders and 3D model files, so may throw
+-        // an IOException.
+-        try {
+-            planeRenderer = new PlaneRenderer(render);
+-            backgroundRenderer = new BackgroundRenderer(render);
+-            virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);
+-
+-            cubemapFilter =
+-                    new SpecularCubemapFilter(
+-                            render, CUBEMAP_RESOLUTION, CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES);
+-            // Load DFG lookup table for environmental lighting
+-            dfgTexture =
+-                    new Texture(
+-                            render,
+-                            Texture.Target.TEXTURE_2D,
+-                            Texture.WrapMode.CLAMP_TO_EDGE,
+-                            /* useMipmaps= */ false);
+-            // The dfg.raw file is a raw half-float texture with two channels.
+-            final int dfgResolution = 64;
+-            final int dfgChannels = 2;
+-            final int halfFloatSize = 2;
+-
+-            ByteBuffer buffer =
+-                    ByteBuffer.allocateDirect(dfgResolution * dfgResolution * dfgChannels * halfFloatSize);
+-            try (InputStream is = getAssets().open("models/dfg.raw")) {
+-                is.read(buffer.array());
+-            }
+-            // SampleRender abstraction leaks here.
+-            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, dfgTexture.getTextureId());
+-            GLError.maybeThrowGLException("Failed to bind DFG texture", "glBindTexture");
+-            GLES30.glTexImage2D(
+-                    GLES30.GL_TEXTURE_2D,
+-                    /* level= */ 0,
+-                    GLES30.GL_RG16F,
+-                    /* width= */ dfgResolution,
+-                    /* height= */ dfgResolution,
+-                    /* border= */ 0,
+-                    GLES30.GL_RG,
+-                    GLES30.GL_HALF_FLOAT,
+-                    buffer);
+-            GLError.maybeThrowGLException("Failed to populate DFG texture", "glTexImage2D");
+-
+-            // Virtual object to render (ARCore pawn)
+-            virtualObjectAlbedoTexture =
+-                    Texture.createFromAsset(
+-                            render,
+-                            "models/pawn_albedo.png",
+-                            Texture.WrapMode.CLAMP_TO_EDGE,
+-                            Texture.ColorFormat.SRGB);
+-            virtualObjectAlbedoInstantPlacementTexture =
+-                    Texture.createFromAsset(
+-                            render,
+-                            "models/pawn_albedo_instant_placement.png",
+-                            Texture.WrapMode.CLAMP_TO_EDGE,
+-                            Texture.ColorFormat.SRGB);
+-            Texture virtualObjectPbrTexture =
+-                    Texture.createFromAsset(
+-                            render,
+-                            "models/pawn_roughness_metallic_ao.png",
+-                            Texture.WrapMode.CLAMP_TO_EDGE,
+-                            Texture.ColorFormat.LINEAR);
+-
+-            virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj");
+-            virtualObjectShader =
+-                    Shader.createFromAssets(
+-                                    render,
+-                                    "shaders/environmental_hdr.vert",
+-                                    "shaders/environmental_hdr.frag",
+-                                    /* defines= */ new HashMap<String, String>() {
+-                                        {
+-                                            put(
+-                                                    "NUMBER_OF_MIPMAP_LEVELS",
+-                                                    Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
+-                                        }
+-                                    })
+-                            .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
+-                            .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
+-                            .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
+-                            .setTexture("u_DfgTexture", dfgTexture);
+-        } catch (IOException e) {
+-            Log.e(TAG, "Failed to read a required asset file", e);
+-            messageSnackbarHelper.showError(this, "Failed to read a required asset file: " + e);
+-        }
+-    }
+-
+-    @Override
+-    public void onSurfaceChanged(SampleRender render, int width, int height) {
+-        displayRotationHelper.onSurfaceChanged(width, height);
+-        virtualSceneFramebuffer.resize(width, height);
+-    }
+-
+-    @Override
+-    public void onDrawFrame(SampleRender render) {
+-        if (session == null) {
+-            return;
+-        }
+-
+-         if (!hasSetTextureNames) {
+-            session.setCameraTextureNames(
+-                    new int[]{backgroundRenderer.getCameraColorTexture().getTextureId()});
+-            hasSetTextureNames = true;
+-        }
+-
+-        Frame frame;
+-        try {
+-            frame = session.update();
+-        } catch (CameraNotAvailableException e) {
+-            Log.e(TAG, "Camera not available during onDrawFrame", e);
+-            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
+-            return;
+-        }
+-        Camera camera = frame.getCamera();
+-
+-        backgroundRenderer.updateDisplayGeometry(frame);
+-
+-
+-        // Handle one tap per frame.
+-        handleTap(frame, camera);
+-
+-        // Keep the screen unlocked while tracking, but allow it to lock when tracking stops.
+-        trackingStateHelper.updateKeepScreenOnFlag(camera.getTrackingState());
+-
+-        // Show a message based on whether tracking has failed, if planes are detected, and if the user
+-        // has placed any objects.
+-        String message = null;
+-        if (camera.getTrackingState() == TrackingState.PAUSED) {
+-            if (camera.getTrackingFailureReason() == TrackingFailureReason.NONE) {
+-                message = SEARCHING_PLANE_MESSAGE;
+-            } else {
+-                message = TrackingStateHelper.getTrackingFailureReasonString(camera);
+-            }
+-        } else if (hasTrackingPlane()) {
+-            if (wrappedAnchors.isEmpty()) {
+-                message = WAITING_FOR_TAP_MESSAGE;
+-            }
+-        } else {
+-            message = SEARCHING_PLANE_MESSAGE;
+-        }
+-        if (message == null) {
+-            messageSnackbarHelper.hide(this);
+-        } else {
+-            messageSnackbarHelper.showMessage(this, message);
+-        }
+-
+-        // -- Draw background
+-
+-        if (frame.getTimestamp() != 0) {
+-            // Suppress rendering if the camera did not produce the first frame yet. This is to avoid
+-            // drawing possible leftover data from previous sessions if the texture is reused.
+-            backgroundRenderer.drawBackground(render);
+-        }
+-
+-        // If not tracking, don't draw 3D objects.
+-        if (camera.getTrackingState() == TrackingState.PAUSED) {
+-            return;
+-        }
+-
+-        // Get projection matrix.
+-        camera.getProjectionMatrix(projectionMatrix, 0, Z_NEAR, Z_FAR);
+-
+-        // Get camera matrix and draw.
+-        camera.getViewMatrix(viewMatrix, 0);
+-
+-        // Visualize planes.
+-        planeRenderer.drawPlanes(
+-                render,
+-                session.getAllTrackables(Plane.class),
+-                camera.getDisplayOrientedPose(),
+-                projectionMatrix);
+-
+-        // -- Draw occluded virtual objects
+-
+-        // Update lighting parameters in the shader
+-        updateLightEstimation(frame.getLightEstimate(), viewMatrix);
+-
+-        // Visualize anchors created by touch.
+-        render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f);
+-        for (WrappedAnchor wrappedAnchor : wrappedAnchors) {
+-            Anchor anchor = wrappedAnchor.getAnchor();
+-            Trackable trackable = wrappedAnchor.getTrackable();
+-            if (anchor.getTrackingState() != TrackingState.TRACKING) {
+-                continue;
+-            }
+-
+-            // Get the current pose of an Anchor in world space. The Anchor pose is updated
+-            // during calls to session.update() as ARCore refines its estimate of the world.
+-            anchor.getPose().toMatrix(modelMatrix, 0);
+-
+-            // Calculate model/view/projection matrices
+-            Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+-            Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
+-
+-            // Update shader properties and draw
+-            virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
+-            virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
+-
+-            if (trackable instanceof InstantPlacementPoint) {
+-                virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoInstantPlacementTexture);
+-            } else {
+-                virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
+-            }
+-            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
+-        }
+-
+-        // Compose the virtual scene with the background.
+-        backgroundRenderer.drawVirtualScene(render, virtualSceneFramebuffer, Z_NEAR, Z_FAR);
+-    }
+-
+-    // Handle only one tap per frame, as taps are usually low frequency compared to frame rate.
+-    private void handleTap(Frame frame, Camera camera) {
+-        MotionEvent tap = tapHelper.poll();
+-        if (tap != null && camera.getTrackingState() == TrackingState.TRACKING) {
+-            List<HitResult> hitResultList;
+-            if (instantPlacementSettings.isInstantPlacementEnabled()) {
+-                hitResultList =
+-                        frame.hitTestInstantPlacement(tap.getX(), tap.getY(), APPROXIMATE_DISTANCE_METERS);
+-            } else {
+-                hitResultList = frame.hitTest(tap);
+-            }
+-            for (HitResult hit : hitResultList) {
+-                // If any plane, Oriented Point, or Instant Placement Point was hit, create an anchor.
+-                Trackable trackable = hit.getTrackable();
+-                // If a plane was hit, check that it was hit inside the plane polygon.
+-                if ((trackable instanceof Plane
+-                        && ((Plane) trackable).isPoseInPolygon(hit.getHitPose()))
+-                        || (trackable instanceof Point
+-                        && ((Point) trackable).getOrientationMode()
+-                        == OrientationMode.ESTIMATED_SURFACE_NORMAL)
+-                        || (trackable instanceof InstantPlacementPoint)) {
+-                    // Cap the number of objects created. This avoids overloading both the
+-                    // rendering system and ARCore.
+-                    if (wrappedAnchors.size() >= 20) {
+-                        wrappedAnchors.get(0).getAnchor().detach();
+-                        wrappedAnchors.remove(0);
+-                    }
+-                    wrappedAnchors.add(new WrappedAnchor(hit.createAnchor(), trackable));
+-
+-                    break;
+-                }
+-            }
+-        }
+-    }
+-
+-    private void launchInstantPlacementSettingsMenuDialog() {
+-        resetSettingsMenuDialogCheckboxes();
+-        Resources resources = getResources();
+-        new AlertDialog.Builder(this).show();
+-    }
+-
+-    private void applySettingsMenuDialogCheckboxes() {
+-        instantPlacementSettings.setInstantPlacementEnabled(
+-                instantPlacementSettingsMenuDialogCheckboxes[0]);
+-        configureSession();
+-    }
+-
+-    private void resetSettingsMenuDialogCheckboxes() {
+-instantPlacementSettingsMenuDialogCheckboxes[0] =
+-                instantPlacementSettings.isInstantPlacementEnabled();
+-    }
+-
+-    /** Checks if we detected at least one plane. */
+-    private boolean hasTrackingPlane() {
+-        for (Plane plane : session.getAllTrackables(Plane.class)) {
+-            if (plane.getTrackingState() == TrackingState.TRACKING) {
+-                return true;
+-            }
+-        }
+-        return false;
++        return true;
+     }
+-
+-    /** Update state based on the current frame's light estimation. */
+-    private void updateLightEstimation(LightEstimate lightEstimate, float[] viewMatrix) {
+-        if (lightEstimate.getState() != LightEstimate.State.VALID) {
+-            virtualObjectShader.setBool("u_LightEstimateIsValid", false);
+-            return;
+-        }
+-        virtualObjectShader.setBool("u_LightEstimateIsValid", true);
+-
+-        Matrix.invertM(viewInverseMatrix, 0, viewMatrix, 0);
+-        virtualObjectShader.setMat4("u_ViewInverse", viewInverseMatrix);
+-
+-        updateMainLight(
+-                lightEstimate.getEnvironmentalHdrMainLightDirection(),
+-                lightEstimate.getEnvironmentalHdrMainLightIntensity(),
+-                viewMatrix);
+-        updateSphericalHarmonicsCoefficients(
+-                lightEstimate.getEnvironmentalHdrAmbientSphericalHarmonics());
+-        cubemapFilter.update(lightEstimate.acquireEnvironmentalHdrCubeMap());
+-    }
+-
+-    private void updateMainLight(float[] direction, float[] intensity, float[] viewMatrix) {
+-        // We need the direction in a vec4 with 0.0 as the final component to transform it to view space
+-        worldLightDirection[0] = direction[0];
+-        worldLightDirection[1] = direction[1];
+-        worldLightDirection[2] = direction[2];
+-        Matrix.multiplyMV(viewLightDirection, 0, viewMatrix, 0, worldLightDirection, 0);
+-        virtualObjectShader.setVec4("u_ViewLightDirection", viewLightDirection);
+-        virtualObjectShader.setVec3("u_LightIntensity", intensity);
+-    }
+-
+-    private void updateSphericalHarmonicsCoefficients(float[] coefficients) {
+-        if (coefficients.length != 9 * 3) {
+-            throw new IllegalArgumentException(
+-                    "The given coefficients array must be of length 27 (3 components per 9 coefficients");
+-        }
+-
+-        // Apply each factor to every component of each coefficient
+-        for (int i = 0; i < 9 * 3; ++i) {
+-            sphericalHarmonicsCoefficients[i] = coefficients[i] * sphericalHarmonicFactors[i / 3];
+-        }
+-        virtualObjectShader.setVec3Array(
+-                "u_SphericalHarmonicsCoefficients", sphericalHarmonicsCoefficients);
+-    }
+ 
+-    /** Configures the session with feature settings. */
+-    private void configureSession() {
+-        Config config = session.getConfig();
+-        config.setLightEstimationMode(Config.LightEstimationMode.ENVIRONMENTAL_HDR);
+-        if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
+-            config.setDepthMode(Config.DepthMode.AUTOMATIC);
+-        } else {
+-            config.setDepthMode(Config.DepthMode.DISABLED);
+-        }
+-        if (instantPlacementSettings.isInstantPlacementEnabled()) {
+-            config.setInstantPlacementMode(InstantPlacementMode.LOCAL_Y_UP);
+-        } else {
+-            config.setInstantPlacementMode(InstantPlacementMode.DISABLED);
+-        }
+-        session.configure(config);
+-    }
+-}
+-
+-/**
+- * Associates an Anchor with the trackable it was attached to. This is used to be able to check
+- * whether or not an Anchor originally was attached to an {@link InstantPlacementPoint}.
+- */
+-class WrappedAnchor {
+-    private Anchor anchor;
+-    private Trackable trackable;
+-
+-    public WrappedAnchor(Anchor anchor, Trackable trackable) {
+-        this.anchor = anchor;
+-        this.trackable = trackable;
+-    }
+-
+-    public Anchor getAnchor() {
+-        return anchor;
+-    }
+-
+-    public Trackable getTrackable() {
+-        return trackable;
+-    }
+-}
++//    // AR 화면에서 정보를 표시하는 메서드
++//    private void showInfoWindow(Place place) {
++//        // InfoWindow의 레이아웃을 inflate
++//        View infoWindowLayout = View.inflate(this, R.layout.activity_ar_info, null);
++//
++//        // 장소 이름과 키워드를 설정
++////        TextView placeNameTextView = infoWindowLayout.findViewById(R.id.placeName);
++//        TextView keywordsTextView = infoWindowLayout.findViewById(R.id.placeKeyword);
++//
++//        placeNameTextView.setText(place.getName());
++//
++//        // 장소에 연결된 키워드 리스트를 가져와서 표시
++//        //getKeywords 함수 만들어서 띄우기?
++//        List<String> keywords = place.getKeywords();
++//        if (keywords != null && !keywords.isEmpty()) {
++//            StringBuilder keywordsStr = new StringBuilder();
++//            for (String keyword : keywords) {
++//                keywordsStr.append(keyword).append(", ");
++//            }
++//            // 마지막 ", " 제거
++//            keywordsStr.setLength(keywordsStr.length() - 2);
++//            keywordsTextView.setText(keywordsStr.toString());
++//        } else {
++//            keywordsTextView.setText("키워드 없음");
++//        }
++//
++//        // InfoWindow을 Sceneform 노드로 추가
++//        Node infoCard = new Node();
++//        infoCard.setRenderable(infoWindowLayoutRenderable); // infoWindowLayoutRenderable은 3D 레이아웃을 3D 모델로 변환한 Renderable입니다.
++//        infoCard.setParent(anchorNode); // anchorNode는 정보를 표시할 위치입니다.
++//        infoCard.setLocalPosition(new Vector3(0.0f, 0.05f, 0.0f)); // 위치 조정 (선택 사항)
++//    }
+ 
++}
+\ No newline at end of file

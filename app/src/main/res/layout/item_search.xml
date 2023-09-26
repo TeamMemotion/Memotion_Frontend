@@ -3,92 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+    <View
+        android:id="@+id/itemBack"
+        android:layout_width="370dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/button_round_13"
+        android:backgroundTint="#4DFABCBC"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/btn_searchfield"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-        app:layout_constraintEnd_toEndOf="@+id/imageView9"
-        app:layout_constraintHorizontal_bias="0.881"
-        app:layout_constraintStart_toStartOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="@+id/imageView9"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/btn_searchfield2" />
+        android:id="@+id/emotion"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/itemBack"
+        app:layout_constraintStart_toStartOf="@+id/itemBack"
+        app:layout_constraintTop_toTopOf="@+id/itemBack" />
 
-    <ImageView
-        android:id="@+id/imageView11"
+    <TextView
+        android:id="@+id/keyword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView10"
-        app:layout_constraintStart_toStartOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="@+id/imageView10"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/btn_searchbtn" />
+        android:layout_marginTop="16dp"
+        android:text="힘들어요"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/emotion"
+        app:layout_constraintTop_toTopOf="@+id/itemBack" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/appCompatLocation"
+        android:layout_width="17dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="6dp"
+        android:src="@drawable/icon_location"
+        app:layout_constraintStart_toEndOf="@+id/emotion"
+        app:layout_constraintTop_toBottomOf="@+id/keyword" />
 
     <TextView
-        android:id="@+id/titleText"
+        android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="2dp"
-        android:text="인문관이 높아요"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="@+id/imageView10" />
-
-    <TextView
-        android:id="@+id/searchRoute"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="27.5dp"
         android:text="동덕여대"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView10"
-        app:layout_constraintStart_toEndOf="@+id/imageView11"
-        app:layout_constraintTop_toBottomOf="@+id/titleText" />
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/appCompatLocation"
+        app:layout_constraintTop_toTopOf="@+id/keyword" />
 
     <TextView
-        android:id="@+id/dateText"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="19dp"
         android:text="23.08.06"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView10"
-        app:layout_constraintEnd_toEndOf="@+id/imageView10"
-        app:layout_constraintHorizontal_bias="0.924"
-        app:layout_constraintStart_toEndOf="@+id/searchRoute"
-        app:layout_constraintTop_toBottomOf="@+id/titleText"
-        app:layout_constraintVertical_bias="0.833"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="55dp"
-        android:layout_height="52dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-        app:layout_constraintEnd_toStartOf="@+id/imageView10"
-        app:layout_constraintStart_toStartOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="@+id/imageView9"
-        app:srcCompat="@drawable/smile" />
+        android:textSize="9sp"
+        app:layout_constraintEnd_toEndOf="@+id/itemBack"
+        app:layout_constraintTop_toTopOf="@+id/itemBack" />
 </androidx.constraintlayout.widget.ConstraintLayout>

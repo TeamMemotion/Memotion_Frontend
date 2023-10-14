@@ -71,4 +71,5 @@
         android:textSize="9sp"
         app:layout_constraintEnd_toEndOf="@+id/itemBack"
         app:layout_constraintTop_toTopOf="@+id/itemBack" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

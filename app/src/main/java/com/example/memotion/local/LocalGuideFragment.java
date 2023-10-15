@@ -22,34 +22,6 @@ public class LocalGuideFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         localguideBinding = FragmentLocalguideBinding.inflate(inflater, container, false);
 
-        heartIcon = getView().findViewById(R.id.hearticon);
-        noHeartIcon = getView().findViewById(R.id.nohearticon);
-
-        heartIcon.setVisibility(View.INVISIBLE);
-        noHeartIcon.setVisibility(View.VISIBLE);
-
-        heartIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isHeartVisible) {
-                    heartIcon.setVisibility(View.VISIBLE);
-                    noHeartIcon.setVisibility(View.INVISIBLE);
-                    isHeartVisible = false;
-                }
-            }
-        });
-
-        noHeartIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isHeartVisible) {
-                    noHeartIcon.setVisibility(View.VISIBLE);
-                    heartIcon.setVisibility(View.INVISIBLE);
-                    isHeartVisible = true;
-                }
-            }
-        });
-
         return localguideBinding.getRoot();
     }
 

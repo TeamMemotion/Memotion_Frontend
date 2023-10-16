@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imageView9"
+        android:id="@+id/localguide"
         android:layout_width="128dp"
         android:layout_height="154dp"
         android:layout_marginStart="8dp"
@@ -18,13 +18,14 @@
         app:srcCompat="@drawable/localbg2" />
 
     <ImageView
-        android:id="@+id/imageView14"
+        android:id="@+id/localguidePic"
         android:layout_width="111dp"
         android:layout_height="126dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView9"
-        app:layout_constraintStart_toStartOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="@+id/imageView9"
+        android:onClick="onClick"
+        app:layout_constraintEnd_toEndOf="@+id/localguide"
+        app:layout_constraintStart_toStartOf="@+id/localguide"
+        app:layout_constraintTop_toTopOf="@+id/localguide"
         app:srcCompat="@drawable/picbg2" />
 
     <ImageView
@@ -32,9 +33,9 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-        app:layout_constraintStart_toStartOf="@+id/imageView9"
-        app:layout_constraintTop_toBottomOf="@+id/imageView14"
+        app:layout_constraintBottom_toBottomOf="@+id/localguide"
+        app:layout_constraintStart_toStartOf="@+id/localguide"
+        app:layout_constraintTop_toBottomOf="@+id/localguidePic"
         app:layout_constraintVertical_bias="0.375"
         app:srcCompat="@drawable/profile" />
 
@@ -47,6 +48,6 @@
         android:text="정보응님의 루트 기록"
         android:textSize="7sp"
         app:layout_constraintStart_toEndOf="@+id/userProfile"
-        app:layout_constraintTop_toBottomOf="@+id/imageView14" />
+        app:layout_constraintTop_toBottomOf="@+id/localguidePic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

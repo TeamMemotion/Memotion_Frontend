@@ -47,39 +47,38 @@
         app:layout_constraintTop_toBottomOf="@+id/searchLocal"
         app:srcCompat="@drawable/local_bg" />
 
-    <TextView
+    <Button
         android:id="@+id/chungcheong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="32dp"
-        android:text="충청"
+        android:background="null"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:text="충청"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintHorizontal_bias="0.024"
+        app:layout_constraintHorizontal_bias="0.607"
         app:layout_constraintStart_toEndOf="@+id/jeolla"
         app:layout_constraintTop_toBottomOf="@+id/gangwon"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.8" />
 
-    <TextView
+    <Button
         android:id="@+id/jeolla"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="32dp"
-        android:text="전라"
+        android:layout_marginStart="28dp"
+        android:background="null"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:text="전라"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintStart_toEndOf="@+id/gyeongsang"
         app:layout_constraintTop_toBottomOf="@+id/incheon"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.8" />
 
     <TextView
         android:id="@+id/textView4"
@@ -88,6 +87,7 @@
         android:layout_marginTop="12dp"
         android:text="인기 루트 기록"
         android:textColor="#000000"
+        android:background="null"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,31 +95,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
-    <TextView
+    <Button
         android:id="@+id/gangwon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="32dp"
-        android:text="강원"
+        android:layout_marginTop="24dp"
+        android:background="null"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:text="강원"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.592"
         app:layout_constraintStart_toEndOf="@+id/incheon"
         app:layout_constraintTop_toBottomOf="@+id/jeju" />
 
-    <TextView
+    <Button
         android:id="@+id/jeju"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         android:text="제주"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:background="null"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
@@ -127,73 +128,78 @@
         app:layout_constraintStart_toEndOf="@+id/busan"
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
-    <TextView
+    <Button
         android:id="@+id/busan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="16dp"
-        android:text="부산"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="8dp"
+        android:background="null"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:text="부산"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/gyeonggi"
+        app:layout_constraintStart_toEndOf="@+id/seoul"
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
-    <TextView
+    <Button
         android:id="@+id/incheon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="32dp"
-        android:text="인천"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="24dp"
+        android:background="null"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:text="인천"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/gyeonggi"
         app:layout_constraintTop_toBottomOf="@+id/busan" />
 
-    <TextView
+    <Button
         android:id="@+id/gyeonggi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="24dp"
         android:text="경기"
+        android:background="null"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/seoul" />
 
-    <TextView
+    <Button
         android:id="@+id/gyeongsang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="32dp"
-        android:text="경상"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:background="null"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:text="경상"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/gyeonggi"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.588" />
 
-    <TextView
+    <Button
         android:id="@+id/seoul"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="16dp"
-        android:text="서울"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
+        android:background="null"
         android:onClick="onClick"
-        android:textColor="#000000"
+        android:text="서울"
+        android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
@@ -202,10 +208,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="429dp"
         android:layout_height="332dp"
-        android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         app:layout_constraintVertical_bias="1.0"

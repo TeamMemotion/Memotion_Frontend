@@ -29,6 +29,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="12dp"
         android:background="@drawable/baseline_close_24"
+        android:onClick="onClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView12" />
 
@@ -36,9 +37,10 @@
         android:id="@+id/btnSavePlan"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/btn_save_route"
+        android:onClick="onClick"
         android:text="저장"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
@@ -93,10 +95,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:background="@drawable/route_planplace"
-        android:hint="검색"
+        android:hint="  검색"
         android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@+id/textView13"
-        tools:layout_editor_absoluteX="23dp" />
+        app:layout_constraintEnd_toEndOf="@+id/imageView12"
+        app:layout_constraintStart_toStartOf="@+id/imageView12"
+        app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
     <TextView
         android:id="@+id/textView14"
@@ -129,6 +132,7 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="2dp"
+        android:onClick="onClick"
         android:src="@drawable/btn_place_search"
         app:layout_constraintBottom_toBottomOf="@+id/planPlaceSearch"
         app:layout_constraintEnd_toEndOf="@+id/planPlaceSearch"
@@ -183,7 +187,7 @@
         android:layout_marginTop="5dp"
         android:text="시작시간"
         android:textColor="#000000"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/imageView15"
         app:layout_constraintTop_toBottomOf="@+id/planTitle" />
 
@@ -195,8 +199,8 @@
         android:background="@null"
         android:ems="10"
         android:inputType="time"
-        app:layout_constraintTop_toBottomOf="@+id/planTitle"
-        tools:layout_editor_absoluteX="75dp" />
+        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintTop_toBottomOf="@+id/planTitle" />
 
     <EditText
         android:id="@+id/planEndTime"
@@ -214,12 +218,12 @@
         android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="4dp"
         android:text="종료시간"
         android:textColor="#000000"
-        android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/planStartTime"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/btn_upstarttime"
         app:layout_constraintTop_toBottomOf="@+id/planTitle" />
 
     <EditText
@@ -236,5 +240,44 @@
         app:layout_constraintStart_toStartOf="@+id/imageView15"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
+    <Button
+        android:id="@+id/btn_upstarttime"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/toptr"
+        android:onClick="onClick"
+        app:layout_constraintBottom_toTopOf="@+id/btn_downstarttime"
+        app:layout_constraintStart_toEndOf="@+id/planStartTime" />
+
+    <Button
+        android:id="@+id/btn_downstarttime"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/undertr"
+        android:onClick="onClick"
+        app:layout_constraintBottom_toTopOf="@+id/planMemo"
+        app:layout_constraintStart_toEndOf="@+id/planStartTime" />
+
+    <Button
+        android:id="@+id/btn_upendtime"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:background="@drawable/toptr"
+        android:onClick="onClick"
+        app:layout_constraintBottom_toTopOf="@+id/btn_downendtime"
+        app:layout_constraintStart_toEndOf="@+id/planEndTime" />
+
+    <Button
+        android:id="@+id/btn_downendtime"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/undertr"
+        android:onClick="onClick"
+        app:layout_constraintBottom_toTopOf="@+id/planMemo"
+        app:layout_constraintStart_toEndOf="@+id/planEndTime" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

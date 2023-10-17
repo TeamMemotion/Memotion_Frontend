@@ -48,10 +48,10 @@
         app:srcCompat="@drawable/local_bg" />
 
     <Button
-        android:id="@+id/chungcheong"
+        android:id="@+id/btn_chungcheong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="null"
+        android:background="#FFDEDE"
         android:onClick="onClick"
         android:text="충청"
         android:textColor="#FFFFFF"
@@ -60,25 +60,25 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
         app:layout_constraintHorizontal_bias="0.607"
-        app:layout_constraintStart_toEndOf="@+id/jeolla"
-        app:layout_constraintTop_toBottomOf="@+id/gangwon"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintStart_toEndOf="@+id/btn_jeolla"
+        app:layout_constraintTop_toBottomOf="@+id/btn_gangwon"
+        app:layout_constraintVertical_bias="0.771" />
 
     <Button
-        android:id="@+id/jeolla"
+        android:id="@+id/btn_jeolla"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:background="null"
+        android:background="#FFDEDE"
         android:onClick="onClick"
         android:text="전라"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-        app:layout_constraintStart_toEndOf="@+id/gyeongsang"
-        app:layout_constraintTop_toBottomOf="@+id/incheon"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintStart_toEndOf="@+id/btn_gyeongsang"
+        app:layout_constraintTop_toBottomOf="@+id/btn_incheon"
+        app:layout_constraintVertical_bias="0.771" />
 
     <TextView
         android:id="@+id/textView4"
@@ -87,7 +87,6 @@
         android:layout_marginTop="12dp"
         android:text="인기 루트 기록"
         android:textColor="#000000"
-        android:background="null"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,11 +95,11 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <Button
-        android:id="@+id/gangwon"
+        android:id="@+id/btn_gangwon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="null"
+        android:background="#FFDEDE"
         android:onClick="onClick"
         android:text="강원"
         android:textColor="#FFFFFF"
@@ -108,78 +107,78 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
         app:layout_constraintHorizontal_bias="0.592"
-        app:layout_constraintStart_toEndOf="@+id/incheon"
-        app:layout_constraintTop_toBottomOf="@+id/jeju" />
+        app:layout_constraintStart_toEndOf="@+id/btn_incheon"
+        app:layout_constraintTop_toBottomOf="@+id/btn_jeju" />
 
     <Button
-        android:id="@+id/jeju"
+        android:id="@+id/btn_jeju"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="제주"
         android:onClick="onClick"
-        android:background="null"
+        android:background="#FFDEDE"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/busan"
+        app:layout_constraintStart_toEndOf="@+id/btn_busan"
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
     <Button
-        android:id="@+id/busan"
+        android:id="@+id/btn_busan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="8dp"
-        android:background="null"
+        android:background="#FFDEDE"
         android:onClick="onClick"
         android:text="부산"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/seoul"
+        app:layout_constraintStart_toEndOf="@+id/btn_seoul"
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
     <Button
-        android:id="@+id/incheon"
+        android:id="@+id/btn_incheon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginTop="24dp"
-        android:background="null"
+        android:background="#FFDEDE"
         android:onClick="onClick"
         android:text="인천"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/gyeonggi"
-        app:layout_constraintTop_toBottomOf="@+id/busan" />
+        app:layout_constraintStart_toEndOf="@+id/btn_gyeonggi"
+        app:layout_constraintTop_toBottomOf="@+id/btn_busan" />
 
     <Button
-        android:id="@+id/gyeonggi"
+        android:id="@+id/btn_gyeonggi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="24dp"
         android:text="경기"
-        android:background="null"
+        android:background="#FFDEDE"
         android:onClick="onClick"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/seoul" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_seoul" />
 
     <Button
-        android:id="@+id/gyeongsang"
+        android:id="@+id/btn_gyeongsang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="18dp"
-        android:background="null"
+        android:background="#FFDEDE"
         android:onClick="onClick"
         android:text="경상"
         android:textColor="#FFFFFF"
@@ -187,16 +186,15 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/gyeonggi"
-        app:layout_constraintVertical_bias="0.588" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_gyeonggi" />
 
     <Button
-        android:id="@+id/seoul"
+        android:id="@+id/btn_seoul"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
-        android:background="null"
+        android:background="#FFDEDE"
         android:onClick="onClick"
         android:text="서울"
         android:textColor="#FFFFFF"

@@ -2,148 +2,343 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="316dp"
-    android:layout_height="178dp"
-    tools:context=".route.RouteAddDialog">
+    android:layout_width="320dp"
+    android:layout_height="175dp"
+    tools:context=".route.RouteWriteDialog">
+
+    <ImageView
+        android:id="@+id/dialogBack"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/button_round_13"
+        android:backgroundTint="#FFDEDE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/close_btn"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="18dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/baseline_close_24"
         android:onClick="onClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/route_add_dialog_view"
+        android:layout_width="300dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/dialog_background_7"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/routeaddbg" />
-
-    <ImageView
-        android:id="@+id/imageView13"
-        android:layout_width="294dp"
-        android:layout_height="93dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView11"
-        app:layout_constraintHorizontal_bias="0.461"
-        app:layout_constraintStart_toStartOf="@+id/imageView11"
-        app:layout_constraintTop_toBottomOf="@+id/close_btn"
-        app:srcCompat="@drawable/route_addbg" />
-
+        app:layout_constraintTop_toBottomOf="@+id/close_btn" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="5dp"
         android:text="제목:"
         android:textColor="#000000"
-        app:layout_constraintStart_toStartOf="@+id/imageView13"
-        app:layout_constraintTop_toTopOf="@+id/imageView13" />
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/route_add_dialog_view"
+        app:layout_constraintTop_toTopOf="@+id/route_add_dialog_view" />
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="300dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="27.5dp"
+        android:background="#E15F81"
+        app:layout_constraintEnd_toEndOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toStartOf="@+id/route_add_dialog_view"
+        app:layout_constraintTop_toTopOf="@+id/route_add_dialog_view" />
 
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
-        android:text="여행 기간"
+        android:layout_marginStart="6dp"
+        android:text="여행 기간: "
         android:textColor="#000000"
-        app:layout_constraintStart_toStartOf="@+id/imageView13"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/view2"
+        app:layout_constraintStart_toStartOf="@+id/route_add_dialog_view"
+        app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="300dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="27.5dp"
+        android:background="#E15F81"
+        app:layout_constraintEnd_toEndOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toStartOf="@+id/route_add_dialog_view"
+        app:layout_constraintTop_toTopOf="@+id/view1" />
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
-        android:text="시작일"
+        android:layout_marginStart="6dp"
+        android:text="시작일:"
         android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView13"
-        app:layout_constraintStart_toStartOf="@+id/imageView13"
-        app:layout_constraintTop_toBottomOf="@+id/textView9"
-        app:layout_constraintVertical_bias="0.0" />
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toStartOf="@+id/route_add_dialog_view"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="1dp"
+        android:layout_height="28dp"
+        android:background="#E15F81"
+        app:layout_constraintEnd_toEndOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toStartOf="@+id/route_add_dialog_view"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
     <TextView
         android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="4dp"
-        android:text="종료일"
+        android:layout_marginStart="5dp"
+        android:text="종료일:"
         android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView13"
-        app:layout_constraintStart_toEndOf="@+id/addRouteStartDate"
-        app:layout_constraintTop_toBottomOf="@+id/textView9"
-        app:layout_constraintVertical_bias="0.0" />
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toStartOf="@+id/view3"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
     <EditText
         android:id="@+id/addRouteTitle"
-        android:layout_width="225dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:background="@null"
-        android:ems="10"
+        android:hint="제목을 입력하세요"
         android:inputType="text"
+        android:text=""
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView13"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/view1"
         app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toTopOf="@+id/imageView13" />
+        app:layout_constraintTop_toTopOf="@+id/route_add_dialog_view" />
 
     <EditText
-        android:id="@+id/addRouteStartDate"
-        android:layout_width="89dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:id="@+id/etPeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
         android:background="@null"
-        android:ems="10"
-        android:inputType="date"
+        android:hint="0"
+        android:inputType="number"
+        android:text=""
         android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/view2"
+        app:layout_constraintStart_toEndOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="일"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/view2"
+        app:layout_constraintStart_toEndOf="@+id/etPeriod"
+        app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+    <EditText
+        android:id="@+id/startYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:background="@null"
+        android:hint="0000"
+        android:inputType="date"
+        android:text=""
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
         app:layout_constraintStart_toEndOf="@+id/textView10"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <TextView
+        android:id="@+id/tv_start_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="년"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/startYear"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
     <EditText
-        android:id="@+id/addRouteEndDate"
-        android:layout_width="89dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:id="@+id/startMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
         android:background="@null"
-        android:ems="10"
+        android:hint="00"
         android:inputType="date"
+        android:text=""
         android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/tv_start_year"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <TextView
+        android:id="@+id/tv_startMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="월"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/startMonth"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <EditText
+        android:id="@+id/startDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:background="@null"
+        android:hint="00"
+        android:inputType="date"
+        android:text=""
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/tv_startMonth"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <TextView
+        android:id="@+id/tv_startDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="일"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/startDate"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <EditText
+        android:id="@+id/endYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:background="@null"
+        android:hint="0000"
+        android:inputType="date"
+        android:text=""
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
         app:layout_constraintStart_toEndOf="@+id/textView12"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <TextView
+        android:id="@+id/tv_endYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="년"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/endYear"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <EditText
+        android:id="@+id/endMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:background="@null"
+        android:hint="00"
+        android:inputType="date"
+        android:text=""
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/tv_endYear"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <TextView
+        android:id="@+id/tv_endMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="월"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/endMonth"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <EditText
+        android:id="@+id/endDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:background="@null"
+        android:hint="00"
+        android:inputType="date"
+        android:text=""
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/tv_endMonth"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <TextView
+        android:id="@+id/tv_endDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="일"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/route_add_dialog_view"
+        app:layout_constraintStart_toEndOf="@+id/endDate"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
     <Button
         android:id="@+id/btnSaveRoute"
-        android:layout_width="wrap_content"
+        android:layout_width="284dp"
         android:layout_height="28dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/btn_save_route"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_pink_background"
         android:onClick="onClick"
         android:text="저장"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView11"
-        app:layout_constraintEnd_toEndOf="@+id/imageView11"
-        app:layout_constraintHorizontal_bias="0.478"
-        app:layout_constraintStart_toStartOf="@+id/imageView11"
-        app:layout_constraintTop_toBottomOf="@+id/imageView13"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintEnd_toEndOf="@+id/dialogBack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/route_add_dialog_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

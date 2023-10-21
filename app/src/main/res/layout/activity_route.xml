@@ -9,59 +9,66 @@
 
     <include
         android:id="@+id/action_route"
-        layout="@layout/action_inner_bar_top"
-        tools:layout_editor_absoluteX="74dp"
-        tools:layout_editor_absoluteY="0dp" />
+        layout="@layout/action_inner_bar_top" />
 
     <TextView
-        android:id="@+id/textView17"
+        android:id="@+id/routeStartDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="2dp"
-        android:text="루트 기록"
-        android:textColor="#000000"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/action_route"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="@+id/action_route"
-        app:layout_constraintTop_toTopOf="@+id/action_route"
-        app:layout_constraintVertical_bias="0.484" />
-
-    <TextView
-        android:id="@+id/routeDuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="4dp"
-        android:text="23.06.17-23.06.23"
+        android:text="00.00.00"
         android:textColor="#000000"
-        android:textSize="30sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/action_route" />
 
     <TextView
+        android:id="@+id/routeDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="4dp"
+        android:text="-"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/routeStartDate"
+        app:layout_constraintTop_toBottomOf="@+id/action_route" />
+
+    <TextView
+        android:id="@+id/routeEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="4dp"
+        android:text="00.00.00"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/routeDate"
+        app:layout_constraintTop_toBottomOf="@+id/action_route" />
+
+        <TextView
         android:id="@+id/textrouteTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
         android:text="제주도 여행"
         android:textColor="#000000"
-        android:textSize="26sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/routeDuration" />
+        app:layout_constraintTop_toBottomOf="@+id/routeStartDate" />
 
     <Button
         android:id="@+id/btn_likeroute"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/thumbsup"
+        android:background="@drawable/baseline_thumb_up_off_alt_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/action_route" />
 
@@ -69,7 +76,6 @@
         android:id="@+id/likerouteCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
         android:layout_marginEnd="35dp"
         android:text="10"
         android:textColor="#E15F81"
@@ -81,19 +87,49 @@
         android:id="@+id/horizontalRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textrouteTitle"
-        tools:layout_editor_absoluteX="0dp"
         tools:listitem="@layout/item_date"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="409dp"
-        android:layout_height="512dp"
+    <View
+        android:id="@+id/imageView7"
+        android:layout_width="380dp"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalRecyclerView"
+        android:background="#ECECEC"
+        android:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontalRecyclerView"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
         tools:listitem="@layout/item_route_plan" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="15dp"
+        android:src = "@drawable/ic_baseline_add_24"
+        android:backgroundTint="@color/main_color"
+        app:tint = "@null"
+        app:maxImageSize="45dp"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

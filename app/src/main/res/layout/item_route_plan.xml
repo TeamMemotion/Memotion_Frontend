@@ -3,73 +3,97 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
 
     <ImageView
-        android:id="@+id/imageView14"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:id="@+id/routePic"
+        android:layout_width="94dp"
+        android:layout_height="94dp"
+        android:background="@drawable/button_round_8"
+        android:layout_marginStart="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/picbg" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/routeplanTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:text="제목"
         android:textColor="#000000"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView14"
+        app:layout_constraintStart_toEndOf="@+id/routePic"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView16"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView14"
-        app:layout_constraintTop_toBottomOf="@+id/routeplanTitle"
-        app:srcCompat="@drawable/btn_searchbtn" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/appCompatLocation"
+        android:layout_width="20dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="0dp"
+        android:src="@drawable/icon_location"
+        app:layout_constraintStart_toEndOf="@+id/routePic"
+        app:layout_constraintTop_toBottomOf="@+id/routeplanTitle" />
 
     <ImageView
         android:id="@+id/imageView17"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView14"
-        app:layout_constraintTop_toBottomOf="@+id/imageView16"
-        app:srcCompat="@drawable/alarm" />
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="14dp"
+        app:layout_constraintStart_toEndOf="@+id/routePic"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatLocation"
+        app:srcCompat="@drawable/baseline_schedule_24" />
 
     <TextView
         android:id="@+id/planplace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="4dp"
         android:text="장소"
         android:textColor="#000000"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView16"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/appCompatLocation"
         app:layout_constraintTop_toBottomOf="@+id/routeplanTitle" />
+
+    <TextView
+        android:id="@+id/plantime_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:text="00:00"
+        android:textColor="#000000"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView17"
+        app:layout_constraintTop_toBottomOf="@+id/planplace" />
 
     <TextView
         android:id="@+id/plantime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="6dp"
-        android:text="시작 시간 ~ 종료 시간"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:text="~"
         android:textColor="#000000"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView17"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/plantime_start"
+        app:layout_constraintTop_toBottomOf="@+id/planplace" />
+
+    <TextView
+        android:id="@+id/plantime_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:text="00:00"
+        android:textColor="#000000"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/plantime"
         app:layout_constraintTop_toBottomOf="@+id/planplace" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

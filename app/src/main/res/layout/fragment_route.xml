@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".route.RouteFragment">
 
     <include android:id="@+id/home_actionbar"
         layout="@layout/actionbar_main_top"/>
@@ -12,7 +14,7 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="8dp"
         android:text="로컬 가이드"
         android:textAllCaps="false"
@@ -27,12 +29,10 @@
         android:id="@+id/btnToLocal"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="15dp"
         android:onClick="onClick"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/home_actionbar"
         app:srcCompat="@drawable/vector" />
 
@@ -40,8 +40,8 @@
         android:id="@+id/userroute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="30dp"
         android:text="짐니의 루트기록"
         android:textColor="#000000"
         android:textSize="20sp"
@@ -53,50 +53,52 @@
         android:id="@+id/btnToMyRoute"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginStart="240dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="37dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.272"
-        app:layout_constraintStart_toEndOf="@+id/userroute"
         app:layout_constraintTop_toBottomOf="@+id/recyclerView2"
         app:srcCompat="@drawable/vector" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="409dp"
-        android:layout_height="334dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userroute"
-        app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/item_route" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView2"
-        android:layout_width="407dp"
-        android:layout_height="175dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/userroute"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        tools:listitem="@layout/item_local"></androidx.recyclerview.widget.RecyclerView>
+        tools:listitem="@layout/item_local">
 
-    <ImageView
-        android:id="@+id/imageView10"
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerView"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/recyclerView"
-        app:srcCompat="@drawable/btn_plus" />
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="65dp"
+        android:src = "@drawable/ic_baseline_add_24"
+        android:backgroundTint="@color/main_color"
+        app:tint = "@null"
+        app:maxImageSize="45dp"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

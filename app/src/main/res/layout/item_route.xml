@@ -3,128 +3,141 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/routebg"
-        android:layout_width="405dp"
-        android:layout_height="104dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
+    <View
+        android:id="@+id/itemBack"
+        android:layout_width="380dp"
+        android:layout_height="107dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_round_13"
+        android:backgroundTint="#FFDEDE"
         android:onClick="onClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.007"
-        app:srcCompat="@drawable/routebg" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/routePic"
-        android:layout_width="97dp"
+        android:layout_width="90dp"
         android:layout_height="90dp"
-        android:layout_marginStart="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/routebg"
-        app:layout_constraintStart_toStartOf="@+id/routebg"
-        app:layout_constraintTop_toTopOf="@+id/routebg"
-        app:layout_constraintVertical_bias="0.55"
-        app:srcCompat="@drawable/picbg" />
+        android:background="@drawable/button_round_8"
+        android:layout_marginStart="14dp"
+        app:layout_constraintBottom_toBottomOf="@+id/itemBack"
+        app:layout_constraintStart_toStartOf="@+id/itemBack"
+        app:layout_constraintTop_toTopOf="@+id/itemBack" />
 
     <TextView
         android:id="@+id/routeTitle"
-        android:layout_width="237dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:text="루트기록 제목"
-        android:textColor="#000000"
-        android:textIsSelectable="false"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/routePic"
-        app:layout_constraintTop_toTopOf="@+id/routebg" />
-
-    <EditText
-        android:id="@+id/routeDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:ems="10"
-        android:inputType="date"
-        android:text="23.06.10-23.06.21"
-        android:background="@null"
-        android:textColor="#222222"
+        android:layout_marginTop="15dp"
+        android:text="루트기록 제목"
+        android:textColor="#000000"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/routebg"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/routePic"
+        app:layout_constraintTop_toTopOf="@+id/itemBack"/>
+
+    <TextView
+        android:id="@+id/routeStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="2dp"
+        android:text="2023.06.10"
+        android:textColor="#474747"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/routePic"
         app:layout_constraintTop_toBottomOf="@+id/routeTitle" />
 
-    <ImageView
-        android:id="@+id/userProfile"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+    <TextView
+        android:id="@+id/routeDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="2dp"
+        android:text="-"
+        android:textColor="#474747"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/routeStartDate"
+        app:layout_constraintTop_toBottomOf="@+id/routeTitle" />
+
+    <TextView
+        android:id="@+id/routeEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="2dp"
+        android:text="2023.06.21"
+        android:textColor="#474747"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/routeDate"
+        app:layout_constraintTop_toBottomOf="@+id/routeTitle" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@+id/routePic"
         app:layout_constraintTop_toBottomOf="@+id/routeDate"
-        app:srcCompat="@drawable/profile" />
+        android:id="@+id/profileImageLayout">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileImage"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/profile"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="정보응"
         android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/userProfile"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/profileImageLayout"
+        app:layout_constraintTop_toBottomOf="@+id/routeDate" />
+
+    <TextView
+        android:id="@+id/textview10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="16dp"
+        android:text="님의 루트 기록"
+        android:textSize="10sp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/userName"
         app:layout_constraintTop_toBottomOf="@+id/routeDate" />
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="144dp"
-        android:layout_marginTop="24dp"
-        android:onClick="onClick"
-        app:layout_constraintStart_toEndOf="@+id/userName"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="107dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toEndOf="@+id/textview10"
         app:layout_constraintTop_toBottomOf="@+id/routeDate"
-        app:srcCompat="@drawable/nohearticon" />
+        app:srcCompat="@drawable/baseline_favorite_24" />
 
     <TextView
         android:id="@+id/heartCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15.3dp"
         android:text="3"
-        android:textColor="#000000"
+        android:textColor="#666666"
         app:layout_constraintStart_toEndOf="@+id/imageView7"
         app:layout_constraintTop_toBottomOf="@+id/routeDate" />
-
-    <TextView
-        android:id="@+id/commentCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="20dp"
-        android:text="3"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="@+id/routebg"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
-        app:layout_constraintTop_toBottomOf="@+id/routeDate" />
-
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        app:layout_constraintStart_toEndOf="@+id/heartCount"
-        app:srcCompat="@drawable/commenticon"
-        tools:layout_editor_absoluteY="87dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

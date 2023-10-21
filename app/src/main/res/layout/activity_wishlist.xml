@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".mypage.WishListActivity">
+
+    <include
+        android:id="@+id/action_localguide"
+        layout="@layout/action_inner_bar_top"/>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchLikeRoute"
+        android:layout_width="380dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_light_pink_background"
+        android:backgroundTint="#FFDEDE"
+        app:iconifiedByDefault="false"
+        app:queryHint="나의 관심 루트 기록을 검색해보세요"
+        android:queryBackground="@null"
+        android:textSize="15sp"
+        app:closeIcon="@drawable/baseline_close_24_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/action_localguide" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/appCompatMic"
+        android:layout_width="30dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="13dp"
+        android:src="@drawable/mic"
+        app:layout_constraintBottom_toBottomOf="@+id/searchLikeRoute"
+        app:layout_constraintEnd_toEndOf="@+id/searchLikeRoute"
+        app:layout_constraintTop_toTopOf="@+id/searchLikeRoute" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchLikeRoute"
+        tools:listitem="@layout/item_route" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

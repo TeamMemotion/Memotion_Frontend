@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.example.memotion.databinding.FragmentRouteBinding;
-import com.example.memotion.local.LocalguideActivity;
+import com.example.memotion.local.LocalGuideActivity;
 
 public class RouteFragment extends Fragment {
 
@@ -23,7 +23,7 @@ public class RouteFragment extends Fragment {
         routeBinding.btnToLocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), LocalguideActivity.class);
+                Intent intent = new Intent(getContext(), LocalGuideActivity.class);
                 startActivity(intent);
             }
         });

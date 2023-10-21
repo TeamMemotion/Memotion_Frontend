@@ -2,52 +2,73 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/localguide"
-        android:layout_width="128dp"
-        android:layout_height="154dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
+    <View
+        android:id="@+id/itemBack"
+        android:layout_width="106dp"
+        android:layout_height="125dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_round_8"
+        android:backgroundTint="#FFDEDE"
         android:onClick="onClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/localbg2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/localguidePic"
-        android:layout_width="111dp"
-        android:layout_height="126dp"
-        android:layout_marginTop="4dp"
-        android:onClick="onClick"
-        app:layout_constraintEnd_toEndOf="@+id/localguide"
-        app:layout_constraintStart_toStartOf="@+id/localguide"
-        app:layout_constraintTop_toTopOf="@+id/localguide"
-        app:srcCompat="@drawable/picbg2" />
+        android:id="@+id/routePic"
+        android:layout_width="94dp"
+        android:layout_height="94dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_round_8"
+        app:layout_constraintEnd_toEndOf="@+id/itemBack"
+        app:layout_constraintStart_toStartOf="@+id/itemBack"
+        app:layout_constraintTop_toTopOf="@+id/itemBack" />
 
-    <ImageView
-        android:id="@+id/userProfile"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/localguide"
-        app:layout_constraintStart_toStartOf="@+id/localguide"
-        app:layout_constraintTop_toBottomOf="@+id/localguidePic"
-        app:layout_constraintVertical_bias="0.375"
-        app:srcCompat="@drawable/profile" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@+id/itemBack"
+        app:layout_constraintTop_toBottomOf="@+id/routePic"
+        android:id="@+id/profileImageLayout">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileImage"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:src="@drawable/profile"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/userName"
-        android:layout_width="65dp"
-        android:layout_height="11dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="6dp"
-        android:text="정보응님의 루트 기록"
+        android:text="정보응"
         android:textSize="7sp"
-        app:layout_constraintStart_toEndOf="@+id/userProfile"
-        app:layout_constraintTop_toBottomOf="@+id/localguidePic" />
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/profileImageLayout"
+        app:layout_constraintTop_toBottomOf="@+id/routePic"/>
+
+    <TextView
+        android:id="@+id/textview10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="6dp"
+        android:text="님의 루트 기록"
+        android:textSize="7sp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/userName"
+        app:layout_constraintTop_toBottomOf="@+id/routePic"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

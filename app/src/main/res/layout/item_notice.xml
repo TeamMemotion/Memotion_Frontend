@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="@id/list_item"
         android:visibility="gone">
         <include
-            android:id="@+id/random_matching"
+            android:id="@+id/notice_content"
             layout="@layout/item_notice_detail"/>
 
     </FrameLayout>

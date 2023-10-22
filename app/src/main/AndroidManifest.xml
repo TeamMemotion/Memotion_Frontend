@@ -47,7 +47,8 @@
         <activity android:name=".account.FindPwdActivity"/>
         <activity android:name=".diary.DiaryActivity"/>
         <activity android:name=".mypage.MyDiaryActivity"/>
-<!--        <activity android:name=".camera.CameraActivity"/>-->
+        <activity android:name=".arcamera.ArActivity"/>
+        <activity android:name=".mypage.NoticeActivity"/>
         <!-- Kakao Login -->
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

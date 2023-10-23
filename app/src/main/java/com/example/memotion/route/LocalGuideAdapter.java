@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.memotion.databinding.ItemLocalBinding;
-import com.example.memotion.route.get.localGuide.LocalGuideGetResponse;
+import com.example.memotion.route.get.localGuide.latest.LocalGuideGetResponse;
 
 import java.util.ArrayList;
 

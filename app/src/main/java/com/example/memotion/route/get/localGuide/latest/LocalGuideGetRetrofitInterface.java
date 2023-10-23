@@ -1,4 +1,4 @@
-package com.example.memotion.route.get.localGuide;
+package com.example.memotion.route.get.localGuide.latest;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -11,30 +11,33 @@ import android.view.Window;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.memotion.MainActivity;
 import com.example.memotion.R;
 import com.example.memotion.databinding.FragmentRouteBinding;
 import com.example.memotion.local.LocalGuideActivity;
-import com.example.memotion.mypage.get.mydiary.GetDiaryEmotionResponse;
-import com.example.memotion.route.get.localGuide.LocalGuideGetResponse;
-import com.example.memotion.route.get.localGuide.LocalGuideGetResult;
-import com.example.memotion.route.get.localGuide.LocalGuideGetService;
+import com.example.memotion.route.get.localGuide.latest.LocalGuideGetResponse;
+import com.example.memotion.route.get.localGuide.latest.LocalGuideGetResult;
+import com.example.memotion.route.get.localGuide.latest.LocalGuideGetService;
+import com.example.memotion.route.get.route.myRoute.MyRouteGetResponse;
+import com.example.memotion.route.get.route.myRoute.MyRouteGetResult;
+import com.example.memotion.route.get.route.myRoute.MyRouteGetService;
 
 import java.util.ArrayList;
 
-public class RouteFragment extends Fragment implements LocalGuideGetResult {
+public class RouteFragment extends Fragment implements LocalGuideGetResult, MyRouteGetResult {
 
     FragmentRouteBinding routeBinding;
     private static String TAG = "RouteFragment";
     private ArrayList<LocalGuideGetResponse.Result> localGuideList = new ArrayList<>();
 
     private LocalGuideAdapter localGuideAdapter;
+    private RouteAdapter routeAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         routeBinding = FragmentRouteBinding.inflate(inflater, container, false);
 
         localGuideAdapter = new LocalGuideAdapter(this);
+        routeAdapter = new RouteAdapter(this);
 
         routeBinding.btnToLocal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +65,7 @@ public class RouteFragment extends Fragment implements LocalGuideGetResult {
     public void onResume() {
         super.onResume();
         getLocalGuide();
+        getMyRoute();
     }
 
     // 로컬 가이드 조회
@@ -110,4 +114,45 @@ public class RouteFragment extends Fragment implements LocalGuideGetResult {
     }
 
     // 내가 쓴 루트 기록 조회
+    private void getMyRoute(){
+        MyRouteGetService getMyRouteService = new MyRouteGetService();
+        getMyRouteService.setMyRouteGetResult(this);
+        getMyRouteService.getMyRoute();
+    }
+
+    @Override
+    public void getMyRouteSuccess(int code, ArrayList<MyRouteGetResponse.Result> result) {
+        Log.d(TAG, "나의 루트 기록 조회 성공");
+
+        for(int i = 0; i < result.size() - 1; i++) {
+            Log.d("routeId: ", result.get(i).getRouteId().toString());
+            Log.d("routeImg: ", result.get(i).getRouteImg());
+            Log.d("startDate: ", result.get(i).getStartDate());
+            Log.d("endDate: ", result.get(i).getEndDate());
+            Log.d("name: ", result.get(i).getName());
+            Log.d("likeCount: ", result.get(i).getLikeCount().toString());
+        }
+
+        initRecycler_myRoute(result);
+    }
+
+    @Override
+    public void getMyRouteFailure(int code, String message) {
+        Log.d(TAG, "나의 루트 기록 조회 실패");
+    }
+
+    private void initRecycler_myRoute(ArrayList<MyRouteGetResponse.Result> result) {
+        routeAdapter.setMyRouteList(result);
+        routeBinding.recyclerView.setAdapter(routeAdapter);
+        routeBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        routeAdapter.setItemClickListener(new RouteAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MyRouteGetResponse.Result result) {
+//                Intent intent = new Intent(getContext(), RouteActivity.class);
+//                intent.putExtra("routeId", result.getRouteId());
+//                startActivity(intent);
+            }
+        });
+    }
 }

@@ -7,9 +7,9 @@
 
     <View
         android:id="@+id/itemBack"
-        android:layout_width="106dp"
-        android:layout_height="125dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="100dp"
+        android:layout_height="117dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/button_round_8"
         android:backgroundTint="#FFDEDE"
@@ -21,8 +21,8 @@
 
     <ImageView
         android:id="@+id/routePic"
-        android:layout_width="94dp"
-        android:layout_height="94dp"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/button_round_8"
         app:layout_constraintEnd_toEndOf="@+id/itemBack"
@@ -32,7 +32,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="@+id/itemBack"
         app:layout_constraintTop_toBottomOf="@+id/routePic"

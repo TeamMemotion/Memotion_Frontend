@@ -9,7 +9,7 @@ import com.example.memotion.databinding.ActivityLocalGuideBinding;
 
 public class LocalGuideActivity extends AppCompatActivity {
     ActivityLocalGuideBinding localGuideBinding;
-    private static String TAG = "LocalGuide";
+    private static String TAG = "LocalGuideActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

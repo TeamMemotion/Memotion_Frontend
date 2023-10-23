@@ -8,10 +8,10 @@ import retrofit2.Response;
 
 public class GetRouteDetailService {
 
-    private GetRouteDeatilResult getRouteDeatilResult;
+    private GetRouteDetailResult getRouteDetailResult;
 
-    public void setGetRouteDeatilResult(GetRouteDeatilResult getRouteDeatilResult) {
-        this.getRouteDeatilResult = getRouteDeatilResult;
+    public void setGetRouteDeatilResult(GetRouteDetailResult getRouteDetailResult) {
+        this.getRouteDetailResult = getRouteDetailResult;
     }
     public void getRouteDetail(Long id){
         GetRouteDetailRetrofitInterface getRouteDetailRetrofitInterface = getClient().create(GetRouteDetailRetrofitInterface.class);
@@ -21,7 +21,7 @@ public class GetRouteDetailService {
             public void onResponse(Call<GetRouteDetailResponse> call, Response<GetRouteDetailResponse> response) {
                 if(response.isSuccessful()) {
                     if(response.body().getCode() == 1000) {
-                        getRouteDeatilResult.getRouteDeatilSuccess(response.body().getCode(), response.body().getResult());
+                        getRouteDetailResult.getRouteDeatilSuccess(response.body().getCode(), response.body().getResult());
                     }
                 }
             }

@@ -84,7 +84,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_likeroute" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/horizontalRecyclerView"
+        android:id="@+id/dateView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -102,19 +102,20 @@
         android:layout_height="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/dateView"
         android:background="#ECECEC"
         android:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/routeDetailView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalRecyclerView"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
+        app:layout_constraintTop_toBottomOf="@+id/dateView"
         tools:listitem="@layout/item_route_plan" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

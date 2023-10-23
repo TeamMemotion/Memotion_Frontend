@@ -19,11 +19,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="장소 등록"
+        android:layout_marginEnd="30dp"
+        android:text="장소 검색"
         android:textColor="@color/black"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_marginEnd="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +39,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/close_btn"
+        android:id="@+id/search_btnClose"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
@@ -114,47 +114,51 @@
         app:layout_constraintTop_toBottomOf="@+id/get_gpsPlaceFullName" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/get_btnHappy"
+        android:id="@+id/search_btnHappy"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/happy"
         android:layout_marginStart="10dp"
+        android:background="@drawable/happy"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintStart_toStartOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/get_btnSmile"
+        android:id="@+id/search_btnSmile"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="12dp"
         android:background="@drawable/smile"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintStart_toEndOf="@+id/get_btnHappy"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        app:layout_constraintStart_toEndOf="@+id/search_btnHappy"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        android:visibility="invisible" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/get_btnNotbad"
+        android:id="@+id/search_btnNotbad"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="12dp"
         android:background="@drawable/notbad"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintStart_toEndOf="@+id/get_btnSmile"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        app:layout_constraintStart_toEndOf="@+id/search_btnSmile"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        android:visibility="invisible"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/get_btnSad"
+        android:id="@+id/search_btnSad"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="12dp"
         android:background="@drawable/sad"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintStart_toEndOf="@+id/get_btnNotbad"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        app:layout_constraintStart_toEndOf="@+id/search_btnNotbad"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        android:visibility="invisible" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/get_btnUpset"
+        android:id="@+id/search_btnUpset"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="12dp"
@@ -162,9 +166,9 @@
         android:background="@drawable/upset"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintStart_toEndOf="@+id/get_btnSad"
+        app:layout_constraintStart_toEndOf="@+id/search_btnSad"
         app:layout_constraintTop_toTopOf="@+id/imageView2"
-        tools:visibility="visible" />
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/get_keyword"
@@ -189,8 +193,8 @@
         android:layout_marginBottom="23dp"
         android:elevation="10dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/get_btnHappy"
-        app:layout_constraintEnd_toEndOf="@+id/get_btnHappy"
+        app:layout_constraintBottom_toBottomOf="@+id/search_btnHappy"
+        app:layout_constraintEnd_toEndOf="@+id/search_btnHappy"
         tools:src="@drawable/is_checked" />
 
     <ImageView
@@ -201,8 +205,8 @@
         android:layout_marginBottom="23dp"
         android:elevation="10dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/get_btnSmile"
-        app:layout_constraintEnd_toEndOf="@+id/get_btnSmile"
+        app:layout_constraintBottom_toBottomOf="@+id/search_btnSmile"
+        app:layout_constraintEnd_toEndOf="@+id/search_btnSmile"
         tools:src="@drawable/is_checked" />
 
     <ImageView
@@ -213,8 +217,8 @@
         android:layout_marginBottom="23dp"
         android:elevation="10dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/get_btnNotbad"
-        app:layout_constraintEnd_toEndOf="@+id/get_btnNotbad"
+        app:layout_constraintBottom_toBottomOf="@+id/search_btnNotbad"
+        app:layout_constraintEnd_toEndOf="@+id/search_btnNotbad"
         tools:src="@drawable/is_checked" />
 
     <ImageView
@@ -225,8 +229,8 @@
         android:layout_marginBottom="23dp"
         android:elevation="10dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/get_btnSad"
-        app:layout_constraintEnd_toEndOf="@+id/get_btnSad"
+        app:layout_constraintBottom_toBottomOf="@+id/search_btnSad"
+        app:layout_constraintEnd_toEndOf="@+id/search_btnSad"
         tools:src="@drawable/is_checked" />
 
     <ImageView
@@ -237,8 +241,8 @@
         android:layout_marginBottom="23dp"
         android:elevation="10dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/get_btnUpset"
-        app:layout_constraintEnd_toEndOf="@+id/get_btnUpset"
+        app:layout_constraintBottom_toBottomOf="@+id/search_btnUpset"
+        app:layout_constraintEnd_toEndOf="@+id/search_btnUpset"
         tools:src="@drawable/is_checked" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

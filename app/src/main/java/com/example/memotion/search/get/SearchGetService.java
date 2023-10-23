@@ -1,4 +1,4 @@
-package com.example.memotion.search.post;
+package com.example.memotion.search.get;
 
 import static com.example.memotion.RetrofitClient.errorParsing;
 import static com.example.memotion.RetrofitClient.getClient;

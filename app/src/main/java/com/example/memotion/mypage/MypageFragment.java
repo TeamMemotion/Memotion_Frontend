@@ -41,7 +41,8 @@ public class MypageFragment extends Fragment implements GetProfileResult, Logout
         mypageBinding.favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getContext(), WishListActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -56,14 +57,16 @@ public class MypageFragment extends Fragment implements GetProfileResult, Logout
         mypageBinding.updateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                startActivity(intent);
             }
         });
 
         mypageBinding.withdrawal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getContext(), WithdrawalActivity.class);
+                startActivity(intent);
             }
         });
 

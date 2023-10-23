@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.memotion.arcamera.ar.PlacesArFragment;
+import com.example.memotion.camera.CameraFragment;
 import com.example.memotion.databinding.ActivityMainBinding;
 import com.example.memotion.home.HomeFragment;
 import com.example.memotion.mypage.MypageFragment;
@@ -51,9 +52,10 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new MypageFragment()).commit();
                     return true;
                 } else if (itemId == R.id.menu_ar) {
-                    getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new PlacesArFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new CameraFragment()).commit();
                     return true;
                 }
+
                 return false;
             }
         });

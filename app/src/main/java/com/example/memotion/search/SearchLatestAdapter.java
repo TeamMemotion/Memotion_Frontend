@@ -1,5 +1,6 @@
 package com.example.memotion.search;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,15 +9,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.memotion.R;
 import com.example.memotion.databinding.ItemSearchBinding;
-import com.example.memotion.search.post.SearchGetResponse;
+import com.example.memotion.diary.DiaryRecyclerAdapter;
+import com.example.memotion.search.get.SearchGetResponse;
 import com.google.android.gms.maps.model.LatLng;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,9 +28,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapter.ViewHolder>{
-
+    private String TAG = "SearchLatestAdapter";
     private SearchFragment searchFragment;
-    ItemSearchBinding itemSearchBinding;
+    private ItemSearchBinding itemSearchBinding;
     private Context context;
     private ArrayList<SearchGetResponse.Result> searchList;
 
@@ -36,20 +40,20 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
 
     public void setSearchLatestList(ArrayList<SearchGetResponse.Result> searchList) {
         this.searchList = searchList;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public SearchLatestAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        itemSearchBinding = ItemSearchBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         context = parent.getContext();
-
-        return new ViewHolder(itemSearchBinding);
+        itemSearchBinding = ItemSearchBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new SearchLatestAdapter.ViewHolder(itemSearchBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchLatestAdapter.ViewHolder holder, int position) {
-        if (holder instanceof SearchLatestAdapter.ViewHolder) {
+    public void onBindViewHolder(@NonNull SearchLatestAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        if (holder instanceof ViewHolder) {
             holder.bind(searchList.get(position));
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +75,8 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private ItemSearchBinding itemSearchBinding;
-        public ViewHolder(ItemSearchBinding binding) {
+
+        public ViewHolder(@NotNull ItemSearchBinding binding) {
             super(binding.getRoot());
             this.itemSearchBinding = binding;
         }
@@ -88,6 +93,8 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
             else if(result.getEmotion().equals("upset"))
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.upset);
 
+            String keyword = result.getKeyWord() == null ? "null" : result.getKeyWord();
+            Log.d(TAG, "keyword: " + keyword);
             itemSearchBinding.keyword.setText(result.getKeyWord());
 
             LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
@@ -99,17 +106,12 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
             String day = date.substring(8);
             String createdAt = year + ". " + month + "." + day;
             itemSearchBinding.date.setText(createdAt);
-
-            Log.d("diaryId: ", result.getDiaryId().toString());
-            Log.d("keyword: ", result.getKeyWord());
-            Log.d("emotion: ", result.getEmotion());
-            Log.d("createdAt: ", result.getCreatedDate());
         }
     }
 
     private SearchLatestAdapter.OnItemClickListener itemClickListener;
 
-    public void setItemClickListener(SearchLatestAdapter.OnItemClickListener onItemClickListener) {
+    public void setItemClickListener(OnItemClickListener onItemClickListener) {
         this.itemClickListener = onItemClickListener;
     }
 
@@ -142,6 +144,9 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
             if (addresses != null) {
                 Address address = addresses.get(0);
                 String markerAddress = address.getAddressLine (0);
+
+                if(markerAddress.length() >= 15)
+                    markerAddress = markerAddress.substring(0, 14) + "...";
 
                 itemSearchBinding.location.setText(markerAddress);
             }

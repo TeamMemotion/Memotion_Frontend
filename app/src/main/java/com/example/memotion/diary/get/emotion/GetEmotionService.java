@@ -44,7 +44,7 @@ public class GetEmotionService {
                         switch (errorResponse.getCode()) {
                             case 500:
                             case 2001:
-                                // 어진이한테 에러처리 물어보고 추가하기
+                                getEmotionResult.getEmotionFailure(errorResponse.getCode(), errorResponse.getMessage());
                                 break;
                         }
                     } catch (IOException e) {

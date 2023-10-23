@@ -50,8 +50,6 @@ public class DiaryDialog extends Dialog {
     private GoogleMap mGoogleMap;    // 지도 객체
     private Marker mCenterMarker;
 
-    private Double mLat = 360.0;    // 위도 초기값
-    private Double mLng = 360.0;    // 경도 초기값
     private boolean mLastShare = true;
 
     public DiaryDialog(@NonNull Context context, SearchGetResponse.Result result) {

@@ -77,6 +77,9 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
         }
 
         void bind(SearchGetResponse.Result result) {
+            LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
+            executeGeocoding(location);
+
             if(result.getEmotion().equals("happy"))
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.happy);
             else if(result.getEmotion().equals("smile"))
@@ -89,9 +92,6 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.upset);
 
             itemSearchBinding.keyword.setText(result.getKeyWord());
-
-            LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
-            executeGeocoding(location);
 
             String date = result.getCreatedDate();
             String year = date.substring(0, 4);
@@ -140,7 +140,7 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
 
                 if(markerAddress.length() >= 15)
                     markerAddress = markerAddress.substring(0, 14) + "...";
-                itemSearchBinding.location.setText(markerAddress);
+                itemSearchBinding.searchLocation.setText(markerAddress);
             }
         }
     }

@@ -82,6 +82,9 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
         }
 
         void bind(SearchGetResponse.Result result) {
+            LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
+            executeGeocoding(location);
+
             if(result.getEmotion().equals("happy"))
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.happy);
             else if(result.getEmotion().equals("smile"))
@@ -93,12 +96,7 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
             else if(result.getEmotion().equals("upset"))
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.upset);
 
-            String keyword = result.getKeyWord() == null ? "null" : result.getKeyWord();
-            Log.d(TAG, "keyword: " + keyword);
             itemSearchBinding.keyword.setText(result.getKeyWord());
-
-            LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
-            executeGeocoding(location);
 
             String date = result.getCreatedDate();
             String year = date.substring(0, 4);
@@ -148,7 +146,7 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
                 if(markerAddress.length() >= 15)
                     markerAddress = markerAddress.substring(0, 14) + "...";
 
-                itemSearchBinding.location.setText(markerAddress);
+                itemSearchBinding.searchLocation.setText(markerAddress);
             }
         }
     }

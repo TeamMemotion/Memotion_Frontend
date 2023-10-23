@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="316dp"
+    android:layout_height="512dp"
+    tools:context=".diary.PlaceAddDialog">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/diary_write_background"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="217dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="장소 등록"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnShare"
+        android:layout_width="18dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="34dp"
+        android:background="@drawable/share_ok"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/close_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="18dp"
+        android:background="@drawable/baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/gps_getText"
+        android:layout_width="267dp"
+        android:layout_height="29dp"
+        android:background="@drawable/btn_background_grey_color"
+        android:backgroundTint="#FFFFFF"
+        android:paddingLeft="20dp"
+        android:hint=""
+        android:textSize="14dp"
+        android:layout_marginTop="80dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/get_gpsMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="267dp"
+        android:layout_height="204dp"
+        app:cameraTargetLat="37.606537"
+        app:cameraTargetLng="127.041758"
+        app:cameraZoom="17"
+        android:background="@drawable/button_round_18"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gps_getText" />
+
+    <TextView
+        android:id="@+id/get_gpsPlaceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="장소 이름"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/get_gpsMap" />
+
+
+    <TextView
+        android:id="@+id/get_gpsPlaceFullName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00시 00구 00로 0000"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        android:layout_marginTop="7dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/get_gpsPlaceName" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="267dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_round_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/get_gpsPlaceFullName" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/get_btnHappy"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/happy"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/get_btnSmile"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/smile"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/get_btnHappy"
+        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/get_btnNotbad"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/notbad"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/get_btnSmile"
+        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/get_btnSad"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/sad"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/get_btnNotbad"
+        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/get_btnUpset"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/upset"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/get_btnSad"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        tools:visibility="visible" />
+
+    <EditText
+        android:id="@+id/get_keyword"
+        android:layout_width="267dp"
+        android:layout_height="37dp"
+        android:background="@drawable/button_round_10"
+        android:hint=""
+        android:paddingLeft="15dp"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+
+    <ImageView
+        android:id="@+id/checkedHappy"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/get_btnHappy"
+        app:layout_constraintEnd_toEndOf="@+id/get_btnHappy"
+        tools:src="@drawable/is_checked" />
+
+    <ImageView
+        android:id="@+id/checkedSmile"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/get_btnSmile"
+        app:layout_constraintEnd_toEndOf="@+id/get_btnSmile"
+        tools:src="@drawable/is_checked" />
+
+    <ImageView
+        android:id="@+id/checkedNotbad"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/get_btnNotbad"
+        app:layout_constraintEnd_toEndOf="@+id/get_btnNotbad"
+        tools:src="@drawable/is_checked" />
+
+    <ImageView
+        android:id="@+id/checkedSad"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/get_btnSad"
+        app:layout_constraintEnd_toEndOf="@+id/get_btnSad"
+        tools:src="@drawable/is_checked" />
+
+    <ImageView
+        android:id="@+id/checkedUpset"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="23dp"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/get_btnUpset"
+        app:layout_constraintEnd_toEndOf="@+id/get_btnUpset"
+        tools:src="@drawable/is_checked" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

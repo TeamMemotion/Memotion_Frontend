@@ -1,4 +1,4 @@
-package com.example.memotion.search.get;
+package com.example.memotion.search.post;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,5 +1,6 @@
 package com.example.memotion.search;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.memotion.R;
 import com.example.memotion.databinding.ItemSearchBinding;
-import com.example.memotion.search.post.SearchGetResponse;
+import com.example.memotion.search.get.SearchGetResponse;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.util.Locale;
 
 public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAdapter.ViewHolder> {
     private SearchFragment searchFragment;
-    ItemSearchBinding itemSearchBinding;
+    private ItemSearchBinding itemSearchBinding;
     private Context context;
     private ArrayList<SearchGetResponse.Result> searchList;
 
@@ -34,6 +35,7 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
 
     public void setSearchEarliestList(ArrayList<SearchGetResponse.Result> searchList) {
         this.searchList = searchList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -46,8 +48,8 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchEarliestAdapter.ViewHolder holder, int position) {
-        if (holder instanceof SearchEarliestAdapter.ViewHolder) {
+    public void onBindViewHolder(@NonNull SearchEarliestAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        if (holder instanceof ViewHolder) {
             holder.bind(searchList.get(position));
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +77,9 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
         }
 
         void bind(SearchGetResponse.Result result) {
+            LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
+            executeGeocoding(location);
+
             if(result.getEmotion().equals("happy"))
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.happy);
             else if(result.getEmotion().equals("smile"))
@@ -88,26 +93,18 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
 
             itemSearchBinding.keyword.setText(result.getKeyWord());
 
-            LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
-            executeGeocoding(location);
-
             String date = result.getCreatedDate();
             String year = date.substring(0, 4);
             String month = date.substring(5, 7);
             String day = date.substring(8);
             String createdAt = year + ". " + month + "." + day;
             itemSearchBinding.date.setText(createdAt);
-
-            Log.d("diaryId: ", result.getDiaryId().toString());
-            Log.d("keyword: ", result.getKeyWord());
-            Log.d("emotion: ", result.getEmotion());
-            Log.d("createdAt: ", result.getCreatedDate());
         }
     }
 
-    private SearchLatestAdapter.OnItemClickListener itemClickListener;
+    private SearchEarliestAdapter.OnItemClickListener itemClickListener;
 
-    public void setItemClickListener(SearchLatestAdapter.OnItemClickListener onItemClickListener) {
+    public void setItemClickListener(OnItemClickListener onItemClickListener) {
         this.itemClickListener = onItemClickListener;
     }
 
@@ -141,7 +138,9 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
                 Address address = addresses.get(0);
                 String markerAddress = address.getAddressLine (0);
 
-                itemSearchBinding.location.setText(markerAddress);
+                if(markerAddress.length() >= 15)
+                    markerAddress = markerAddress.substring(0, 14) + "...";
+                itemSearchBinding.searchLocation.setText(markerAddress);
             }
         }
     }

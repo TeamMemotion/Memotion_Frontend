@@ -1,4 +1,4 @@
-package com.example.memotion.search.post;
+package com.example.memotion.search.get;
 
 import java.util.ArrayList;
 

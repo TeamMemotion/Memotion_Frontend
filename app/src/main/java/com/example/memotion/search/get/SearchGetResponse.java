@@ -1,4 +1,4 @@
-package com.example.memotion.search.post;
+package com.example.memotion.search.get;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -24,7 +24,7 @@ public class SearchGetResponse {
 
     public static class Result {
         @SerializedName(value = "diaryId") private Long diaryId;
-        @SerializedName(value = "keyword") private String keyWord;
+        @SerializedName(value = "keyWord") private String keyWord;
         @SerializedName(value = "latitude") private Double latitude;
         @SerializedName(value = "longitude") private Double longitude;
         @SerializedName(value = "emotion") private String emotion;

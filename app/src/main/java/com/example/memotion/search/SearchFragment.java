@@ -1,15 +1,16 @@
 package com.example.memotion.search;
 
-import android.app.SearchManager;
-import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -20,9 +21,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.memotion.R;
 import com.example.memotion.databinding.FragmentSearchBinding;
-import com.example.memotion.search.post.SearchGetResponse;
-import com.example.memotion.search.post.SearchGetResult;
-import com.example.memotion.search.post.SearchGetService;
+import com.example.memotion.diary.DiaryDialog;
+import com.example.memotion.diary.DiaryRecyclerAdapter;
+import com.example.memotion.search.get.SearchGetResponse;
+import com.example.memotion.search.get.SearchGetResult;
+import com.example.memotion.search.get.SearchGetService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,62 +47,21 @@ public class SearchFragment extends Fragment implements SearchGetResult {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         searchBinding = FragmentSearchBinding.inflate(inflater, container, false);
-
         searchEditText = searchBinding.searchEt;
 
         // 스피너
         setUpSpinnerText();
         setUpSpinnerHandler();
 
-        searchBinding.searchEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    // EditText에 포커스가 주어질 때 이벤트 처리
-                    ViewGroup.LayoutParams layoutParams = searchBinding.searchEt.getLayoutParams();
+        searchLatestAdapter = new SearchLatestAdapter(this);
+        searchEarliestAdapter = new SearchEarliestAdapter(this);
 
-                    layoutParams.width = searchBinding.searchEt.getWidth()-50;
-                    searchBinding.searchEt.setLayoutParams(layoutParams);
-                    searchBinding.cancel.setVisibility(View.VISIBLE);
-                } else {
-                    // EditText에서 포커스가 빠져나갈 때 이벤트 처리
-//                    ViewGroup.LayoutParams layoutParams = searchBinding.searchEt.getLayoutParams();
-//
-//                    layoutParams.width = searchBinding.searchEt.getWidth()+50;
-//                    searchBinding.searchEt.setLayoutParams(layoutParams);
-//                    searchBinding.cancel.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
-        if(searchBinding.cancel.getVisibility() == View.VISIBLE) {
-            searchBinding.cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ViewGroup.LayoutParams layoutParams = searchBinding.searchEt.getLayoutParams();
-
-                    layoutParams.width = searchBinding.searchEt.getWidth()+50;
-                    searchBinding.searchEt.setLayoutParams(layoutParams);
-                    searchBinding.cancel.setVisibility(View.INVISIBLE);
-
-                    if(filterState == 0)
-                        getSearch("latest", null, null);
-                    else
-                        getSearch("earliest", null, null);
-                }
-            });
-        }
-
+        // 원하는 장소 검색
         searchBinding.btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(searchBinding.searchEt.getText().length() > 0) {
-                    executeReverseGeocoding(searchBinding.searchEt.toString());
-                    if(filterState == 0) {
-                        getSearch("latest", mLat, mLng);
-                    } else if(filterState == 1) {
-                        getSearch("earliest", mLat, mLng);
-                    }
+                    executeReverseGeocoding(searchBinding.searchEt.getText().toString());
                 }
             }
         });
@@ -107,6 +69,7 @@ public class SearchFragment extends Fragment implements SearchGetResult {
         return searchBinding.getRoot();
     }
 
+    // 스피너 텍스트를 정하는 것 (최신순 오래된순)
     private void setUpSpinnerText() {
         List<String> items = Arrays.asList(getResources().getStringArray(R.array.spinner_item));
 
@@ -114,32 +77,29 @@ public class SearchFragment extends Fragment implements SearchGetResult {
         searchBinding.spinnerBtn.setAdapter(adapter);
     }
 
+    // 최신순 클릭하면 그거에 맞는 adapter or 오래된순 클릭하면 그거에 맞는 adapter 보여주는 역할
     private void setUpSpinnerHandler() {
         searchBinding.spinnerBtn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 if(position == 0) { // 최신순
                     filterState = 0;
-                    searchBinding.frameLayoutLatest.setVisibility(View.INVISIBLE);
-                    searchBinding.frameLayoutNew.setVisibility(View.VISIBLE);
+//                    searchBinding.frameLayoutLatest.setVisibility(View.VISIBLE);
+//                    searchBinding.frameLayoutEarliest.setVisibility(View.INVISIBLE);
 
-//                    if(searchBinding.searchEt.getText().length() > 0) {
-//                        executeReverseGeocoding(searchBinding.searchEt.toString());
-//                        getSearch("latest", mLat, mLng);
-//                    } else {
-//                        getSearch("latest", null, null);
-//                    }
+                    if(searchBinding.searchEt.getText().length() > 0)
+                        executeReverseGeocoding(searchBinding.searchEt.toString());
+                    else
+                        getSearch("latest", null, null);
                 } else {    // 오래된순
                     filterState = 1;
-                    searchBinding.frameLayoutLatest.setVisibility(View.VISIBLE);
-                    searchBinding.frameLayoutNew.setVisibility(View.INVISIBLE);
+//                    searchBinding.frameLayoutLatest.setVisibility(View.INVISIBLE);
+//                    searchBinding.frameLayoutEarliest.setVisibility(View.VISIBLE);
 
-                    if(searchBinding.searchEt.getText().length() > 0) {
+                    if(searchBinding.searchEt.getText().length() > 0)
                         executeReverseGeocoding(searchBinding.searchEt.toString());
-                        getSearch("earliest", mLat, mLng);
-                    } else {
+                    else
                         getSearch("earliest", null, null);
-                    }
                 }
             }
 
@@ -153,11 +113,11 @@ public class SearchFragment extends Fragment implements SearchGetResult {
     @Override
     public void onResume() {
         super.onResume();
-        getSearch("latest", null, null);
     }
 
     // 검색 조회
     private void getSearch(String filter, Double latitude, Double longitude) {
+        Log.d(TAG, "위도: " + latitude + ", 경도: " + longitude);
         SearchGetService searchGetService = new SearchGetService();
         searchGetService.setSearchGetResult(this);
         searchGetService.getSearch(filter, latitude, longitude);
@@ -165,22 +125,11 @@ public class SearchFragment extends Fragment implements SearchGetResult {
 
     @Override
     public void getSearchSuccess(int code, ArrayList<SearchGetResponse.Result> result) {
-        Log.d(TAG, "공지사항 조회 성공");
+        Log.d(TAG, "장소 검색 조회 성공");
 
-        for (int i=0; i < result.size() - 1; i++) {
-            Log.d(TAG, "diary id: " + result.get(i).getDiaryId());
-            Log.d(TAG, "keyword: " + result.get(i).getKeyWord());
-            Log.d(TAG, "latitude: " + result.get(i).getLatitude());
-            Log.d(TAG, "longitude: " + result.get(i).getLongitude());
-            Log.d(TAG, "emotion: " + result.get(i).getEmotion());
-            Log.d(TAG, "Date: " + result.get(i).getCreatedDate());
-        }
-
-        Log.d(TAG, "--------");
-
-        if(filterState == 0) {
+        if(filterState == 0) {  // 최신순에 맞는 RecyclerView 띄우기
             initRecycler_latest(result);
-        } else if (filterState == 1) {
+        } else if (filterState == 1) {  // 오래된순에 맞는 RecyclerView 띄우기
             initRecycler_earliest(result);
         }
     }
@@ -190,29 +139,40 @@ public class SearchFragment extends Fragment implements SearchGetResult {
         Log.d(TAG, "검색 실패");
     }
 
+    // 최신순 RecyclerView로 데이터 넘기고 화면 띄우기
     private void initRecycler_latest(ArrayList<SearchGetResponse.Result> result) {
-        for (int i=0; i < result.size() - 1; i++) {
-            Log.d(TAG, "diary id: " + result.get(i).getDiaryId());
-            Log.d(TAG, "keyword: " + result.get(i).getKeyWord());
-            Log.d(TAG, "latitude: " + result.get(i).getLatitude());
-            Log.d(TAG, "longitude: " + result.get(i).getLongitude());
-            Log.d(TAG, "emotion: " + result.get(i).getEmotion());
-            Log.d(TAG, "Date: " + result.get(i).getCreatedDate());
-        }
-
         searchLatestAdapter.setSearchLatestList(result);
+        searchBinding.frameLayoutLatest.setVisibility(View.VISIBLE);
         searchBinding.searchView.setAdapter(searchLatestAdapter);
         searchBinding.searchView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-        // 클릭 이벤트
+        // 클릭 이벤트 발생
+        searchLatestAdapter.setItemClickListener(new SearchLatestAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(SearchGetResponse.Result result) {
+                DiaryDialog dialog = new DiaryDialog(getContext(), result);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
+            }
+        });
     }
 
+    // 오래된순 RecyclerView로 데이터 넘기고 화면 띄우기
     private void initRecycler_earliest(ArrayList<SearchGetResponse.Result> result) {
         searchEarliestAdapter.setSearchEarliestList(result);
+        searchBinding.frameLayoutLatest.setVisibility(View.VISIBLE);
         searchBinding.searchView.setAdapter(searchEarliestAdapter);
         searchBinding.searchView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         // 클릭 이벤트
+        searchEarliestAdapter.setItemClickListener(new SearchEarliestAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(SearchGetResponse.Result result) {
+                DiaryDialog dialog = new DiaryDialog(getContext(), result);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
+            }
+        });
     }
 
     private void executeReverseGeocoding(String str) {
@@ -245,6 +205,11 @@ public class SearchFragment extends Fragment implements SearchGetResult {
                     Address address = addresses.get(0);
                     mLat = address.getLatitude();
                     mLng = address.getLongitude();
+
+                    if(filterState == 0)
+                        getSearch("latest", mLat, mLng);
+                    else
+                        getSearch("earliest", mLat, mLng);
                 }
             }
         }

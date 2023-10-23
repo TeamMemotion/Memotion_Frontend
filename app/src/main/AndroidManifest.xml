@@ -49,6 +49,11 @@
         <activity android:name=".mypage.MyDiaryActivity"/>
         <activity android:name=".arcamera.ArActivity"/>
         <activity android:name=".mypage.NoticeActivity"/>
+        <activity android:name=".local.LocalGuideActivity"/>
+        <activity android:name=".local.LocalGuideSearchActivity"/>
+        <activity android:name=".mypage.ProfileActivity"/>
+        <activity android:name=".mypage.WithdrawalActivity"/>
+        <activity android:name=".mypage.WishListActivity"/>
         <!-- Kakao Login -->
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

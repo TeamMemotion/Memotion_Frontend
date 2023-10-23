@@ -107,8 +107,9 @@ public class RouteFragment extends Fragment implements LocalGuideGetResult, MyRo
         localGuideAdapter.setItemClickListener(new LocalGuideAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(LocalGuideGetResponse.Result result) {
-                Intent intent = new Intent(getContext(), RouteActivity.class);
-
+//                Intent intent = new Intent(getContext(), RouteActivity.class);
+//                intent.putExtra("routeId", result.getRouteId());
+//                startActivity(intent);
             }
         });
     }
@@ -126,7 +127,9 @@ public class RouteFragment extends Fragment implements LocalGuideGetResult, MyRo
 
         for(int i = 0; i < result.size() - 1; i++) {
             Log.d("routeId: ", result.get(i).getRouteId().toString());
-            Log.d("routeImg: ", result.get(i).getRouteImg());
+            if(result.get(i).getRouteImg() != null) {
+                Log.d("routeImg: ", result.get(i).getRouteImg());
+            }
             Log.d("startDate: ", result.get(i).getStartDate());
             Log.d("endDate: ", result.get(i).getEndDate());
             Log.d("name: ", result.get(i).getName());
@@ -144,7 +147,7 @@ public class RouteFragment extends Fragment implements LocalGuideGetResult, MyRo
     private void initRecycler_myRoute(ArrayList<MyRouteGetResponse.Result> result) {
         routeAdapter.setMyRouteList(result);
         routeBinding.recyclerView.setAdapter(routeAdapter);
-        routeBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        routeBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         routeAdapter.setItemClickListener(new RouteAdapter.OnItemClickListener() {
             @Override

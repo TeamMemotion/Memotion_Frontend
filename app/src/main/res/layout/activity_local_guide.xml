@@ -11,28 +11,36 @@
         android:id="@+id/action_localguide"
         layout="@layout/action_inner_bar_top"/>
 
-    <androidx.appcompat.widget.SearchView
+    <View
         android:id="@+id/searchLocal"
-        android:layout_width="380dp"
-        android:layout_height="37dp"
+        android:layout_width="370dp"
+        android:layout_height="42dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/btn_light_pink_background"
         android:backgroundTint="#FFDEDE"
-        app:iconifiedByDefault="false"
-        app:queryHint="원하는 지역을 검색하세요"
-        android:queryBackground="@null"
-        android:textSize="15sp"
-        app:closeIcon="@drawable/baseline_close_24_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/action_localguide" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/appCompatMic"
+
+    <TextView
+        android:id="@+id/textview5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="원하는 장소를 검색하세요"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/searchLocal"
+        app:layout_constraintStart_toStartOf="@+id/searchLocal"
+        app:layout_constraintTop_toTopOf="@+id/searchLocal" />
+
+    <ImageButton
+        android:id="@+id/btn_search"
         android:layout_width="30dp"
         android:layout_height="32dp"
         android:layout_marginEnd="13dp"
-        android:src="@drawable/mic"
+        android:background="@drawable/search"
+        android:backgroundTint="#993C3C43"
         app:layout_constraintBottom_toBottomOf="@+id/searchLocal"
         app:layout_constraintEnd_toEndOf="@+id/searchLocal"
         app:layout_constraintTop_toTopOf="@+id/searchLocal" />
@@ -40,11 +48,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/local_guide_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/searchLocal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="14dp"
         android:visibility="visible">
 
         <TextView
@@ -52,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="인기 지역 9곳"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="22dp"
             android:textColor="#E15F81"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +71,7 @@
 
         <View
             android:id="@+id/itemBack"
-            android:layout_width="380dp"
+            android:layout_width="370dp"
             android:layout_height="200dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/button_round_13"
@@ -72,7 +82,7 @@
 
         <View
             android:id="@+id/view1"
-            android:layout_width="380dp"
+            android:layout_width="370dp"
             android:layout_height="2dp"
             android:background="#E15F81"
             android:layout_marginTop="68dp"
@@ -82,7 +92,7 @@
 
         <View
             android:id="@+id/view2"
-            android:layout_width="380dp"
+            android:layout_width="370dp"
             android:layout_height="2dp"
             android:background="#E15F81"
             android:layout_marginTop="68dp"
@@ -212,6 +222,7 @@
             app:layout_constraintTop_toTopOf="@+id/view2"
             app:layout_constraintBottom_toBottomOf="@+id/itemBack"/>
 
+
         <TextView
             android:id="@+id/tx_yeosu"
             android:layout_width="wrap_content"
@@ -230,54 +241,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="26dp"
-            android:text="인기 루트 기록"
+            android:text="최근 루트 기록"
             android:textColor="@color/black"
             android:textSize="19sp"
             android:textStyle="bold"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="22dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/itemBack"/>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/latestRouteView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical"
+            android:layout_marginTop="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/textView4"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView4"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/item_route" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/local_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/searchLocal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="vertical"
-        android:visibility="invisible">
-
-        <TextView
-            android:id="@+id/searchRoute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginStart="16dp"
-            android:textColor="#E15F81"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@+id/searchLocal" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchRoute"
-            tools:listitem="@layout/item_route" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

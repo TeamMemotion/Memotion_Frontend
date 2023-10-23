@@ -25,6 +25,9 @@ public class LocalGuideGetResponse {
     public static class Result {
         @SerializedName(value = "routeId") private Long routeId;
         @SerializedName(value = "routeImg") private String routeImg;
+        @SerializedName(value = "routeName") private String routeName;
+        @SerializedName(value = "startDate") private String startDate;
+        @SerializedName(value = "endDate") private String endDate;
         @SerializedName(value = "profileImg") private String profileImg;
         @SerializedName(value = "username") private String username;
         @SerializedName(value = "likeCount") private Long likeCount;
@@ -52,6 +55,18 @@ public class LocalGuideGetResponse {
 
         public boolean isLiked() {
             return liked;
+        }
+
+        public String getRouteName() {
+            return routeName;
+        }
+
+        public String getStartDate() {
+            return startDate;
+        }
+
+        public String getEndDate() {
+            return endDate;
         }
     }
 }

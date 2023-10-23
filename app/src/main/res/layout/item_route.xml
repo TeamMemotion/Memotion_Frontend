@@ -9,7 +9,7 @@
         android:id="@+id/itemBack"
         android:layout_width="370dp"
         android:layout_height="107dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/button_round_13"
         android:backgroundTint="#FFDEDE"
         android:onClick="onClick"

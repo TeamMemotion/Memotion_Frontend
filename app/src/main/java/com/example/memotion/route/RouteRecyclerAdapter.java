@@ -24,7 +24,9 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     private RouteActivity routeActivity;
     private ArrayList<RouteDetailItem> routeDetailItems;
     public RouteRecyclerAdapter(RouteActivity routeActivity){
-        this.routeActivity=routeActivity;}
+        this.routeActivity=routeActivity;
+    }
+
     @NonNull
     @Override
     public RouteRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

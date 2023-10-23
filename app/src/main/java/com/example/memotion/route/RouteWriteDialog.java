@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import com.example.memotion.R;
 import com.example.memotion.databinding.DialogRouteWriteBinding;
 import com.example.memotion.route.post.route.PostRouteRequest;
+import com.example.memotion.route.post.route.PostRouteResponse;
 import com.example.memotion.route.post.route.PostRouteResult;
 import com.example.memotion.route.post.route.PostRouteService;
 

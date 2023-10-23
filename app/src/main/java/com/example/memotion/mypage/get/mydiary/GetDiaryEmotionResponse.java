@@ -23,7 +23,7 @@ public class GetDiaryEmotionResponse {
     }
 
     public static class Result {
-        @SerializedName(value = "diaryContentId") private int diaryContentId;
+        @SerializedName(value = "diaryContentId") private Long diaryContentId;
         @SerializedName(value = "createdDate") private String createdDate;
         @SerializedName(value = "title") private String title;
         @SerializedName(value = "content") private String content;
@@ -31,7 +31,7 @@ public class GetDiaryEmotionResponse {
         @SerializedName(value = "memberId") private Long memberId;
 
 
-        public int getDiaryContentId() { return diaryContentId; }
+        public Long getDiaryContentId() { return diaryContentId; }
         public String getTitle() { return title; }
         public String getContent() { return content; }
         public String getKeyWord() { return keyWord; }

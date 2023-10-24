@@ -13,7 +13,6 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/button_round_8"
         android:backgroundTint="#FFDEDE"
-        android:onClick="onClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

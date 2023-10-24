@@ -97,5 +97,6 @@ public class PostRouteDetailResponse {
         public String getUrl() {
             return url;
         }
+
     }
 }

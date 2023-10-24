@@ -107,9 +107,9 @@ public class RouteFragment extends Fragment implements LocalGuideGetResult, MyRo
         localGuideAdapter.setItemClickListener(new LocalGuideAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(LocalGuideGetResponse.Result result) {
-//                Intent intent = new Intent(getContext(), RouteActivity.class);
-//                intent.putExtra("routeId", result.getRouteId());
-//                startActivity(intent);
+                Intent intent = new Intent(getContext(), RouteActivity.class);
+                intent.putExtra("routeId", result.getRouteId());
+                startActivity(intent);
             }
         });
     }
@@ -152,9 +152,9 @@ public class RouteFragment extends Fragment implements LocalGuideGetResult, MyRo
         routeAdapter.setItemClickListener(new RouteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MyRouteGetResponse.Result result) {
-//                Intent intent = new Intent(getContext(), RouteActivity.class);
-//                intent.putExtra("routeId", result.getRouteId());
-//                startActivity(intent);
+                Intent intent = new Intent(getContext(), RouteActivity.class);
+                intent.putExtra("routeId", result.getRouteId());
+                startActivity(intent);
             }
         });
     }

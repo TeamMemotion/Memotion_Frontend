@@ -15,12 +15,12 @@
         android:layout_width="370dp"
         android:layout_height="42dp"
         android:layout_marginTop="15dp"
-        android:layout_marginStart="21dp"
         android:background="@drawable/btn_light_pink_background"
         android:backgroundTint="#FFDEDE"
         android:hint="원하는 장소를 검색하세요"
         android:paddingLeft="20dp"
         android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_actionbar" />
 

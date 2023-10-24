@@ -59,8 +59,6 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
 
         // 여행 기간 가로로 나열하는 RecyclerView 연결
         dateRecyclerAdapter = new RouteDateRecyclerAdapter(this);
-        routeBinding.dateView.setAdapter(dateRecyclerAdapter);
-        routeBinding.dateView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
         // 루트 상세 조회하는 RecyclerView 연결
         recyclerView = routeBinding.routeDetailView;
@@ -125,7 +123,10 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
             }
 
             // Date 담기
+            Log.d(TAG, "DateRecyclerAdapter: " + dateList.size());
             dateRecyclerAdapter.setDateList(dateList);
+            routeBinding.dateView.setAdapter(dateRecyclerAdapter);
+            routeBinding.dateView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         } catch (Exception e) {
             e.printStackTrace();
         }

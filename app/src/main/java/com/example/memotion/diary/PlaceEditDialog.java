@@ -85,7 +85,7 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
         keyword.setText(item.getKeyword());
 
         // 닫기 버튼
-        dialog.findViewById(R.id.routeDetail_close_btn).setOnClickListener(new View.OnClickListener() {
+        dialog.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();

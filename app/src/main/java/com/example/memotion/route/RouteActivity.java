@@ -63,8 +63,6 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
         // 루트 상세 조회하는 RecyclerView 연결
         recyclerView = routeBinding.routeDetailView;
         routeAdapter = new RouteRecyclerAdapter(this);
-        recyclerView.setAdapter(routeAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // + 버튼 클릭 시
         routeBinding.routeDetailAddBtn.setOnClickListener(new View.OnClickListener() {

@@ -62,7 +62,7 @@ public class RouteDateRecyclerAdapter extends RecyclerView.Adapter<RouteDateRecy
         if (holder instanceof RouteDateRecyclerAdapter.ViewHolder) {
             holder.bind(dateList.get(position), position);
 
-            // 여기서 selectBar의 가시성을 조절하세요.
+            Log.d(TAG, "onBindViewHolder 들어옴");
             if (position != selectedPosition) {
                 holder.itemDateBinding.selectBar.setVisibility(View.INVISIBLE);
                 holder.itemDateBinding.itemDate.setTypeface(null, Typeface.NORMAL);
@@ -108,6 +108,8 @@ public class RouteDateRecyclerAdapter extends RecyclerView.Adapter<RouteDateRecy
         }
 
         void bind(Date selectDate, int position) {
+            Log.d(TAG, "Date 바인딩 시작");
+
             SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
             String day = dayFormat.format(selectDate);
 

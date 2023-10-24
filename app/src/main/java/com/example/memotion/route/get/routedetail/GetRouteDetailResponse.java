@@ -27,13 +27,13 @@ public class GetRouteDetailResponse {
 
     public static class Result {
         @SerializedName(value ="content") private String content;
-        @SerializedName(value ="end_time") private LocalDateTime end_time;
+        @SerializedName(value ="end_time") private String end_time;
         @SerializedName(value ="latitude") private Double latitude;
         @SerializedName(value ="longitude") private Double longitude;
         @SerializedName(value ="place") private String place;
         @SerializedName(value = "routeId") private Long routeId;
-        @SerializedName(value ="select_date") private LocalDate select_date;
-        @SerializedName(value ="start_time") private LocalDateTime start_time;
+        @SerializedName(value ="select_date") private String select_date;
+        @SerializedName(value ="start_time") private String start_time;
         @SerializedName(value = "title") private String title;
         @SerializedName(value = "url" ) private String url;
 
@@ -45,11 +45,11 @@ public class GetRouteDetailResponse {
             this.content = content;
         }
 
-        public LocalDateTime getEnd_time() {
+        public String getEnd_time() {
             return end_time;
         }
 
-        public void setEnd_time(LocalDateTime end_time) {
+        public void setEnd_time(String end_time) {
             this.end_time = end_time;
         }
 
@@ -85,19 +85,19 @@ public class GetRouteDetailResponse {
             this.routeId = routeId;
         }
 
-        public LocalDate getSelect_date() {
+        public String getSelect_date() {
             return select_date;
         }
 
-        public void setSelect_date(LocalDate select_date) {
+        public void setSelect_date(String select_date) {
             this.select_date = select_date;
         }
 
-        public LocalDateTime getStart_time() {
+        public String getStart_time() {
             return start_time;
         }
 
-        public void setStart_time(LocalDateTime start_time) {
+        public void setStart_time(String start_time) {
             this.start_time = start_time;
         }
 

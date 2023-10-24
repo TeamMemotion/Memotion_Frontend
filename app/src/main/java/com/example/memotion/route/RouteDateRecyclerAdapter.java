@@ -39,6 +39,7 @@ public class RouteDateRecyclerAdapter extends RecyclerView.Adapter<RouteDateRecy
     private Context context;
     private List<Date> dateList;
     private int selectedPosition = -1;   // 날짜 선택 위치
+    public static Date selectedDate;
 
     public RouteDateRecyclerAdapter(RouteActivity routeActivity) {
         this.routeActivity = routeActivity;
@@ -91,17 +92,16 @@ public class RouteDateRecyclerAdapter extends RecyclerView.Adapter<RouteDateRecy
                     itemDateBinding.itemDate.setTypeface(null, Typeface.BOLD);
                     itemDateBinding.itemDate.setTextColor(Color.BLACK);
 
-                    Log.d(TAG, "현재 선택된 날짜의 position: " + selectedPosition);
                     // 이전에 선택한 날짜의 selectBar를 invisible로 설정
-                    // 선택된게 selectedPosition : 0 / getAdapter는 1
                     if (selectedPosition != getAdapterPosition()) {
                         notifyItemChanged(selectedPosition);
-                        // itemDateBinding.selectBar.setVisibility(View.INVISIBLE);
                     }
 
                     // 선택된 날짜의 selectBar visible로 변경
                     selectedPosition = getAdapterPosition();
                     itemDateBinding.selectBar.setVisibility(View.VISIBLE);
+
+                    selectedDate = dateList.get(selectedPosition);
                 }
             });
 
@@ -123,6 +123,7 @@ public class RouteDateRecyclerAdapter extends RecyclerView.Adapter<RouteDateRecy
                 // 선택된 날짜의 selectBar visible로 변경
                 selectedPosition = position;
                 itemDateBinding.selectBar.setVisibility(View.VISIBLE);
+                selectedDate = selectDate;
             }
 
             // 데이터 바인딩 끝나면 현재 선택된 날짜를 기준으로 Route_Detail 조회하는 API 호출

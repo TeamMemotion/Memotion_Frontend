@@ -1,13 +1,11 @@
-package com.example.memotion.route.get.routedetail;
+package com.example.memotion.arcamera.emotion;
 
 import static com.example.memotion.RetrofitClient.errorParsing;
 import static com.example.memotion.RetrofitClient.getClient;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.example.memotion.RetrofitClient;
-import com.example.memotion.route.get.route.GetRouteResponse;
 
 import java.io.IOException;
 
@@ -15,25 +13,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GetRouteDetailService {
-    private GetRouteDetailResult getRouteDetailResult;
+public class GetEmotionService {
+    private GetEmotionResult getEmotionResult;
 
-    public void setGetRouteDetailResult(GetRouteDetailResult getRouteDetailResult) {
-        this.getRouteDetailResult = getRouteDetailResult;
+    public void setGetEmotionResult(GetEmotionResult getEmotionResult) {
+        this.getEmotionResult = getEmotionResult;
     }
 
-    public void getRouteDetail(Long routeDetailId) {
-        GetRouteDetailRetrofitInterface getRouteDetailService = getClient().create(GetRouteDetailRetrofitInterface.class);
-        getRouteDetailService.getRouteDetail(routeDetailId).enqueue(new Callback<GetRouteDetailResponse>() {
+    public void getEmotion(Double longitude, Double latitude ) {
+        GetEmotionRetrofitInterface getEmotionService = getClient().create(GetEmotionRetrofitInterface.class);
+        getEmotionService.getEmotion(longitude, latitude).enqueue(new Callback<GetEmotionResponse>() {
 
-            @SuppressLint("LongLogTag")
             @Override
-            public void onResponse(Call<GetRouteDetailResponse> call, Response<GetRouteDetailResponse> response) {
-                Log.d("GET-ROUTE-DETAIL-SUCCESS", response.toString());
+            public void onResponse(Call<GetEmotionResponse> call, Response<GetEmotionResponse> response) {
+                Log.d("GET-EMOTION-SUCCESS", response.toString());
 
                 if(response.isSuccessful()) {
                     if(response.body().getCode() == 1000) {
-                        getRouteDetailResult.getRouteDetailSuccess(response.body().getCode(), response.body().getResult());
+                        getEmotionResult.getEmotionSuccess(response.body().getCode(), response.body().getResult());
                     }
                 } else {
                     //400이상 에러시 response.body가 null로 처리됨. 따라서 errorBody로 받아야함.
@@ -48,7 +45,7 @@ public class GetRouteDetailService {
                         switch (errorResponse.getCode()) {
                             case 500:
                             case 2001:
-                                getRouteDetailResult.getRouteDetailFailure(errorResponse.getCode(), errorResponse.getMessage());
+                                // 어진이한테 에러처리 물어보고 추가하기
                                 break;
                         }
                     } catch (IOException e) {
@@ -57,10 +54,9 @@ public class GetRouteDetailService {
                 }
             }
 
-            @SuppressLint("LongLogTag")
             @Override
-            public void onFailure(Call<GetRouteDetailResponse> call, Throwable t) {
-                Log.d("GET-ROUTE-DETAIL-FAILURE", t.getMessage());
+            public void onFailure(Call<GetEmotionResponse> call, Throwable t) {
+                Log.d("GET-EMOTION-FAILURE", t.getMessage());
             }
         });
     }

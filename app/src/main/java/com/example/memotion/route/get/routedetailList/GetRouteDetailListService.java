@@ -10,9 +10,10 @@ public class GetRouteDetailListService {
 
     private GetRouteDetailListResult getRouteDetailListResult;
 
-    public void setGetRouteDetailResult(GetRouteDetailListResult getRouteDetailListResult) {
+    public void setGetRouteDetailListResult(GetRouteDetailListResult getRouteDetailListResult) {
         this.getRouteDetailListResult = getRouteDetailListResult;
     }
+
     public void getRouteDetailList(Long id){
         GetRouteDetailListRetrofitInterface getRouteDetailListRetrofitInterface = getClient().create(GetRouteDetailListRetrofitInterface.class);
 

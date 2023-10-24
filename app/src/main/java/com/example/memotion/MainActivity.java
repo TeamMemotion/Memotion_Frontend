@@ -8,13 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.memotion.camera.CameraFragment;
+//import com.example.memotion.camera.CameraFragment;
 import com.example.memotion.databinding.ActivityMainBinding;
 import com.example.memotion.home.HomeFragment;
 import com.example.memotion.mypage.MypageFragment;
 import com.example.memotion.route.RouteFragment;
 import com.example.memotion.search.SearchFragment;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.ar.sceneform.ux.ArFragment;
 import com.kakao.sdk.common.KakaoSdk;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new MypageFragment()).commit();
                     return true;
                 } else if (itemId == R.id.menu_ar) {
-                    getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new CameraFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(viewBinding.containerFragment.getId(), new ArFragment()).commit();
                     return true;
                 }
 

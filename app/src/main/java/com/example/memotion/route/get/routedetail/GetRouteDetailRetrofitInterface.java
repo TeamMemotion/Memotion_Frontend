@@ -7,6 +7,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface GetRouteDetailRetrofitInterface {
-    @GET("route/route-detail/list/{detailId}")
+    @GET("/route/route/list/{routeId}")
     Call<GetRouteDetailResponse> getRouteDetail(@Path(value = "detailId") Long id);
 }

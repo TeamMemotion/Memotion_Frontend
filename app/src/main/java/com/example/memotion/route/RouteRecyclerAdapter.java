@@ -17,6 +17,8 @@ import com.example.memotion.databinding.ItemRoutePlanBinding;
 import com.example.memotion.diary.DiaryItem;
 import com.example.memotion.diary.DiaryRecyclerAdapter;
 import com.example.memotion.diary.PlaceEditDialog;
+import com.example.memotion.route.get.routedetail.GetRouteDetailResponse;
+import com.example.memotion.route.get.routedetailList.GetRouteDetailListResponse;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     ItemRoutePlanBinding itemRoutePlanBinding;
     private RouteActivity routeActivity;
     private ArrayList<RouteDetailItem> routeDetailItems;
+
+    private ArrayList<GetRouteDetailResponse.Result> results;
 
     private Context context;
     public RouteRecyclerAdapter(RouteActivity routeActivity){
@@ -45,8 +49,8 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     public void onBindViewHolder(@NonNull RouteRecyclerAdapter.ViewHolder holder, int position) {
         holder.onBind(routeDetailItems.get(position));
     }
-    public void setRouteDetailItems(ArrayList<RouteDetailItem> detailItemsList) {
-        this.routeDetailItems = detailItemsList;
+    public void setRouteDetailItems(ArrayList<GetRouteDetailResponse.Result> detailItemsList) {
+        this.results = detailItemsList;
         notifyDataSetChanged();
     }
 

@@ -55,6 +55,7 @@
         <activity android:name=".mypage.WithdrawalActivity"/>
         <activity android:name=".mypage.WishListActivity"/>
         <activity android:name=".route.RouteActivity"/>
+        <activity android:name=".route.RouteAddMyActivity"/>
         <!-- Kakao Login -->
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

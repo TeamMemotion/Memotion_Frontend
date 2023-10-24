@@ -77,8 +77,8 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
     private GoogleMap mGoogleMap;    // 지도 객체
     private Marker mCenterMarker;
 
-    private Double mLat = 0.0;    // 위도 초기값
-    private Double mLng = 0.0;    // 경도 초기값
+    private Double mLat = 360.0;    // 위도 초기값
+    private Double mLng = 360.0;    // 경도 초기값
     private String mLastEmotion;
     private boolean mLastShare = true;
     private MultipartBody.Part body;
@@ -168,6 +168,7 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
             @Override
             public void onClick(View view) {
                 String inputLocation = routeAddMyBinding.placeAdd.toString();
+                Log.d(TAG, "검색 위치: " + inputLocation);
 
                 // reverseGeocoding -> 위도 경도 추출 + 현재 위치 변경
                 if(inputLocation.getBytes().length > 0)
@@ -352,11 +353,10 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
     }
     private void mapLoad() {
         // Google Maps 초기화
-        MapsInitializer.initialize(getApplicationContext());
+        MapsInitializer.initialize(this); // this는 현재 액티비티의 컨텍스트를 나타냅니다.
         // SupportMapFragment를 찾음
-        SupportMapFragment mapFragment = (SupportMapFragment) ((FragmentActivity) getApplicationContext()).getSupportFragmentManager()
-                .findFragmentById(R.id.gpsMap);
-        mapFragment.getMapAsync (mapReadyCallback); // map 정보 가져오기 (Callback 호출)
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.gpsMap);
+        mapFragment.getMapAsync(mapReadyCallback); // map 정보 가져오기 (Callback 호출)
     }
 
     // getMapAsync의 매개변수로 전달
@@ -475,9 +475,9 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
                     // 정확한 위치명을 입력하지 않은 경우
                     Toast.makeText (getApplicationContext(), "정확한 위치명을 입력하세요", Toast.LENGTH_SHORT).show ();
                 } else {
-                    Address address = addresses.get (0);
-                    mLat = address.getLatitude ();
-                    mLng = address.getLongitude ();
+                    Address address = addresses.get(0);
+                    mLat = address.getLatitude();
+                    mLng = address.getLongitude();
 
                     mLastLocation.setLatitude(mLat);
                     mLastLocation.setLongitude(mLng);

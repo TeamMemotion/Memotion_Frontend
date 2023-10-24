@@ -25,7 +25,9 @@ public class RouteDetailItem implements Serializable {
 
     private Long routeId;
 
-    public RouteDetailItem(String title, String start_time, String end_time, String select_date, String content, String place, Double latitude, Double longitude, String url, Long routeId) {
+    private Long recordDetailId;
+
+    public RouteDetailItem(String title, String start_time, String end_time, String select_date, String content, String place, Double latitude, Double longitude, String url, Long routeId , Long recordDetailId) {
         this.title = title;
         this.start_time = start_time;
         this.end_time = end_time;
@@ -36,6 +38,11 @@ public class RouteDetailItem implements Serializable {
         this.longitude = longitude;
         this.url = url;
         this.routeId = routeId;
+        this.recordDetailId = recordDetailId;
+    }
+
+    public Long getRecordDetailId() {
+        return recordDetailId;
     }
 
     public String getTitle() {

@@ -33,6 +33,11 @@ public class GetRouteDetailListResponse {
         @SerializedName(value ="start_time") private String start_time;
         @SerializedName(value = "title") private String title;
         @SerializedName(value = "url" ) private String url;
+        @SerializedName(value = "recordDetailId" ) private Long recordDetailId;
+
+        public Long getRecordDetailId() {
+            return recordDetailId;
+        }
 
         public String getContent() {
             return content;

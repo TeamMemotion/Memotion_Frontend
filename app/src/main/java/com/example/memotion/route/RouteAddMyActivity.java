@@ -20,6 +20,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +32,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.memotion.R;
 import com.example.memotion.databinding.ActivityRouteAddMyBinding;
+import com.example.memotion.route.patch.routedetail.PatchRouteDetailRequest;
+import com.example.memotion.route.post.routedetail.PostRouteDetailRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -47,6 +51,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,6 +77,11 @@ public class RouteAddMyActivity extends AppCompatActivity {
     private boolean mLastShare = true;
 
     private int routeId = -1;
+//    private int filterState = -1;   // 0부터 시작
+//    private String filterContent;
+    private String date;
+
+    private ArrayList<String> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,17 +89,28 @@ public class RouteAddMyActivity extends AppCompatActivity {
         routeAddMyBinding = ActivityRouteAddMyBinding.inflate(getLayoutInflater());
         setContentView(routeAddMyBinding.getRoot());
 
+        // 스피너
+        // 스피너 텍스트를 정하는 것 (최신순 오래된순)
+//        ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, items);
+//        routeAddMyBinding.spinnerBtn.setAdapter(adapter);
+
         // 생성인지 수정인지 조회
         Intent intent = getIntent();
         if(intent != null) {
-            // intent로 routeId랑 날짜 리스트 받기 routeId =
+            // intent로 routeId랑 날짜 받기 routeId =
 //            if(location != null) {
 //                if(routeId != -1) {
-//                  // get 상세 조회
-//            }
+//                  // get api 상세 조회
+////                  // 저장된 날짜로 스피너 띄우기
+////                  // 받아온 날짜로 arraylist에 있는 형태로 타입 변환
+////                  int position = items.indexOf( );
+////                  if(position >= 0) {
+////                      routeAddMyBinding.spinnerBtn.setSelection(position);
+////            }
         }
+        //setUpSpinnerHandler();
 
-        // 스피너
+        // 날짜 넣어주기 (textview)
 
 
         // 저장
@@ -159,14 +181,47 @@ public class RouteAddMyActivity extends AppCompatActivity {
         routeAddMyBinding.endAmPm.addTextChangedListener(textWatcher);
         routeAddMyBinding.endHour.addTextChangedListener(textWatcher);
         routeAddMyBinding.endMinute.addTextChangedListener(textWatcher);
-        routeAddMyBinding.gpsPlaceFullName.addTextChangedListener(textWatcher);
+        routeAddMyBinding.placeAdd.addTextChangedListener(textWatcher);
     }
 
     // 저장 api
+//    private PostRouteDetailRequest saveRequest() {
+//        // 전달 받은 날짜
+//        return PostRouteDetailRequest();
+//    }
+//
+//    private void postRouteDetail() {
+//
+//    }
+//
+//    // 수정 api
+//    private PatchRouteDetailRequest patchRequest() {
+//        //
+//        return PatchRouteDetailRequest();
+//    }
+//    private void patchRouteDetail() {
+//
+//    }
+
+    // 조회 api
 
 
-    // 수정 api
-
+//    // 스피너
+//    // 최신순 클릭하면 그거에 맞는 adapter or 오래된순 클릭하면 그거에 맞는 adapter 보여주는 역할
+//    private void setUpSpinnerHandler() {
+//        routeAddMyBinding.spinnerBtn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+//                filterContent = items.get(position);
+//                filterState = position;
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
+//    }
 
     // editText 내용 입력시 버튼 활성화
     TextWatcher textWatcher = new TextWatcher() {
@@ -184,7 +239,7 @@ public class RouteAddMyActivity extends AppCompatActivity {
         public void afterTextChanged(Editable editable) {
             if(!routeAddMyBinding.addRouteTitle.toString().isEmpty() && !routeAddMyBinding.startAmPm.toString().isEmpty() && !routeAddMyBinding.startHour.toString().isEmpty()
                     && !routeAddMyBinding.startMinute.toString().isEmpty() && !routeAddMyBinding.endAmPm.toString().isEmpty() && !routeAddMyBinding.endHour.toString().isEmpty()
-                    && !routeAddMyBinding.endMinute.toString().isEmpty() && !routeAddMyBinding.gpsPlaceFullName.toString().isEmpty()) {
+                    && !routeAddMyBinding.endMinute.toString().isEmpty() && !routeAddMyBinding.placeAdd.toString().isEmpty()) {
                 routeAddMyBinding.btnSaveRoute.setClickable(true);
                 routeAddMyBinding.btnSaveRoute.setBackgroundResource(R.drawable.btn_pink_background);
             } else {
@@ -332,7 +387,7 @@ public class RouteAddMyActivity extends AppCompatActivity {
                 Address address = addresses.get(0);
                 String markerAddress = address.getAddressLine (0);
 
-                routeAddMyBinding.gpsPlaceFullName.setText(markerAddress);
+                routeAddMyBinding.placeAdd.setText(markerAddress);
             }
         }
     }
@@ -377,7 +432,7 @@ public class RouteAddMyActivity extends AppCompatActivity {
 
                         // 장소 검색 주소 변경
                         String markerAddress = address.getAddressLine (0);
-                        routeAddMyBinding.gpsPlaceFullName.setText(markerAddress);
+                        routeAddMyBinding.placeAdd.setText(markerAddress);
 
                         // 마커 위치 변경
                         mCenterMarker.setPosition(new LatLng(mLat, mLng));

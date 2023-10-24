@@ -1,4 +1,4 @@
-package com.example.memotion.route.get.route.myRoute;
+package com.example.memotion.route.get.myRoute;
 
 import static com.example.memotion.RetrofitClient.errorParsing;
 import static com.example.memotion.RetrofitClient.getClient;

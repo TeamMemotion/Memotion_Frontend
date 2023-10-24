@@ -17,9 +17,9 @@ import com.example.memotion.local.LocalGuideActivity;
 import com.example.memotion.route.get.localGuide.latest.LocalGuideGetResponse;
 import com.example.memotion.route.get.localGuide.latest.LocalGuideGetResult;
 import com.example.memotion.route.get.localGuide.latest.LocalGuideGetService;
-import com.example.memotion.route.get.route.myRoute.MyRouteGetResponse;
-import com.example.memotion.route.get.route.myRoute.MyRouteGetResult;
-import com.example.memotion.route.get.route.myRoute.MyRouteGetService;
+import com.example.memotion.route.get.myRoute.MyRouteGetResponse;
+import com.example.memotion.route.get.myRoute.MyRouteGetResult;
+import com.example.memotion.route.get.myRoute.MyRouteGetService;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.memotion.route.get.route.myRoute;
+package com.example.memotion.route.get.myRoute;
 
 import java.util.ArrayList;
 

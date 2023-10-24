@@ -1,4 +1,4 @@
-package com.example.memotion.route.get.route.myRoute;
+package com.example.memotion.route.get.myRoute;
 
 import com.google.gson.annotations.SerializedName;
 

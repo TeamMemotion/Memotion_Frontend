@@ -9,7 +9,7 @@ public class GetRouteDetailResponse {
     @SerializedName(value = "isSuccess") private Boolean isSuccess;
     @SerializedName(value = "code") private int code;
     @SerializedName(value = "message") private String message;
-    @SerializedName(value = "result") private GetRouteDetailResponse.Result result;
+    @SerializedName(value = "result") private ArrayList<GetRouteDetailResponse.Result> result;
 
     public int getCode() {
         return code;
@@ -19,11 +19,11 @@ public class GetRouteDetailResponse {
         return message;
     }
 
-    public GetRouteDetailResponse.Result getResult() {
+    public ArrayList<GetRouteDetailResponse.Result> getResult() {
         return result;
     }
 
-    public static class Result {
+    public static class Result  {
         @SerializedName(value ="content") private String content;
         @SerializedName(value ="end_time") private String end_time;
         @SerializedName(value ="latitude") private Double latitude;

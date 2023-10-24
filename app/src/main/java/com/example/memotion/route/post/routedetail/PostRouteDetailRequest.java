@@ -2,6 +2,8 @@ package com.example.memotion.route.post.routedetail;
 
 import com.google.gson.annotations.SerializedName;
 
+import okhttp3.MultipartBody;
+
 public class PostRouteDetailRequest {
     @SerializedName(value = "content")
     private String content;
@@ -31,9 +33,9 @@ public class PostRouteDetailRequest {
     private String title;
 
     @SerializedName(value = "url")
-    private String url;
+    private MultipartBody.Part url;
 
-    public PostRouteDetailRequest(String content, String endTime, Double latitude, Double longitude, String place, Long routeId, String selectDate, String startTime, String title, String url) {
+    public PostRouteDetailRequest(String content, String endTime, Double latitude, Double longitude, String place, Long routeId, String selectDate, String startTime, String title, MultipartBody.Part url) {
         this.content = content;
         this.endTime = endTime;
         this.latitude = latitude;

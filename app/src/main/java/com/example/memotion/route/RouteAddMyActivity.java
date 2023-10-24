@@ -32,8 +32,14 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.memotion.R;
 import com.example.memotion.databinding.ActivityRouteAddMyBinding;
+import com.example.memotion.route.get.routedetail.GetRouteDetailResponse;
+import com.example.memotion.route.get.routedetail.GetRouteDetailResult;
+import com.example.memotion.route.get.routedetail.GetRouteDetailService;
 import com.example.memotion.route.patch.routedetail.PatchRouteDetailRequest;
 import com.example.memotion.route.post.routedetail.PostRouteDetailRequest;
+import com.example.memotion.route.post.routedetail.PostRouteDetailResponse;
+import com.example.memotion.route.post.routedetail.PostRouteDetailResult;
+import com.example.memotion.route.post.routedetail.PostRouteDetailService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -60,7 +66,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class RouteAddMyActivity extends AppCompatActivity {
+public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDetailResult, GetRouteDetailResult {
 
     ActivityRouteAddMyBinding routeAddMyBinding;
     final String TAG = "RouteAddMyActivity";
@@ -71,12 +77,14 @@ public class RouteAddMyActivity extends AppCompatActivity {
     private GoogleMap mGoogleMap;    // 지도 객체
     private Marker mCenterMarker;
 
-    private Double mLat = 360.0;    // 위도 초기값
-    private Double mLng = 360.0;    // 경도 초기값
+    private Double mLat = 0.0;    // 위도 초기값
+    private Double mLng = 0.0;    // 경도 초기값
     private String mLastEmotion;
     private boolean mLastShare = true;
+    private MultipartBody.Part body;
+    private Long routeDetailId = Long.valueOf(-1);
 
-    private int routeId = -1;
+    private Long routeId = Long.valueOf(-1);
 //    private int filterState = -1;   // 0부터 시작
 //    private String filterContent;
     private String date;
@@ -97,28 +105,35 @@ public class RouteAddMyActivity extends AppCompatActivity {
         // 생성인지 수정인지 조회
         Intent intent = getIntent();
         if(intent != null) {
-            // intent로 routeId랑 날짜 받기 routeId =
-//            if(location != null) {
+            // intent로 routeId랑 날짜 받기
+            date = intent.getStringExtra("selectDate");
+            routeId = intent.getLongExtra("routeId", -1);
+
+            if(date != null) {
 //                if(routeId != -1) {
-//                  // get api 상세 조회
-////                  // 저장된 날짜로 스피너 띄우기
-////                  // 받아온 날짜로 arraylist에 있는 형태로 타입 변환
-////                  int position = items.indexOf( );
-////                  if(position >= 0) {
-////                      routeAddMyBinding.spinnerBtn.setSelection(position);
-////            }
+//                    // get api 상세 조회
+//////                  // 저장된 날짜로 스피너 띄우기
+//////                  // 받아온 날짜로 arraylist에 있는 형태로 타입 변환
+//////                  int position = items.indexOf( );
+//////                  if(position >= 0) {
+//////                      routeAddMyBinding.spinnerBtn.setSelection(position);
+//                }
+                routeAddMyBinding.currentDate.setText(date);
+                if(routeDetailId != -1) {
+                    getRouteDetail();
+                }
+            }
         }
         //setUpSpinnerHandler();
-
-        // 날짜 넣어주기 (textview)
 
 
         // 저장
         routeAddMyBinding.btnSaveRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(routeId == -1) {
+                if(routeDetailId == -1) {
                     // 생성
+                    saveRouteDetail();
                 } else {
                     // 수정
                 }
@@ -185,14 +200,40 @@ public class RouteAddMyActivity extends AppCompatActivity {
     }
 
     // 저장 api
-//    private PostRouteDetailRequest saveRequest() {
-//        // 전달 받은 날짜
-//        return PostRouteDetailRequest();
-//    }
-//
-//    private void postRouteDetail() {
-//
-//    }
+    private PostRouteDetailRequest saveRequest() {
+        String content = routeAddMyBinding.writeMemo.getText().toString();
+        String endTime = stringToTimestamp(routeAddMyBinding.endAmPm.getText().toString(), routeAddMyBinding.endHour.getText().toString(), routeAddMyBinding.endMinute.getText().toString());
+        Double latitude = mLat;
+        Double longitude = mLng;
+        String place = routeAddMyBinding.placeAdd.getText().toString();
+        String selectDate = routeAddMyBinding.currentDate.getText().toString();
+        String startTime = stringToTimestamp(routeAddMyBinding.startAmPm.getText().toString(), routeAddMyBinding.startHour.getText().toString(), routeAddMyBinding.startMinute.getText().toString());
+        String title = routeAddMyBinding.addRouteTitle.getText().toString();
+        return new PostRouteDetailRequest(content, endTime, latitude, longitude, place, routeId, selectDate, startTime, title, body);
+    }
+
+    private void saveRouteDetail() {
+        PostRouteDetailService postRouteDetailService = new PostRouteDetailService();
+        postRouteDetailService.setPostRouteDetailResult(this);
+        postRouteDetailService.postRouteDetail(saveRequest());
+    }
+
+    @Override
+    public void postRouteDetailSuccess(int code, PostRouteDetailResponse.Result result) {
+        Toast.makeText(getApplicationContext(), "저장을 성공하였습니다.", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, result.getRouteId().toString());
+        Log.d(TAG, result.getTitle());
+        Log.d(TAG, result.getSelectDate());
+        Log.d(TAG, result.getStartTime());
+        Log.d(TAG, result.getEndTime());
+        Log.d(TAG, result.getUrl());
+    }
+
+    @Override
+    public void postRouteDetailFailure(int code, String message) {
+        Log.d("상세 저장 실패: ", message);
+    }
+
 //
 //    // 수정 api
 //    private PatchRouteDetailRequest patchRequest() {
@@ -204,6 +245,21 @@ public class RouteAddMyActivity extends AppCompatActivity {
 //    }
 
     // 조회 api
+    private void getRouteDetail() {
+        GetRouteDetailService getRouteDetailService = new GetRouteDetailService();
+        getRouteDetailService.setGetRouteDetailResult(this);
+//        getRouteDetailService.getRouteDetail();
+    }
+
+    @Override
+    public void getRouteDetailSuccess(int code, GetRouteDetailResponse.Result result) {
+
+    }
+
+    @Override
+    public void getRouteDetailFailure(int code, String message) {
+
+    }
 
 
 //    // 스피너
@@ -477,7 +533,7 @@ public class RouteAddMyActivity extends AppCompatActivity {
                 String filePath = absolutelyPath(selectedImageUri, getApplicationContext());
                 File file = new File(filePath);
                 RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
-                MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
 
                 //profileImage.setImageURI(selectedImageUri);

@@ -1,7 +1,5 @@
 package com.example.memotion.route.get.route;
 
-import com.example.memotion.route.get.routedetail.GetRouteDetailResponse;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

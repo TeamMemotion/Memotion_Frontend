@@ -69,7 +69,9 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
             @Override
             public void onClick(View view) {
                 try {
+                    Log.d(TAG, "+ 버튼 클릭 시 동작");
                     Date date = RouteDateRecyclerAdapter.selectedDate;
+                    Log.d(TAG, "선택일: " + date.toString());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy년MM월dd일");
                     String selectDate = sdf.format(date);
 

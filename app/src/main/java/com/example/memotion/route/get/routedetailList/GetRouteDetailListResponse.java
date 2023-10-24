@@ -1,15 +1,14 @@
-package com.example.memotion.route.get.routedetail;
+package com.example.memotion.route.get.routedetailList;
 
-import com.example.memotion.route.get.routedetailList.GetRouteDetailListResponse;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class GetRouteDetailResponse {
+public class GetRouteDetailListResponse {
     @SerializedName(value = "isSuccess") private Boolean isSuccess;
     @SerializedName(value = "code") private int code;
     @SerializedName(value = "message") private String message;
-    @SerializedName(value = "result") private GetRouteDetailResponse.Result result;
+    @SerializedName(value = "result") private ArrayList<GetRouteDetailListResponse.Result> result;
 
     public int getCode() {
         return code;
@@ -19,7 +18,7 @@ public class GetRouteDetailResponse {
         return message;
     }
 
-    public GetRouteDetailResponse.Result getResult() {
+    public ArrayList<Result> getResult() {
         return result;
     }
 

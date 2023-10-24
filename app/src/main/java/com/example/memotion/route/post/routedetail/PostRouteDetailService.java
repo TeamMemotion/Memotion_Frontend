@@ -1,4 +1,4 @@
-package com.example.memotion.route.get.routedetail;
+package com.example.memotion.route.post.routedetail;
 
 import static com.example.memotion.RetrofitClient.errorParsing;
 import static com.example.memotion.RetrofitClient.getClient;
@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.example.memotion.RetrofitClient;
-import com.example.memotion.route.get.route.GetRouteResponse;
 
 import java.io.IOException;
 
@@ -15,25 +14,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GetRouteDetailService {
-    private GetRouteDetailResult getRouteDetailResult;
+public class PostRouteDetailService {
+    private PostRouteDetailResult postRouteDetailResult;
 
-    public void setGetRouteDetailResult(GetRouteDetailResult getRouteDetailResult) {
-        this.getRouteDetailResult = getRouteDetailResult;
+    public void setPostRouteDetailResult(PostRouteDetailResult postRouteDetailResult) {
+        this.postRouteDetailResult = postRouteDetailResult;
     }
 
-    public void getRouteDetail(Long routeId) {
-        GetRouteDetailRetrofitInterface getRouteDetailService = getClient().create(GetRouteDetailRetrofitInterface.class);
-        getRouteDetailService.getRouteDetail(routeId).enqueue(new Callback<GetRouteDetailResponse>() {
-
+    public void postRouteDetail(PostRouteDetailRequest postRouteDetailRequest) {
+        PostRouteDetailRetrofitInterface postRouteDetailService = getClient().create(PostRouteDetailRetrofitInterface.class);
+        postRouteDetailService.postRouteDetail(postRouteDetailRequest).enqueue(new Callback<PostRouteDetailResponse>() {
             @SuppressLint("LongLogTag")
             @Override
-            public void onResponse(Call<GetRouteDetailResponse> call, Response<GetRouteDetailResponse> response) {
-                Log.d("GET-ROUTE-DETAIL-SUCCESS", response.toString());
+            public void onResponse(Call<PostRouteDetailResponse> call, Response<PostRouteDetailResponse> response) {
+                Log.d("POST-ROUTE-DETAIL-SUCCESS", response.toString());
 
                 if(response.isSuccessful()) {
                     if(response.body().getCode() == 1000) {
-                        getRouteDetailResult.getRouteDetailSuccess(response.body().getCode(), response.body().getResult());
+                        postRouteDetailResult.postRouteDetailSuccess(response.body().getCode(), response.body().getResult());
                     }
                 } else {
                     //400이상 에러시 response.body가 null로 처리됨. 따라서 errorBody로 받아야함.
@@ -43,12 +41,12 @@ public class GetRouteDetailService {
 
                         Log.d("ErrorBody : ", errorBody);
                         Log.d("errorCode: ", String.valueOf(errorResponse.getCode()));
-                        Log.d("errorMessage: ", errorResponse.getMessage()!=null && !errorResponse.getMessage().isEmpty() ? errorResponse.getMessage() : " ");
+                        Log.d("errorMessage: ", errorResponse.getMessage());
 
                         switch (errorResponse.getCode()) {
                             case 500:
-                            case 2001:
-                                getRouteDetailResult.getRouteDetailFailure(errorResponse.getCode(), errorResponse.getMessage());
+                            case 2002:
+                                postRouteDetailResult.postRouteDetailFailure(errorResponse.getCode(), errorResponse.getMessage());
                                 break;
                         }
                     } catch (IOException e) {
@@ -59,8 +57,8 @@ public class GetRouteDetailService {
 
             @SuppressLint("LongLogTag")
             @Override
-            public void onFailure(Call<GetRouteDetailResponse> call, Throwable t) {
-                Log.d("GET-ROUTE-DETAIL-FAILURE", t.getMessage());
+            public void onFailure(Call<PostRouteDetailResponse> call, Throwable t) {
+                Log.d("POST-ROUTE-DETAIL-FAILURE", t.getMessage());
             }
         });
     }

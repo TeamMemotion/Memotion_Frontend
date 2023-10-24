@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.memotion.R;
+
 import com.example.memotion.databinding.DialogRouteWriteBinding;
 import com.example.memotion.route.post.route.PostRouteRequest;
 import com.example.memotion.route.post.route.PostRouteResponse;
@@ -20,7 +20,7 @@ import com.example.memotion.route.post.route.PostRouteService;
 public class RouteWriteDialog extends Dialog implements PostRouteResult {
     private String TAG = "RouteWriteDialog";
     private Context context;
-    DialogRouteWriteBinding routeWriteBinding;
+    private DialogRouteWriteBinding routeWriteBinding;
 
     public RouteWriteDialog(@NonNull Context context) {
         super(context);
@@ -33,7 +33,7 @@ public class RouteWriteDialog extends Dialog implements PostRouteResult {
         setContentView(routeWriteBinding.getRoot());
 
         // 닫기 버튼 클릭 시
-        routeWriteBinding.closeBtn.setOnClickListener(new View.OnClickListener() {
+        routeWriteBinding.routeDetailCloseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismiss();

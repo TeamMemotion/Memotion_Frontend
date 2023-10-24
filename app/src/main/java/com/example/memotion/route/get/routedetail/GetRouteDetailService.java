@@ -22,9 +22,9 @@ public class GetRouteDetailService {
         this.getRouteDetailResult = getRouteDetailResult;
     }
 
-    public void getRouteDetail(Long routeId) {
+    public void getRouteDetail(Long routeDetailId) {
         GetRouteDetailRetrofitInterface getRouteDetailService = getClient().create(GetRouteDetailRetrofitInterface.class);
-        getRouteDetailService.getRouteDetail(routeId).enqueue(new Callback<GetRouteDetailResponse>() {
+        getRouteDetailService.getRouteDetail(routeDetailId).enqueue(new Callback<GetRouteDetailResponse>() {
 
             @SuppressLint("LongLogTag")
             @Override

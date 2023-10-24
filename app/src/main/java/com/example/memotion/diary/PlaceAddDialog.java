@@ -1,21 +1,16 @@
 package com.example.memotion.diary;
 
 
-import static android.content.Intent.getIntent;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
@@ -31,8 +26,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.memotion.R;
-import com.example.memotion.account.login.LoginRequest;
-import com.example.memotion.account.login.LoginService;
 import com.example.memotion.diary.post.emotion.PostEmotionRequest;
 import com.example.memotion.diary.post.emotion.PostEmotionResult;
 import com.example.memotion.diary.post.emotion.PostEmotionService;
@@ -43,7 +36,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -53,11 +45,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
-
-import javax.xml.transform.Result;
 
 // 23.08.24 : 지도 API 추가
 public class PlaceAddDialog implements PostEmotionResult {
@@ -89,7 +78,7 @@ public class PlaceAddDialog implements PostEmotionResult {
         dialog.setCancelable(true);    // 취소가 가능하도록 하는 코드
 
         // 닫기 버튼
-        dialog.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
+        dialog.findViewById(R.id.routeDetail_close_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -343,7 +332,7 @@ public class PlaceAddDialog implements PostEmotionResult {
                 Address address = addresses.get(0);
                 String markerAddress = address.getAddressLine (0);
 
-                TextView gpsPlaceFullName = dialog.findViewById(R.id.gpsPlaceFullName);
+                TextView gpsPlaceFullName = dialog.findViewById(R.id.rt_gpsPlaceFullName);
                 gpsPlaceFullName.setText(markerAddress);
             }
         }
@@ -389,7 +378,7 @@ public class PlaceAddDialog implements PostEmotionResult {
                         
                         // 장소 검색 주소 변경
                         String markerAddress = address.getAddressLine (0);
-                        TextView gpsPlaceFullName = dialog.findViewById(R.id.gpsPlaceFullName);
+                        TextView gpsPlaceFullName = dialog.findViewById(R.id.rt_gpsPlaceFullName);
                         gpsPlaceFullName.setText(markerAddress);
 
                         // 마커 위치 변경

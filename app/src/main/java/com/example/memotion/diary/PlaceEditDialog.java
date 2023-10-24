@@ -85,7 +85,7 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
         keyword.setText(item.getKeyword());
 
         // 닫기 버튼
-        dialog.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
+        dialog.findViewById(R.id.routeDetail_close_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -378,7 +378,7 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
                 Address address = addresses.get(0);
                 String markerAddress = address.getAddressLine (0);
 
-                TextView gpsPlaceFullName = dialog.findViewById(R.id.gpsPlaceFullName);
+                TextView gpsPlaceFullName = dialog.findViewById(R.id.rt_gpsPlaceFullName);
                 gpsPlaceFullName.setText(markerAddress);
             }
         }
@@ -424,7 +424,7 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
 
                         // 장소 검색 주소 변경
                         String markerAddress = address.getAddressLine (0);
-                        TextView gpsPlaceFullName = dialog.findViewById(R.id.gpsPlaceFullName);
+                        TextView gpsPlaceFullName = dialog.findViewById(R.id.rt_gpsPlaceFullName);
                         gpsPlaceFullName.setText(markerAddress);
 
                         // 마커 위치 변경

@@ -59,7 +59,7 @@
             android:id="@+id/parent">
 
             <TextView
-                android:id="@+id/textview1"
+                android:id="@+id/select_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="22dp"
@@ -78,7 +78,7 @@
                 android:background="@drawable/dialog_background_7"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview1" />
+                app:layout_constraintTop_toBottomOf="@+id/select_date" />
 
             <Spinner
                 android:id="@+id/spinner_btn"
@@ -399,7 +399,7 @@
 
 
             <TextView
-                android:id="@+id/gpsPlaceFullName"
+                android:id="@+id/rt_gpsPlaceFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
@@ -421,7 +421,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gpsPlaceFullName" />
+                app:layout_constraintTop_toBottomOf="@+id/rt_gpsPlaceFullName" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="360dp"
@@ -440,13 +440,13 @@
                     android:layout_height="match_parent"
                     android:text="선택된 이미지 없음"
                     android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/route_et_img"
+                    app:layout_constraintBottom_toBottomOf="@+id/rt_image"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:visibility="visible"/>
                 <ImageView
-                    android:id="@+id/route_et_img"
+                    android:id="@+id/rt_image"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:gravity="center"

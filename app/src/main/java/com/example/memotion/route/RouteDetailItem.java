@@ -7,11 +7,11 @@ import java.time.LocalDateTime;
 public class RouteDetailItem implements Serializable {
     private String title;
 
-    private LocalDateTime start_time;
+    private String start_time;
 
-    private LocalDateTime end_time;
+    private String end_time;
 
-    private LocalDate select_date;
+    private String select_date;
 
     private String content;
 
@@ -25,7 +25,7 @@ public class RouteDetailItem implements Serializable {
 
     private Long routeId;
 
-    public RouteDetailItem(String title, LocalDateTime start_time, LocalDateTime end_time, LocalDate select_date, String content, String place, Double latitude, Double longitude, String url, Long routeId) {
+    public RouteDetailItem(String title, String start_time, String end_time, String select_date, String content, String place, Double latitude, Double longitude, String url, Long routeId) {
         this.title = title;
         this.start_time = start_time;
         this.end_time = end_time;
@@ -46,27 +46,27 @@ public class RouteDetailItem implements Serializable {
         this.title = title;
     }
 
-    public LocalDateTime getStart_time() {
+    public String getStart_time() {
         return start_time;
     }
 
-    public void setStart_time(LocalDateTime start_time) {
+    public void setStart_time(String start_time) {
         this.start_time = start_time;
     }
 
-    public LocalDateTime getEnd_time() {
+    public String getEnd_time() {
         return end_time;
     }
 
-    public void setEnd_time(LocalDateTime end_time) {
+    public void setEnd_time(String end_time) {
         this.end_time = end_time;
     }
 
-    public LocalDate getSelect_date() {
+    public String getSelect_date() {
         return select_date;
     }
 
-    public void setSelect_date(LocalDate select_date) {
+    public void setSelect_date(String select_date) {
         this.select_date = select_date;
     }
 

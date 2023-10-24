@@ -46,16 +46,6 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult {
         routeBinding.dateView.setAdapter(dateRecyclerAdapter);
         routeBinding.dateView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        // 날짜 클릭 시 날짜별 RouteDetail 호출
-        dateRecyclerAdapter.setItemClickListener(new RouteDateRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Date selectDate) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String date = dateFormat.format(selectDate);
-                Log.d(TAG, "클릭한 날짜: " + date);
-            }
-        });
-
         // 루트 상세 조회하는 RecyclerView 연결
         recyclerView = routeBinding.routeDetailView;
         routeAdapter = new RouteRecyclerAdapter(this);
@@ -86,7 +76,7 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult {
 
         // 루트 시작일 ~ 종료일을 Date 타입 리스트에 담기
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             Date start = sdf.parse(startDate);
             Date end = sdf.parse(endDate);
 

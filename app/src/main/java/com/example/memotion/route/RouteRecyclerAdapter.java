@@ -1,5 +1,6 @@
 package com.example.memotion.route;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.memotion.R;
+import com.example.memotion.databinding.ItemRoutePlanBinding;
 import com.example.memotion.diary.DiaryItem;
 import com.example.memotion.diary.DiaryRecyclerAdapter;
 import com.example.memotion.diary.PlaceEditDialog;
@@ -21,8 +24,11 @@ import java.util.ArrayList;
 import okhttp3.Route;
 
 public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdapter.ViewHolder> {
+    ItemRoutePlanBinding itemRoutePlanBinding;
     private RouteActivity routeActivity;
     private ArrayList<RouteDetailItem> routeDetailItems;
+
+    private Context context;
     public RouteRecyclerAdapter(RouteActivity routeActivity){
         this.routeActivity=routeActivity;
     }
@@ -31,6 +37,7 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     @Override
     public RouteRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_route, parent, false);
+        context = parent.getContext();
         return new ViewHolder(view);
     }
 
@@ -52,25 +59,17 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int pos = getAdapterPosition();
-
-                    // 데이터 리스트로부터 아이템 데이터 참조
-                    if (pos != RecyclerView.NO_POSITION) {
-                        RouteDetailItem item = routeDetailItems.get(pos);
-                        //상세 루트 자세히 볼 수 있는 다이얼로그
-                    }
-                }
-            });
         }
 
 
         void onBind(RouteDetailItem item) {
-
-
+            if(item.getUrl() != null) {
+                Glide.with(context).load(item.getUrl()).centerCrop().into(itemRoutePlanBinding.routePic);
+            }
+            itemRoutePlanBinding.routeplanTitle.setText(item.getTitle());
+            itemRoutePlanBinding.planplace.setText(item.getPlace());
+            itemRoutePlanBinding.plantimeEnd.setText(item.getEnd_time());
+            itemRoutePlanBinding.plantimeStart.setText(item.getStart_time());
         }
     }
 }

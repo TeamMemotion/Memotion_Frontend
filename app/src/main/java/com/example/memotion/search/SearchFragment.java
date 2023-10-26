@@ -40,7 +40,7 @@ public class SearchFragment extends Fragment implements SearchGetResult {
     private SearchEarliestAdapter searchEarliestAdapter;
     private static String TAG = "SearchFragment";
     private int filterState = 0; // 0-> 최신 / 1-> 오래된
-    EditText searchEditText;
+    private EditText searchEditText;
     private Double mLat = 360.0;    // 위도 초기값
     private Double mLng = 360.0;    // 경도 초기값
 

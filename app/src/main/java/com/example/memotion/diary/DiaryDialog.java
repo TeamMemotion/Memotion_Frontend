@@ -83,6 +83,7 @@ public class DiaryDialog extends Dialog {
 
         diaryBinding.getKeyword.setText(result.getKeyWord());
         diaryBinding.gpsGetText.setText(result.getCreatedDate() + " 작성 다이어리");
+        diaryBinding.getGpsPlaceName.setText(result.getPlace());
 
         // 닫기 버튼 클릭
         diaryBinding.searchBtnClose.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +117,7 @@ public class DiaryDialog extends Dialog {
             Log.d(TAG, "권한 획득 실패 -> 권한 요청");
         }
     }
+
     private void mapLoad() {
         // Google Maps 초기화
         MapsInitializer.initialize(context);

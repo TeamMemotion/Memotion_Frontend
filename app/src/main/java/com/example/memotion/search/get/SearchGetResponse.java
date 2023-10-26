@@ -27,6 +27,7 @@ public class SearchGetResponse {
         @SerializedName(value = "keyWord") private String keyWord;
         @SerializedName(value = "latitude") private Double latitude;
         @SerializedName(value = "longitude") private Double longitude;
+        @SerializedName(value = "place") private String place;
         @SerializedName(value = "emotion") private String emotion;
         @SerializedName(value = "createdDate") private String createdDate;
 
@@ -52,6 +53,10 @@ public class SearchGetResponse {
 
         public String getCreatedDate() {
             return createdDate;
+        }
+
+        public String getPlace() {
+            return place;
         }
     }
 }

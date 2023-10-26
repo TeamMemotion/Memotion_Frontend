@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
@@ -49,7 +50,7 @@ import java.util.List;
 import java.util.Locale;
 
 // 23.08.24 : 지도 API 추가
-public class PlaceAddDialog implements PostEmotionResult {
+public class PlaceAddDialog extends Dialog implements PostEmotionResult {
     final String TAG = "PlaceAddDialog";
     final static int PERMISSION_REQ_CODE = 100;
 
@@ -63,13 +64,24 @@ public class PlaceAddDialog implements PostEmotionResult {
     private Double mLat = 360.0;    // 위도 초기값
     private Double mLng = 360.0;    // 경도 초기값
     private String mLastEmotion;
+    private String inputLocation = "장소 이름";
     private boolean mLastShare = true;
 
-    public PlaceAddDialog(Context context) {
-        this.context = context;
+    private DialogListener dialogListener;
+
+    public interface DialogListener {
+        void onDialogResult(String result);
     }
 
-    public void start() {
+    public PlaceAddDialog(@NonNull Context context, DialogListener listener) {
+        super(context);
+        this.context = context;
+        dialogListener = listener;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         dialog = new Dialog(context);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -90,7 +102,7 @@ public class PlaceAddDialog implements PostEmotionResult {
             @Override
             public void onClick(View view) {
                 EditText editText = dialog.findViewById(R.id.gps_editText);   // 검색 위치
-                String inputLocation = editText.getText().toString();
+                inputLocation = editText.getText().toString();
 
                 // reverseGeocoding -> 위도 경도 추출 + 현재 위치 변경
                 if(inputLocation.getBytes().length > 0)
@@ -188,10 +200,11 @@ public class PlaceAddDialog implements PostEmotionResult {
 
         flpClient = LocationServices.getFusedLocationProviderClient(context);
         flpClient.requestLocationUpdates (
-                getLocationRequest (),
+                getLocationRequest(),
                 mLocCallback,
-                Looper.getMainLooper ()
+                Looper.getMainLooper()
         );
+
         dialog.show();
     }
 
@@ -200,18 +213,18 @@ public class PlaceAddDialog implements PostEmotionResult {
         Log.d(TAG, "API 호출");
         PostEmotionService postEmotionService = new PostEmotionService();
         postEmotionService.setPostEmotionResult(this);
-        postEmotionService.postEmotion(new PostEmotionRequest(mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastEmotion, keyWord, createdDate, mLastShare));
+        postEmotionService.postEmotion(new PostEmotionRequest(mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastEmotion, keyWord, inputLocation, createdDate, mLastShare));
     }
 
     @Override
     public void postEmotionSuccess(int code, Long result) {
         Log.d(TAG, "다이어리 저장 성공");
-        // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
-        Intent intent = new Intent();
-        intent.putExtra("diaryId", result); // diaryId를 전달
 
-        // 결과를 DiaryActivity로 반환
-        ((AppCompatActivity)context).setResult(Activity.RESULT_OK, intent);
+        // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
+        if(dialogListener != null) {
+            dialogListener.onDialogResult(String.valueOf(result));
+        }
+
         dialog.dismiss();
     }
 
@@ -334,6 +347,12 @@ public class PlaceAddDialog implements PostEmotionResult {
 
                 TextView gpsPlaceFullName = dialog.findViewById(R.id.rt_gpsPlaceFullName);
                 gpsPlaceFullName.setText(markerAddress);
+
+                TextView gpsPlaceName = dialog.findViewById(R.id.rt_gpsPlaceName);
+                if(inputLocation.length() >= 15)
+                    gpsPlaceName.setText(inputLocation.substring(0, 14) + "...");
+                else
+                    gpsPlaceName.setText(inputLocation);
             }
         }
     }
@@ -380,6 +399,12 @@ public class PlaceAddDialog implements PostEmotionResult {
                         String markerAddress = address.getAddressLine (0);
                         TextView gpsPlaceFullName = dialog.findViewById(R.id.rt_gpsPlaceFullName);
                         gpsPlaceFullName.setText(markerAddress);
+
+                        TextView gpsPlaceName = dialog.findViewById(R.id.rt_gpsPlaceName);
+                        if(inputLocation.length() >= 15)
+                            gpsPlaceName.setText(inputLocation.substring(0, 14) + "...");
+                        else
+                            gpsPlaceName.setText(inputLocation);
 
                         // 마커 위치 변경
                         mCenterMarker.setPosition(new LatLng(mLat, mLng));

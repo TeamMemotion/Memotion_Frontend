@@ -19,13 +19,13 @@ public class LoginRequest {
         @SerializedName("image")
         private String image;
 
-        @SerializedName("nickname")
-        private String nickname;
+        @SerializedName("username")
+        private String username;
 
-        public KakaoLogin(String email, String image, String nickname) {
+        public KakaoLogin(String email, String image, String username) {
             this.email = email;
             this.image = image;
-            this.nickname = nickname;
+            this.username = username;
         }
     }
 }

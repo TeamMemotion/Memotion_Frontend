@@ -5,7 +5,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface LoginRetrofitInterface {
-    @POST("oauth/kakao")
+    @POST("member/kakao")
     Call<LoginResponse> kakaoLogin(@Body LoginRequest.KakaoLogin kakaoLogin);
 
     @POST("member/login")

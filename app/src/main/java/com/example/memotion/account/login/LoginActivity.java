@@ -191,6 +191,13 @@ public class LoginActivity extends AppCompatActivity implements LoginResult {
         }
     }
 
+    // 카카오 로그인 API 호출
+    private void kakaoLogin(LoginRequest.KakaoLogin kakaoRequest) {
+        LoginService loginService = new LoginService();
+        loginService.setLoginResult(this);
+        loginService.kakaoLogin(kakaoRequest);
+    }
+
     private void updateKakaoLoginUi() {
         UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
             @Override
@@ -207,7 +214,7 @@ public class LoginActivity extends AppCompatActivity implements LoginResult {
 
                     if(email != null) {
                         LoginRequest.KakaoLogin request = new LoginRequest.KakaoLogin(email, image, nickname);
-                        loginService.kakaoLogin(request);
+                        kakaoLogin(request);
                     } else { // email이 null인 경우 : 이메일 동의 거부
                         loginBinding.loginError.setText("이메일 동의가 거부되었습니다.");
                         loginBinding.loginError.setVisibility(View.VISIBLE);
@@ -250,6 +257,4 @@ public class LoginActivity extends AppCompatActivity implements LoginResult {
             return false;
         }
     }
-
-
 }

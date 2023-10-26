@@ -11,16 +11,19 @@ public class PatchEmotionRequest {
     private String emotion;
     @SerializedName(value = "keyWord")
     private String keyWord;
+    @SerializedName(value = "place")
+    private String place;
     @SerializedName(value = "createdDate")
     private String createdDate;
     @SerializedName(value = "share")
     private boolean share;
 
-    public PatchEmotionRequest(Double latitude, Double longitude, String emotion, String keyWord, String createdDate, boolean share) {
+    public PatchEmotionRequest(Double latitude, Double longitude, String emotion, String keyWord, String place, String createdDate, boolean share) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.emotion = emotion;
         this.keyWord = keyWord;
+        this.place = place;
         this.createdDate = createdDate;
         this.share = share;
     }

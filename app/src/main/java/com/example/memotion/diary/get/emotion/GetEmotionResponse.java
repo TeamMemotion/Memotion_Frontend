@@ -30,6 +30,7 @@ public class GetEmotionResponse {
         @SerializedName(value = "latitude") private Double latitude;
         @SerializedName(value = "emotion") private String emotion;
         @SerializedName(value = "keyWord") private String keyWord;
+        @SerializedName(value = "place") private String place;
         @SerializedName(value = "createdDate") private String createdDate;
         @SerializedName(value = "updatedDate") private String updatedDate;
         @SerializedName(value = "share") private boolean share;
@@ -69,6 +70,10 @@ public class GetEmotionResponse {
 
         public Long getMemberId() {
             return memberId;
+        }
+
+        public String getPlace() {
+            return place;
         }
     }
 }

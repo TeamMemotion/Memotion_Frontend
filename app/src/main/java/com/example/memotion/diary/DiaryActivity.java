@@ -44,7 +44,7 @@ import java.util.Locale;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class DiaryActivity extends AppCompatActivity implements PostContentResult, GetContentResult, GetEmotionResult {
+public class DiaryActivity extends AppCompatActivity implements PostContentResult, GetContentResult, GetEmotionResult, PlaceAddDialog.DialogListener, PlaceEditDialog.DialogListener {
     private static String TAG = "DiaryActivity";
     private static int REQUEST_ADD_DIARY = 100;
     private static int REQUEST_EDIT_DIARY = 200;
@@ -87,8 +87,8 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
         diaryBinding.addDiary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PlaceAddDialog dialog = new PlaceAddDialog(DiaryActivity.this);
-                dialog.start();
+                PlaceAddDialog dialog = new PlaceAddDialog(DiaryActivity.this, DiaryActivity.this);
+                dialog.show();
             }
         });
 
@@ -137,20 +137,13 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
 
     // 오늘의 루트 클릭해서 장소 등록 후 실행될 메소드
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "Dialog -> DiaryActivity로 이동");
+    public void onDialogResult(String result) {
+        Log.d(TAG, "Dialog -> DiaryActivity로 돌아옴");
+        Long diaryId = Long.valueOf(result);
 
-        if ((requestCode ==  REQUEST_ADD_DIARY || requestCode == REQUEST_EDIT_DIARY) && resultCode == RESULT_OK) {
-            // PlaceAddDialog에서 전달한 데이터를 확인
-            int diaryId = data.getIntExtra("diaryId", -1);
-
-            // 데이터를 사용하여 화면을 업데이트하거나 필요한 작업을 수행
-            if (diaryId != -1) {
-                todayRouteList();
-                todayDiary();
-                adapter.notifyDataSetChanged();
-            }
+        if(diaryId != -1) {
+            todayRouteList();
+            todayDiary();
         }
     }
 
@@ -169,10 +162,20 @@ public class DiaryActivity extends AppCompatActivity implements PostContentResul
         // TO DO: 반복문 돌려서 하나씩 꺼내 화면에 출력
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             ArrayList<DiaryItem> diaryList = (ArrayList<DiaryItem>) result.stream()
-                    .map(r -> new DiaryItem(r.getDiaryId(), r.getLatitude(), r.getLongitude(), r.getEmotion(), r.getKeyWord()))
+                    .map(r -> new DiaryItem(r.getDiaryId(), r.getLatitude(), r.getLongitude(), r.getEmotion(), r.getKeyWord(), r.getPlace()))
                     .collect(Collectors.toList());
             adapter.setDiaryList(diaryList);
         }
+
+        // 클릭 시 다이어리 수정 및 삭제 가능
+        adapter.setItemClickListener(new DiaryRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DiaryItem diaryItem) {
+                Log.d(TAG, "PlaceEditDialog 호출");
+                PlaceEditDialog dialog = new PlaceEditDialog(DiaryActivity.this, DiaryActivity.this, diaryItem);
+                dialog.show();
+            }
+        });
     }
 
     // 오늘의 루트 전체 조회 실패

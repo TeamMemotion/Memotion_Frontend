@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.memotion.R;
@@ -56,14 +57,14 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
     public static String dateFormat = null;
     private static String TAG = "HomeFragment";
     private String selectedDate = null;
-
+    private Context context;
     int SUBACTIITY_REQUEST_CODE = 100;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        context = getContext();
         homeBinding = FragmentHomeBinding.inflate(inflater, container, false);
-
         calendarView = homeBinding.calendarView;
         //dateText = homeBinding.dateText;
 
@@ -212,11 +213,11 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
             }
         }
 
-        Drawable happy = getResources().getDrawable(R.drawable.happy);
-        Drawable smile = getResources().getDrawable(R.drawable.smile);
-        Drawable notBad = getResources().getDrawable(R.drawable.notbad);
-        Drawable sad = getResources().getDrawable(R.drawable.sad);
-        Drawable upset = getResources().getDrawable(R.drawable.upset);
+        Drawable happy = ContextCompat.getDrawable(context, R.drawable.happy);
+        Drawable smile = ContextCompat.getDrawable(context, R.drawable.smile);
+        Drawable notBad = ContextCompat.getDrawable(context, R.drawable.notbad);
+        Drawable sad = ContextCompat.getDrawable(context, R.drawable.sad);
+        Drawable upset = ContextCompat.getDrawable(context, R.drawable.upset);
 
         calendarView.addDecorator(new ImageDecorator(happy, happyDates));
         calendarView.addDecorator(new ImageDecorator(smile, smileDates));
@@ -245,15 +246,12 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
         // TO DO: 반복문 돌려서 하나씩 꺼내 화면에 출력
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             ArrayList<DiaryItem> diaryList = (ArrayList<DiaryItem>) result.stream()
-                    .map(r -> new DiaryItem(r.getDiaryId(), r.getLatitude(), r.getLongitude(), r.getEmotion(), r.getKeyWord()))
+                    .map(r -> new DiaryItem(r.getDiaryId(), r.getLatitude(), r.getLongitude(), r.getEmotion(), r.getKeyWord(), r.getPlace()))
                     .collect(Collectors.toList());
 
             if(diaryList.size() > 0) {
-                ArrayList<LatLng> latLngs = new ArrayList<LatLng>();
-                latLngs.add(new LatLng(diaryList.get(0).getLatitude(), diaryList.get(0).getLongitude()));
-                latLngs.add(new LatLng(diaryList.get(diaryList.size() - 1).getLatitude(), diaryList.get(diaryList.size() - 1).getLongitude()));
-
-                executeGeocoding(latLngs);
+                homeBinding.tvStart.setText(diaryList.get(0).getPlace());
+                homeBinding.tvEnd.setText(diaryList.get(diaryList.size() - 1).getPlace());
             }
         }
     }
@@ -262,48 +260,6 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
     @Override
     public void getEmotionFailure(int code, String message) {
         Log.d(TAG, "오늘의 장소 전체 조회 실패");
-    }
-
-    private void executeGeocoding(ArrayList<LatLng> latLng) {
-        if(Geocoder.isPresent() && latLng != null)
-            new GeoTask().execute(latLng);
-    }
-
-    class GeoTask extends AsyncTask<ArrayList<LatLng>, Void, List<Address>> {
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-
-        @Override
-        protected List<Address> doInBackground(ArrayList<LatLng>...latLngs) {
-            List<Address> address = new ArrayList<>();
-
-            try{
-                address.add(geocoder.getFromLocation(latLngs[0].get(0).latitude, latLngs[0].get(0).longitude, 1).get(0));
-                address.add(geocoder.getFromLocation(latLngs[0].get(1).latitude, latLngs[0].get(1).longitude, 1).get(0));
-            } catch(IOException e){
-                e.printStackTrace();
-            } catch (IndexOutOfBoundsException ie) {
-                ie.printStackTrace();
-            } catch (RuntimeException re) {
-                re.printStackTrace();
-            }
-            return address;
-        }
-
-        @Override
-        protected void onPostExecute(List<Address> addresses) {
-            if (addresses != null && addresses.size() > 0) {
-                Address startAddress = addresses.get(0);
-                String startAddressName = startAddress.getAddressLine (0);
-                String [] startAddressShortName = startAddressName.split(startAddress.getCountryName() + " ");
-
-                Address endAddress = addresses.get(1);
-                String endAddressName = endAddress.getAddressLine(0);
-                String [] endAddressShortName = endAddressName.split(endAddress.getCountryName() + " ");
-
-                homeBinding.tvStart.setText(startAddressShortName[1]);
-                homeBinding.tvEnd.setText(endAddressShortName[1]);
-            }
-        }
     }
 
     @Override

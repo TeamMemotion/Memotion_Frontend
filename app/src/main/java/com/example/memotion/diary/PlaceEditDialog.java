@@ -10,6 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
@@ -46,11 +47,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 
-public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult {
+public class PlaceEditDialog extends Dialog implements PatchEmotionResult, DeleteEmotionResult {
     final String TAG = "PlaceEditDialog";
     final static int PERMISSION_REQ_CODE = 200;
 
@@ -67,13 +71,24 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
     private Double mLng = 360.0;    // 경도 초기값
     private String mLastEmotion;
     private boolean mLastShare = true;
+    private String inputLocation;
 
-    public PlaceEditDialog(Context context, DiaryItem item) {
+    private PlaceEditDialog.DialogListener dialogListener;
+
+    public interface DialogListener {
+        void onDialogResult(String result);
+    }
+
+    public PlaceEditDialog(@NotNull Context context, PlaceEditDialog.DialogListener listener, DiaryItem item) {
+        super(context);
         this.context = context;
+        this.dialogListener = listener;
         this.item = item;
     }
 
-    public void start() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         dialog = new Dialog(context);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -83,6 +98,13 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
 
         EditText keyword = dialog.findViewById(R.id.keyword);
         keyword.setText(item.getKeyword());
+
+        TextView gpsPlaceName = dialog.findViewById(R.id.rt_gpsPlaceName);
+        inputLocation = item.getPlace();
+        if(inputLocation.getBytes().length >= 15)
+            gpsPlaceName.setText(inputLocation.substring(0, 14) + "...");
+        else
+            gpsPlaceName.setText(inputLocation);
 
         // 닫기 버튼
         dialog.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
@@ -97,7 +119,7 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
             @Override
             public void onClick(View view) {
                 EditText editText = dialog.findViewById(R.id.gps_editText);   // 검색 위치
-                String inputLocation = editText.getText().toString();
+                inputLocation = editText.getText().toString();
 
                 // reverseGeocoding -> 위도 경도 추출 + 현재 위치 변경
                 if(inputLocation.getBytes().length > 0)
@@ -216,19 +238,19 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
     public void patchEmotion(String createdDate, String keyWord){
         PatchEmotionService patchEmotionService = new PatchEmotionService();
         patchEmotionService.setPatchEmotionResult(this);
-        patchEmotionService.patchEmotion(item.getDiaryId(), new PatchEmotionRequest(mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastEmotion, keyWord, createdDate, mLastShare));
+        patchEmotionService.patchEmotion(item.getDiaryId(), new PatchEmotionRequest(mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastEmotion, keyWord, inputLocation, createdDate, mLastShare));
     }
 
     // 다이어리 장소 수정 성공
     @Override
-    public void patchEmotionSuccess(int code, PatchEmotionResponse.Result result) {
+    public void patchEmotionSuccess(int code, Long result) {
         Log.d(TAG, "다이어리 수정 성공");
-        // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
-        Intent intent = new Intent();
-        intent.putExtra("diaryId", result.getDiaryId()); // diaryId를 전달
 
-        // 결과를 DiaryActivity로 반환
-        ((AppCompatActivity)context).setResult(Activity.RESULT_OK, intent);
+        // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
+        if(dialogListener != null) {
+            dialogListener.onDialogResult(String.valueOf(result));
+        }
+
         dialog.dismiss();
     }
 
@@ -249,12 +271,12 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
     @Override
     public void deleteEmotionSuccess(int code, Long result) {
         Log.d(TAG, "다이어리 삭제 성공");
-        // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
-        Intent intent = new Intent();
-        intent.putExtra("diaryId", result); // diaryId를 전달
 
-        // 결과를 DiaryActivity로 반환
-        ((AppCompatActivity)context).setResult(Activity.RESULT_OK, intent);
+        // 성공 시 DiaryActivity로 이동 후 -> 저장한 날짜 + diaryId로 화면 출력 다시하기
+        if(dialogListener != null) {
+            dialogListener.onDialogResult(String.valueOf(result));
+        }
+
         dialog.dismiss();
     }
 
@@ -426,6 +448,12 @@ public class PlaceEditDialog implements PatchEmotionResult, DeleteEmotionResult 
                         String markerAddress = address.getAddressLine (0);
                         TextView gpsPlaceFullName = dialog.findViewById(R.id.rt_gpsPlaceFullName);
                         gpsPlaceFullName.setText(markerAddress);
+
+                        TextView gpsPlaceName = dialog.findViewById(R.id.rt_gpsPlaceName);
+                        if(inputLocation.getBytes().length >= 15)
+                            gpsPlaceName.setText(inputLocation.substring(0, 14) + "...");
+                        else
+                            gpsPlaceName.setText(inputLocation);
 
                         // 마커 위치 변경
                         mCenterMarker.setPosition(new LatLng(mLat, mLng));

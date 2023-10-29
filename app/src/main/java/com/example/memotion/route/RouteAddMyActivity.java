@@ -153,12 +153,12 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
             @Override
             public void onClick(View view) {
                 // 갤러리 접근 권한이 있는 경우
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(RouteAddMyActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     navigateGallery();
-                } else if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) { // 갤러리 접근 권한이 없는 경우 & 교육용 팝업을 보여줘야 하는 경우
+                } else if (ActivityCompat.shouldShowRequestPermissionRationale(RouteAddMyActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) { // 갤러리 접근 권한이 없는 경우 & 교육용 팝업을 보여줘야 하는 경우
                     showPermissionContextPopup();
                 } else { // 권한 요청 하기(requestPermissions) -> 갤러리 접근(onRequestPermissionResult)
-                    ActivityCompat.requestPermissions((Activity) getApplicationContext(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
+                    ActivityCompat.requestPermissions(RouteAddMyActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
                 }
             }
         });
@@ -535,8 +535,10 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
                 RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
                 body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
-
-                //profileImage.setImageURI(selectedImageUri);
+                Log.d("이미지 넣음====", body.toString());
+                routeAddMyBinding.rtImage.setImageURI(selectedImageUri);
+                Log.d("이미지 넣음====", selectedImageUri.toString());
+                routeAddMyBinding.cameraBtnTxt.setVisibility(View.INVISIBLE);
             } else {
                 Toast.makeText(getApplicationContext(), "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
             }

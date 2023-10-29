@@ -85,6 +85,22 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initActionBar();
+    }
+
+    private void initActionBar() {
+        routeBinding.actionRoute.appbarPageNameLeftTv.setText("루트 상세 기록");
+        routeBinding.actionRoute.appbarBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
     // 루트 조회 호출
     public void getRoute(Long routeId) {
         Log.d(TAG, "GET-ROUTE-API 호출");

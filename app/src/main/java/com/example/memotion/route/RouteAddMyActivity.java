@@ -214,7 +214,7 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
 
         String year = selectDate.substring(0, 4);
         String month = selectDate.substring(5, 7);
-        String day = selectDate.substring(8);
+        String day = selectDate.substring(8, 10);
         String date = year + "-" + month + "-" + day;
 
         String startTime = stringToTimestamp(routeAddMyBinding.startAmPm.getText().toString(), routeAddMyBinding.startHour.getText().toString(), routeAddMyBinding.startMinute.getText().toString());
@@ -237,6 +237,8 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
         Log.d(TAG, result.getStartTime());
         Log.d(TAG, result.getEndTime());
         Log.d(TAG, result.getUrl());
+
+        finish();
     }
 
     @Override

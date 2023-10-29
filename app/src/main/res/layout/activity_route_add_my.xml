@@ -444,6 +444,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rt_gpsPlaceFullName" />
 
+            <ImageButton
+                android:id="@+id/image_btn_camera"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_photo_camera"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toEndOf="@+id/textview3"
+                app:layout_constraintTop_toBottomOf="@+id/rt_gpsPlaceFullName" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="360dp"
                 android:layout_height="wrap_content"
@@ -461,15 +471,16 @@
                     android:layout_height="match_parent"
                     android:text="선택된 이미지 없음"
                     android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/rt_image"
+                    app:layout_constraintBottom_toBottomOf="@+id/second"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:visibility="visible"/>
+                    app:layout_constraintTop_toTopOf="@+id/second"
+                    android:visibility="visible"
+                    />
                 <ImageView
                     android:id="@+id/rt_image"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="match_parent"
                     android:gravity="center"
                     android:background="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -477,16 +488,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
-                <ImageButton
-                    android:id="@+id/image_btn_camera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_photo_camera"
-                    android:layout_marginRight="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -209,11 +209,17 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
         String endTime = stringToTimestamp(routeAddMyBinding.endAmPm.getText().toString(), routeAddMyBinding.endHour.getText().toString(), routeAddMyBinding.endMinute.getText().toString());
         Double latitude = mLat;
         Double longitude = mLng;
-        String place = routeAddMyBinding.placeAdd.getText().toString();
+        String place = routeAddMyBinding.rtGpsPlaceFullName.getText().toString();
         String selectDate = routeAddMyBinding.currentDate.getText().toString();
+
+        String year = selectDate.substring(0, 4);
+        String month = selectDate.substring(5, 7);
+        String day = selectDate.substring(8);
+        String date = year + "-" + month + "-" + day;
+
         String startTime = stringToTimestamp(routeAddMyBinding.startAmPm.getText().toString(), routeAddMyBinding.startHour.getText().toString(), routeAddMyBinding.startMinute.getText().toString());
         String title = routeAddMyBinding.addRouteTitle.getText().toString();
-        return new PostRouteDetailRequest(content, endTime, latitude, longitude, place, routeId, selectDate, startTime, title);
+        return new PostRouteDetailRequest(content, endTime, latitude, longitude, place, routeId, date, startTime, title);
     }
 
     private void saveRouteDetail() {
@@ -400,7 +406,7 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
                     // 지도 위치 이동 (가장 최근 위치 기록)
                     mLastLocation = loc;
                     mLat = lat;
-                    mLat = lng;
+                    mLng = lng;
                     LatLng currentLoc = new LatLng (lat, lng);
 
                     // 지정한 위치로 애니메이션 이동

@@ -9,14 +9,16 @@ public class DiaryItem implements Serializable {
     String emotion;
     String keyword;
     String place;
+    boolean share;
 
-    public DiaryItem(Long diaryId, Double latitude, Double longitude, String emotion, String keyword, String place) {
+    public DiaryItem(Long diaryId, Double latitude, Double longitude, String emotion, String keyword, String place, boolean share) {
         this.diaryId = diaryId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.emotion = emotion;
         this.keyword = keyword;
         this.place = place;
+        this.share = share;
     }
 
     public String getPlace() {
@@ -65,5 +67,9 @@ public class DiaryItem implements Serializable {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public boolean isShare() {
+        return share;
     }
 }

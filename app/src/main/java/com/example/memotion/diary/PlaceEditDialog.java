@@ -96,6 +96,9 @@ public class PlaceEditDialog extends Dialog implements PatchEmotionResult, Delet
         dialog.setCanceledOnTouchOutside(true); //다이얼로그의 바깥 화면을 눌렀을 때 다이얼로그가 닫히게 설정
         dialog.setCancelable(true);    // 취소가 가능하도록 하는 코드
 
+        if(item.isShare() != true)
+            dialog.findViewById(R.id.btnShare).setBackgroundResource(R.drawable.share_not_ok);
+
         EditText keyword = dialog.findViewById(R.id.keyword);
         keyword.setText(item.getKeyword());
 
@@ -192,10 +195,14 @@ public class PlaceEditDialog extends Dialog implements PatchEmotionResult, Delet
         dialog.findViewById(R.id.btnShare).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if(mLastShare == true)
+                if(mLastShare == true) {
                     mLastShare = false;
-                else
+                    dialog.findViewById(R.id.btnShare).setBackgroundResource(R.drawable.share_not_ok);
+                }
+                else {
                     mLastShare = true;
+                    dialog.findViewById(R.id.btnShare).setBackgroundResource(R.drawable.share_ok);
+                }
             }
         });
 

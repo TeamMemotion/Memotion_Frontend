@@ -175,10 +175,14 @@ public class PlaceAddDialog extends Dialog implements PostEmotionResult {
         dialog.findViewById(R.id.btnShare).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if(mLastShare == true)
+
+                if(mLastShare == true) {
                     mLastShare = false;
-                else
+                    dialog.findViewById(R.id.btnShare).setBackgroundResource(R.drawable.share_not_ok);
+                } else {
                     mLastShare = true;
+                    dialog.findViewById(R.id.btnShare).setBackgroundResource(R.drawable.share_ok);
+                }
             }
         });
 

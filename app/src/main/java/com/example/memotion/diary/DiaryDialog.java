@@ -85,6 +85,9 @@ public class DiaryDialog extends Dialog {
         diaryBinding.gpsGetText.setText(result.getCreatedDate() + " 작성 다이어리");
         diaryBinding.getGpsPlaceName.setText(result.getPlace());
 
+        if(result.isShare() != true)
+            diaryBinding.btnShare.setBackgroundDrawable(context.getDrawable(R.drawable.share_not_ok));
+
         // 닫기 버튼 클릭
         diaryBinding.searchBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override

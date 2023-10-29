@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.memotion.R;
+
 import com.example.memotion.databinding.ActivityRouteAddMyBinding;
 import com.example.memotion.route.get.routedetail.GetRouteDetailResponse;
 import com.example.memotion.route.get.routedetail.GetRouteDetailResult;
@@ -128,11 +129,13 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
 
 
         // 저장
-        routeAddMyBinding.btnSaveRoute.setOnClickListener(new View.OnClickListener() {
+        routeAddMyBinding.btnSaveRouteDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "routeDetailId: " + routeDetailId);
                 if(routeDetailId == -1) {
                     // 생성
+                    Log.d(TAG, "저장 버튼 클릭");
                     saveRouteDetail();
                 } else {
                     // 수정
@@ -210,13 +213,13 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
         String selectDate = routeAddMyBinding.currentDate.getText().toString();
         String startTime = stringToTimestamp(routeAddMyBinding.startAmPm.getText().toString(), routeAddMyBinding.startHour.getText().toString(), routeAddMyBinding.startMinute.getText().toString());
         String title = routeAddMyBinding.addRouteTitle.getText().toString();
-        return new PostRouteDetailRequest(content, endTime, latitude, longitude, place, routeId, selectDate, startTime, title, body);
+        return new PostRouteDetailRequest(content, endTime, latitude, longitude, place, routeId, selectDate, startTime, title);
     }
 
     private void saveRouteDetail() {
         PostRouteDetailService postRouteDetailService = new PostRouteDetailService();
         postRouteDetailService.setPostRouteDetailResult(this);
-        postRouteDetailService.postRouteDetail(saveRequest());
+        postRouteDetailService.postRouteDetail(body, saveRequest());
     }
 
     @Override
@@ -297,11 +300,11 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
             if(!routeAddMyBinding.addRouteTitle.toString().isEmpty() && !routeAddMyBinding.startAmPm.toString().isEmpty() && !routeAddMyBinding.startHour.toString().isEmpty()
                     && !routeAddMyBinding.startMinute.toString().isEmpty() && !routeAddMyBinding.endAmPm.toString().isEmpty() && !routeAddMyBinding.endHour.toString().isEmpty()
                     && !routeAddMyBinding.endMinute.toString().isEmpty() && !routeAddMyBinding.placeAdd.toString().isEmpty()) {
-                routeAddMyBinding.btnSaveRoute.setClickable(true);
-                routeAddMyBinding.btnSaveRoute.setBackgroundResource(R.drawable.btn_pink_background);
+                routeAddMyBinding.btnSaveRouteDetail.setEnabled(true);
+                routeAddMyBinding.btnSaveRouteDetail.setBackgroundResource(R.drawable.btn_pink_background);
             } else {
-                routeAddMyBinding.btnSaveRoute.setClickable(true);
-                routeAddMyBinding.btnSaveRoute.setBackgroundResource(R.drawable.btn_background_grey_color);
+                routeAddMyBinding.btnSaveRouteDetail.setEnabled(false);
+                routeAddMyBinding.btnSaveRouteDetail.setBackgroundResource(R.drawable.btn_background_grey_color);
             }
         }
     };
@@ -396,6 +399,8 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
 
                     // 지도 위치 이동 (가장 최근 위치 기록)
                     mLastLocation = loc;
+                    mLat = lat;
+                    mLat = lng;
                     LatLng currentLoc = new LatLng (lat, lng);
 
                     // 지정한 위치로 애니메이션 이동
@@ -443,7 +448,7 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
                 Address address = addresses.get(0);
                 String markerAddress = address.getAddressLine (0);
 
-                routeAddMyBinding.placeAdd.setText(markerAddress);
+                routeAddMyBinding.rtGpsPlaceFullName.setText(markerAddress);
             }
         }
     }
@@ -533,7 +538,7 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
                 String filePath = absolutelyPath(selectedImageUri, getApplicationContext());
                 File file = new File(filePath);
                 RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
-                body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                body = MultipartBody.Part.createFormData("multipartFile", file.getName(), requestFile);
 
                 Log.d("이미지 넣음====", body.toString());
                 routeAddMyBinding.rtImage.setImageURI(selectedImageUri);

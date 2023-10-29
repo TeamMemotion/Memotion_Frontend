@@ -10,6 +10,7 @@ import com.example.memotion.RetrofitClient;
 
 import java.io.IOException;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,9 +22,9 @@ public class PostRouteDetailService {
         this.postRouteDetailResult = postRouteDetailResult;
     }
 
-    public void postRouteDetail(PostRouteDetailRequest postRouteDetailRequest) {
+    public void postRouteDetail(MultipartBody.Part multipartFile, PostRouteDetailRequest postRouteDetailRequest) {
         PostRouteDetailRetrofitInterface postRouteDetailService = getClient().create(PostRouteDetailRetrofitInterface.class);
-        postRouteDetailService.postRouteDetail(postRouteDetailRequest).enqueue(new Callback<PostRouteDetailResponse>() {
+        postRouteDetailService.postRouteDetail(multipartFile, postRouteDetailRequest).enqueue(new Callback<PostRouteDetailResponse>() {
             @SuppressLint("LongLogTag")
             @Override
             public void onResponse(Call<PostRouteDetailResponse> call, Response<PostRouteDetailResponse> response) {

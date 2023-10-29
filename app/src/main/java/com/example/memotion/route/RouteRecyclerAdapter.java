@@ -35,19 +35,22 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     private ItemRoutePlanBinding itemRoutePlanBinding;
     private RouteActivity routeActivity;
     private ArrayList<RouteDetailItem> routeDetailItems;
-
     private ArrayList<GetRouteDetailListResponse.Result> results;
-
     private Context context;
+
     public RouteRecyclerAdapter(RouteActivity routeActivity){
-        this.routeActivity=routeActivity;
+        this.routeActivity = routeActivity;
+    }
+
+    public void setRouteDetailListItems(ArrayList<GetRouteDetailListResponse.Result> detailItemsList) {
+        this.results = detailItemsList;
     }
 
     @NonNull
     @Override
     public RouteRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        itemRoutePlanBinding = ItemRoutePlanBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         context = parent.getContext();
+        itemRoutePlanBinding = ItemRoutePlanBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new RouteRecyclerAdapter.ViewHolder(itemRoutePlanBinding);
     }
 
@@ -66,11 +69,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
                 }
             });
         }
-    }
-
-    public void setRouteDetailListItems(ArrayList<GetRouteDetailListResponse.Result> detailItemsList) {
-        this.results = detailItemsList;
-        notifyDataSetChanged();
     }
 
     @Override

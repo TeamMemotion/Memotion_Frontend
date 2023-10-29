@@ -40,7 +40,6 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
     private RouteDateRecyclerAdapter dateRecyclerAdapter;
     private ActivityRouteBinding routeBinding;
     private RouteRecyclerAdapter routeAdapter;
-    private RecyclerView recyclerView;
 
     private List<Date> dateList = new ArrayList<>();
 
@@ -61,7 +60,6 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
         dateRecyclerAdapter = new RouteDateRecyclerAdapter(this);
 
         // 루트 상세 조회하는 RecyclerView 연결
-        recyclerView = routeBinding.routeDetailView;
         routeAdapter = new RouteRecyclerAdapter(this);
 
         // + 버튼 클릭 시
@@ -147,6 +145,7 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
         getRouteDetailListService.getRouteDetailList(routeDetailId);
     }
 
+    // 루트 디테일 조회 성공
     @Override
     public void getRouteDetailListSuccess(int code, ArrayList<GetRouteDetailListResponse.Result> result) {
         routeAdapter.setRouteDetailListItems(result);

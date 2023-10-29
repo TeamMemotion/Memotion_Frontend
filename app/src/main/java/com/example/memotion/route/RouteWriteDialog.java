@@ -41,7 +41,7 @@ public class RouteWriteDialog extends Dialog implements PostRouteResult {
         });
 
         // 저장 버튼 클릭 시
-        routeWriteBinding.btnSaveRoute.setOnClickListener(new View.OnClickListener() {
+        routeWriteBinding.btnSaveRouteDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String routeTitle = routeWriteBinding.addRouteTitle.getText().toString();

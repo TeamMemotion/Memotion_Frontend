@@ -32,10 +32,7 @@ public class PostRouteDetailRequest {
     @SerializedName(value = "title")
     private String title;
 
-    @SerializedName(value = "url")
-    private MultipartBody.Part url;
-
-    public PostRouteDetailRequest(String content, String endTime, Double latitude, Double longitude, String place, Long routeId, String selectDate, String startTime, String title, MultipartBody.Part url) {
+    public PostRouteDetailRequest(String content, String endTime, Double latitude, Double longitude, String place, Long routeId, String selectDate, String startTime, String title) {
         this.content = content;
         this.endTime = endTime;
         this.latitude = latitude;
@@ -45,6 +42,5 @@ public class PostRouteDetailRequest {
         this.selectDate = selectDate;
         this.startTime = startTime;
         this.title = title;
-        this.url = url;
     }
 }

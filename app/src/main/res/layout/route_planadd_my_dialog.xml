@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/close_btn"
-        app:layout_constraintBottom_toTopOf="@id/btnSaveRoute"
+        app:layout_constraintBottom_toTopOf="@id/btnSaveRouteDetail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="10dp">
@@ -458,7 +458,7 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/btnSaveRoute"
+        android:id="@+id/btnSaveRouteDetail"
         android:layout_width="300dp"
         android:layout_height="33dp"
         android:layout_marginTop="465dp"

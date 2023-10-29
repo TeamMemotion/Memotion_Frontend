@@ -335,16 +335,16 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
 
     // 권한 체크
     private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+        if (ContextCompat.checkSelfPermission(RouteAddMyActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                ContextCompat.checkSelfPermission(RouteAddMyActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
                         PackageManager.PERMISSION_GRANTED) {
             // 권한이 있을 경우 수행할 동작
             Log.d(TAG, "권한 획득");
             Toast.makeText (getApplicationContext(), "Permissions Granted", Toast.LENGTH_SHORT).show ();
         } else {
             // 권한이 없는 경우 권한 요청
-            ActivityCompat.requestPermissions((Activity) getApplicationContext(),
+            ActivityCompat.requestPermissions(RouteAddMyActivity.this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
                             android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_REQ_CODE);

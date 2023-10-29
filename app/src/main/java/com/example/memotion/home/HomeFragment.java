@@ -246,7 +246,7 @@ public class HomeFragment extends Fragment implements GetEmotionsResult, GetEmot
         // TO DO: 반복문 돌려서 하나씩 꺼내 화면에 출력
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             ArrayList<DiaryItem> diaryList = (ArrayList<DiaryItem>) result.stream()
-                    .map(r -> new DiaryItem(r.getDiaryId(), r.getLatitude(), r.getLongitude(), r.getEmotion(), r.getKeyWord(), r.getPlace()))
+                    .map(r -> new DiaryItem(r.getDiaryId(), r.getLatitude(), r.getLongitude(), r.getEmotion(), r.getKeyWord(), r.getPlace(), r.isShare()))
                     .collect(Collectors.toList());
 
             if(diaryList.size() > 0) {

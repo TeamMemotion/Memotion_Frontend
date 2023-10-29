@@ -28,6 +28,7 @@ public class SearchGetResponse {
         @SerializedName(value = "latitude") private Double latitude;
         @SerializedName(value = "longitude") private Double longitude;
         @SerializedName(value = "place") private String place;
+        @SerializedName(value = "share") private boolean share;
         @SerializedName(value = "emotion") private String emotion;
         @SerializedName(value = "createdDate") private String createdDate;
 
@@ -57,6 +58,10 @@ public class SearchGetResponse {
 
         public String getPlace() {
             return place;
+        }
+
+        public boolean isShare() {
+            return share;
         }
     }
 }

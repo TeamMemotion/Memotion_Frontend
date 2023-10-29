@@ -89,19 +89,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gps_editText" />
 
+
     <TextView
-        android:id="@+id/gpsPlaceName"
+        android:id="@+id/rt_gpsPlaceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="장소 이름"
         android:textColor="@color/black"
         android:textSize="15dp"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gpsMap" />
-
 
     <TextView
         android:id="@+id/rt_gpsPlaceFullName"
@@ -113,7 +114,7 @@
         android:layout_marginTop="7dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gpsPlaceName" />
+        app:layout_constraintTop_toBottomOf="@+id/rt_gpsPlaceName" />
 
     <ImageView
         android:id="@+id/imageView2"

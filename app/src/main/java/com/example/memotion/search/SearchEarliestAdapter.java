@@ -77,8 +77,12 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
         }
 
         void bind(SearchGetResponse.Result result) {
-            LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
-            executeGeocoding(location);
+            String address = result.getPlace();
+
+            if(address.length() >= 15)
+                address = address.substring(0, 14) + "...";
+            itemSearchBinding.searchLocation.setText(address);
+            itemSearchBinding.keyword.setText(result.getKeyWord());
 
             if(result.getEmotion().equals("happy"))
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.happy);
@@ -90,8 +94,6 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.sad);
             else if(result.getEmotion().equals("upset"))
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.upset);
-
-            itemSearchBinding.keyword.setText(result.getKeyWord());
 
             String date = result.getCreatedDate();
             String year = date.substring(0, 4);
@@ -110,38 +112,5 @@ public class SearchEarliestAdapter extends RecyclerView.Adapter<SearchEarliestAd
 
     interface OnItemClickListener {
         void onItemClick(SearchGetResponse.Result result);
-    }
-
-    private void executeGeocoding(LatLng latLng) {
-        if(Geocoder.isPresent() && latLng != null)
-            new GeoTask().execute(latLng);
-    }
-
-    class GeoTask extends AsyncTask<LatLng, Void, List<Address>> {
-        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-
-        @Override
-        protected List<Address> doInBackground(LatLng...latLngs) {
-            List<Address> address = null;
-
-            try{
-                address = geocoder.getFromLocation(latLngs[0].latitude, latLngs[0].longitude, 1);
-            } catch(IOException e){
-                e.printStackTrace();
-            }
-            return address;
-        }
-
-        @Override
-        protected void onPostExecute(List<Address> addresses) {
-            if (addresses != null) {
-                Address address = addresses.get(0);
-                String markerAddress = address.getAddressLine (0);
-
-                if(markerAddress.length() >= 15)
-                    markerAddress = markerAddress.substring(0, 14) + "...";
-                itemSearchBinding.searchLocation.setText(markerAddress);
-            }
-        }
     }
 }

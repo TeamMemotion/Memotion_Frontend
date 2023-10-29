@@ -8,13 +8,23 @@ public class DiaryItem implements Serializable {
     Double longitude;
     String emotion;
     String keyword;
+    String place;
 
-    public DiaryItem(Long diaryId, Double latitude, Double longitude, String emotion, String keyword) {
+    public DiaryItem(Long diaryId, Double latitude, Double longitude, String emotion, String keyword, String place) {
         this.diaryId = diaryId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.emotion = emotion;
         this.keyword = keyword;
+        this.place = place;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
     }
 
     public Long getDiaryId() {

@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/routeDetail_btn_close"
+        android:id="@+id/rda_btn_close"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="12dp"
@@ -32,7 +32,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/routeDetail_btn_close"
+        app:layout_constraintTop_toBottomOf="@id/rda_btn_close"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +66,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textview1" />
 
             <TextView
-                android:id="@+id/rt_selectDate"
+                android:id="@+id/rda_selectDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -145,7 +145,7 @@
                 app:layout_constraintTop_toTopOf="@+id/view3"  />
 
             <EditText
-                android:id="@+id/rt_routeTitle"
+                android:id="@+id/rda_routeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
@@ -160,7 +160,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/view1" />
 
             <EditText
-                android:id="@+id/rt_startHour"
+                android:id="@+id/rda_startHour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
@@ -184,11 +184,11 @@
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/view3"
-                app:layout_constraintStart_toEndOf="@+id/rt_startHour"
+                app:layout_constraintStart_toEndOf="@+id/rda_startHour"
                 app:layout_constraintTop_toTopOf="@+id/view3"  />
 
             <EditText
-                android:id="@+id/rt_startMinute"
+                android:id="@+id/rda_startMinute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
@@ -212,11 +212,11 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/view3"
-                app:layout_constraintStart_toEndOf="@+id/rt_startMinute"
+                app:layout_constraintStart_toEndOf="@+id/rda_startMinute"
                 app:layout_constraintTop_toTopOf="@+id/view3" />
 
             <EditText
-                android:id="@+id/rt_endHour"
+                android:id="@+id/rda_endHour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
@@ -240,11 +240,11 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/view3"
-                app:layout_constraintStart_toEndOf="@+id/rt_endHour"
+                app:layout_constraintStart_toEndOf="@+id/rda_endHour"
                 app:layout_constraintTop_toTopOf="@+id/view3"/>
 
             <EditText
-                android:id="@+id/rt_endMinute"
+                android:id="@+id/rda_endMinute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
@@ -268,7 +268,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/view3"
-                app:layout_constraintStart_toEndOf="@+id/rt_endMinute"
+                app:layout_constraintStart_toEndOf="@+id/rda_endMinute"
                 app:layout_constraintTop_toTopOf="@+id/view3" />
 
             <TextView
@@ -284,7 +284,7 @@
                 app:layout_constraintTop_toTopOf="@+id/view4"  />
 
             <TextView
-                android:id="@+id/memo"
+                android:id="@+id/rda_memo"
                 android:layout_width="240dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="6dp"
@@ -316,7 +316,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/route_add_dialog_view" />
 
             <EditText
-                android:id="@+id/place_add_dialog_view"
+                android:id="@+id/rda_search"
                 android:layout_width="300dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="4dp"
@@ -329,18 +329,18 @@
                 app:layout_constraintStart_toStartOf="parent"/>
 
             <ImageButton
-                android:id="@+id/btn_search"
+                android:id="@+id/rda_btn_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/search"
                 android:backgroundTint="#993C3C43"
                 android:layout_marginEnd="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/place_add_dialog_view"
-                app:layout_constraintEnd_toEndOf="@+id/place_add_dialog_view"
-                app:layout_constraintTop_toTopOf="@+id/place_add_dialog_view" />
+                app:layout_constraintBottom_toBottomOf="@+id/rda_search"
+                app:layout_constraintEnd_toEndOf="@+id/rda_search"
+                app:layout_constraintTop_toTopOf="@+id/rda_search" />
 
             <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/gpsMap"
+                android:id="@+id/rda_gpsMap"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="300dp"
                 android:layout_height="190dp"
@@ -351,10 +351,10 @@
                 android:layout_marginTop="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_add_dialog_view" />
+                app:layout_constraintTop_toBottomOf="@+id/rda_search" />
 
             <TextView
-                android:id="@+id/gpsPlaceName"
+                android:id="@+id/rda_gpsPlaceName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="장소 이름"
@@ -368,7 +368,7 @@
 
 
             <TextView
-                android:id="@+id/rt_gpsPlaceFullName"
+                android:id="@+id/rda_gpsPlaceFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00시 00구 00로 0000"
@@ -377,7 +377,7 @@
                 android:layout_marginTop="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gpsPlaceName" />
+                app:layout_constraintTop_toBottomOf="@+id/rda_gpsPlaceName" />
 
             <TextView
                 android:id="@+id/textview3"
@@ -390,7 +390,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rt_gpsPlaceFullName" />
+                app:layout_constraintTop_toBottomOf="@+id/rda_gpsPlaceFullName" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="300dp"
@@ -409,13 +409,14 @@
                     android:layout_height="match_parent"
                     android:text="선택된 이미지 없음"
                     android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/rt_image"
+                    app:layout_constraintBottom_toBottomOf="@+id/rda_image"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:visibility="visible"/>
+
                 <ImageView
-                    android:id="@+id/rt_image"
+                    android:id="@+id/rda_image"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:gravity="center"
@@ -427,7 +428,7 @@
 
 
                 <ImageButton
-                    android:id="@+id/image_btn_camera"
+                    android:id="@+id/rda_image_btn_camera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_photo_camera"

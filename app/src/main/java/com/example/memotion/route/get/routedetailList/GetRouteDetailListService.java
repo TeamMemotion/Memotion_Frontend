@@ -3,6 +3,7 @@ package com.example.memotion.route.get.routedetailList;
 import static com.example.memotion.RetrofitClient.errorParsing;
 import static com.example.memotion.RetrofitClient.getClient;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.example.memotion.RetrofitClient;
@@ -15,19 +16,19 @@ import retrofit2.Response;
 
 public class GetRouteDetailListService {
 
-    private GetRouteDetailListResult getRouteDetailListResult;
+    public static GetRouteDetailListResult getRouteDetailListResult;
 
     public void setGetRouteDetailListResult(GetRouteDetailListResult getRouteDetailListResult) {
         this.getRouteDetailListResult = getRouteDetailListResult;
     }
 
-    public void getRouteDetailList(Long id){
+    public void getRouteDetailList(Long id, String selectDate){
         GetRouteDetailListRetrofitInterface getRouteDetailListRetrofitInterface = getClient().create(GetRouteDetailListRetrofitInterface.class);
-
-        getRouteDetailListRetrofitInterface.getRouteDetailList(id).enqueue(new Callback<GetRouteDetailListResponse>() {
+        getRouteDetailListRetrofitInterface.getRouteDetailList(id, selectDate).enqueue(new Callback<GetRouteDetailListResponse>() {
+            @SuppressLint("LongLogTag")
             @Override
             public void onResponse(Call<GetRouteDetailListResponse> call, Response<GetRouteDetailListResponse> response) {
-                Log.d("GET-여기-SUCCESS", response.toString());
+                Log.d("GET-ROUTE-DETAIL-LIST-SUCCESS", response.toString());
                 if(response.isSuccessful()) {
                     if(response.body().getCode() == 1000) {
                         getRouteDetailListResult.getRouteDetailListSuccess(response.body().getCode(), response.body().getResult());
@@ -54,9 +55,10 @@ public class GetRouteDetailListService {
                 }
             }
 
+            @SuppressLint("LongLogTag")
             @Override
             public void onFailure(Call<GetRouteDetailListResponse> call, Throwable t) {
-                Log.d("GET-여기-SUCCESS", t.getMessage());
+                Log.d("GET-ROUTE-DETAIL-LIST-SUCCESS", t.getMessage());
             }
         });
     }

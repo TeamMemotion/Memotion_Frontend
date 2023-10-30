@@ -62,7 +62,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
         setContentView(routeDetailAddBinding.getRoot());
 
         // 닫기 버튼 클릭 시
-        routeDetailAddBinding.routeDetailBtnClose.setOnClickListener(new View.OnClickListener() {
+        routeDetailAddBinding.rdaBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismiss();
@@ -101,12 +101,12 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
             String endMinute = minuteFormat.format(endDate);
             String[] selectDate = result.getSelect_date().split("-");
 
-            routeDetailAddBinding.rtStartHour.setText(startHour);
-            routeDetailAddBinding.rtStartMinute.setText(startMinute);
-            routeDetailAddBinding.rtEndHour.setText(endHour);
-            routeDetailAddBinding.rtEndMinute.setText(endMinute);
-            routeDetailAddBinding.rtRouteTitle.setText(result.getTitle());
-            routeDetailAddBinding.rtSelectDate.setText(selectDate[0] + "년 " + selectDate[1] + "월 " + selectDate[2]);
+            routeDetailAddBinding.rdaStartHour.setText(startHour);
+            routeDetailAddBinding.rdaStartMinute.setText(startMinute);
+            routeDetailAddBinding.rdaEndHour.setText(endHour);
+            routeDetailAddBinding.rdaEndMinute.setText(endMinute);
+            routeDetailAddBinding.rdaRouteTitle.setText(result.getTitle());
+            routeDetailAddBinding.rdaSelectDate.setText(selectDate[0] + "년 " + selectDate[1] + "월 " + selectDate[2]);
 
             Glide.with(getContext())
                     .load(result.getUrl()) // 이미지 URL
@@ -114,7 +114,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
                             .diskCacheStrategy(DiskCacheStrategy.NONE) // 캐시 사용 안 함 (선택 사항)
                             .skipMemoryCache(true) // 메모리 캐시 사용 안 함 (선택 사항)
                     )
-                    .into(routeDetailAddBinding.rtImage);
+                    .into(routeDetailAddBinding.rdaImage);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,7 +126,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
 
         latitude = result.getLatitude();
         longitude = result.getLongitude();
-        routeDetailAddBinding.rtGpsPlaceFullName.setText(result.getPlace());
+        routeDetailAddBinding.rdaGpsPlaceFullName.setText(result.getPlace());
     }
 
     // 루트 상세 조회 실패
@@ -159,7 +159,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
         MapsInitializer.initialize(context);
         // SupportMapFragment를 찾음
         SupportMapFragment mapFragment = (SupportMapFragment) ((FragmentActivity) context).getSupportFragmentManager()
-                .findFragmentById(R.id.get_gpsMap);
+                .findFragmentById(R.id.rda_gpsMap);
         mapFragment.getMapAsync (mapReadyCallback); // map 정보 가져오기 (Callback 호출)
     }
 

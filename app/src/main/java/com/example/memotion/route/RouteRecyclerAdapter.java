@@ -3,6 +3,7 @@ package com.example.memotion.route;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,18 +33,18 @@ import java.util.ArrayList;
 import okhttp3.Route;
 
 public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdapter.ViewHolder> {
+    private String TAG = "RouteRecyclerAdapter";
     private ItemRoutePlanBinding itemRoutePlanBinding;
     private RouteActivity routeActivity;
-    private ArrayList<RouteDetailItem> routeDetailItems;
-    private ArrayList<GetRouteDetailListResponse.Result> results;
+    private ArrayList<GetRouteDetailListResponse.Result.RouteDetailResult> routeDetailList;
     private Context context;
 
     public RouteRecyclerAdapter(RouteActivity routeActivity){
         this.routeActivity = routeActivity;
     }
 
-    public void setRouteDetailListItems(ArrayList<GetRouteDetailListResponse.Result> detailItemsList) {
-        this.results = detailItemsList;
+    public void setRouteDetailListItems(ArrayList<GetRouteDetailListResponse.Result.RouteDetailResult> detailItemsList) {
+        this.routeDetailList = detailItemsList;
     }
 
     @NonNull
@@ -57,13 +58,13 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull RouteRecyclerAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if (holder instanceof RouteRecyclerAdapter.ViewHolder) {
-            holder.bind(routeDetailItems.get(position));
+            holder.bind(routeDetailList.get(position));
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (itemClickListener != null) {
-                        itemClickListener.onItemClick(routeDetailItems.get(position));
+                        itemClickListener.onItemClick(routeDetailList.get(position));
                         notifyItemChanged(position);
                     }
                 }
@@ -73,7 +74,7 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return routeDetailItems != null ? routeDetailItems.size() : 0;
+        return routeDetailList != null ? routeDetailList.size() : 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -84,14 +85,21 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
             this.itemRoutePlanBinding = binding;
         }
 
-        void bind(RouteDetailItem item) {
-            if(item.getUrl() != null) {
-                Glide.with(context).load(item.getUrl()).centerCrop().into(itemRoutePlanBinding.routePic);
-            }
+        void bind(GetRouteDetailListResponse.Result.RouteDetailResult item) {
+            Log.d(TAG, item.getContent());
+            Log.d(TAG, item.getUrl());
+            Log.d(TAG, item.getEnd_time());
+            Log.d(TAG, item.getStart_time());
+            Log.d(TAG, item.getSelect_date());
+
             itemRoutePlanBinding.routeplanTitle.setText(item.getTitle());
             itemRoutePlanBinding.planplace.setText(item.getPlace());
             itemRoutePlanBinding.plantimeEnd.setText(item.getEnd_time());
             itemRoutePlanBinding.plantimeStart.setText(item.getStart_time());
+
+            if(item.getUrl() != null) {
+                Glide.with(context).load(item.getUrl()).centerCrop().into(itemRoutePlanBinding.routePic);
+            }
         }
     }
 
@@ -103,7 +111,7 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     }
 
     interface OnItemClickListener {
-        void onItemClick(RouteDetailItem item);
+        void onItemClick(GetRouteDetailListResponse.Result.RouteDetailResult item);
     }
 }
 

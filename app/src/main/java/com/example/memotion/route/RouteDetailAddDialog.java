@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,6 +51,8 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
     private Double latitude;
     private Double longitude;
 
+    private Dialog dialog;
+
     public RouteDetailAddDialog(@NonNull Context context, Long routeDetailId) {
         super(context);
         this.context = context;
@@ -59,6 +62,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         routeDetailAddBinding = DialogRouteDetailAddBinding.inflate(getLayoutInflater());
         setContentView(routeDetailAddBinding.getRoot());
 
@@ -117,7 +121,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
             routeDetailAddBinding.rdaEndHour.setText(endHour);
             routeDetailAddBinding.rdaEndMinute.setText(endMinute);
             routeDetailAddBinding.rdaRouteTitle.setText(result.getTitle());
-            routeDetailAddBinding.rdaSelectDate.setText(selectDate[0] + "년 " + selectDate[1] + "월 " + selectDate[2]);
+            routeDetailAddBinding.rdaSelectDate.setText(selectDate[0] + "년 " + selectDate[1] + "월 " + selectDate[2] + "일");
             routeDetailAddBinding.rdaMemo.setText(result.getContent());
             routeDetailAddBinding.rdaGpsPlaceFullName.setText(result.getPlace());
 

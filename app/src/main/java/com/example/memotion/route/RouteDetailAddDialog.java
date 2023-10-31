@@ -52,6 +52,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
 
     public RouteDetailAddDialog(@NonNull Context context, Long routeDetailId) {
         super(context);
+        this.context = context;
         this.routeDetailId = routeDetailId;
     }
 
@@ -60,6 +61,9 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
         super.onCreate(savedInstanceState);
         routeDetailAddBinding = DialogRouteDetailAddBinding.inflate(getLayoutInflater());
         setContentView(routeDetailAddBinding.getRoot());
+
+        setCanceledOnTouchOutside(true);
+        setCancelable(true);
 
         // 닫기 버튼 클릭 시
         routeDetailAddBinding.rdaBtnClose.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +91,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
         Log.d(TAG, "루트 상세 조회 성공");
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             Date startDate = dateFormat.parse(result.getStart_time());
             Date endDate = dateFormat.parse(result.getEnd_time());
 
@@ -107,6 +111,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
             routeDetailAddBinding.rdaEndMinute.setText(endMinute);
             routeDetailAddBinding.rdaRouteTitle.setText(result.getTitle());
             routeDetailAddBinding.rdaSelectDate.setText(selectDate[0] + "년 " + selectDate[1] + "월 " + selectDate[2]);
+            routeDetailAddBinding.rdaMemo.setText(result.getContent());
 
             Glide.with(getContext())
                     .load(result.getUrl()) // 이미지 URL
@@ -116,16 +121,19 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
                     )
                     .into(routeDetailAddBinding.rdaImage);
 
+            if(result.getUrl() != null)
+                routeDetailAddBinding.rdaImageBtnCamera.setVisibility(View.INVISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        latitude = result.getLatitude();
+        longitude = result.getLongitude();
 
         // 권한 확인 후 mapLoad()
         checkPermission();
         mapLoad();
 
-        latitude = result.getLatitude();
-        longitude = result.getLongitude();
         routeDetailAddBinding.rdaGpsPlaceFullName.setText(result.getPlace());
     }
 
@@ -154,6 +162,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
             Log.d(TAG, "권한 획득 실패 -> 권한 요청");
         }
     }
+
     private void mapLoad() {
         // Google Maps 초기화
         MapsInitializer.initialize(context);

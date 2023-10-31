@@ -188,9 +188,9 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
         routeAdapter.setItemClickListener(new RouteRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(GetRouteDetailListResponse.Result.RouteDetailResult item) {
-                RouteDetailAddDialog dialog = new RouteDetailAddDialog(getApplicationContext(), item.getRouteId());
+                RouteDetailAddDialog dialog = new RouteDetailAddDialog(RouteActivity.this, item.getRouteId());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 제목 표시 비활성화
-                dialog.setContentView(R.layout.dialog_route_write); // 다이얼로그 레이아웃 설정
+                dialog.setContentView(R.layout.dialog_route_detail_add); // 다이얼로그 레이아웃 설정
                 dialog.show();
             }
         });

@@ -188,10 +188,14 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
         routeAdapter.setItemClickListener(new RouteRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(GetRouteDetailListResponse.Result.RouteDetailResult item) {
-                RouteDetailAddDialog dialog = new RouteDetailAddDialog(RouteActivity.this, item.getRouteId());
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 제목 표시 비활성화
-                dialog.setContentView(R.layout.dialog_route_detail_add); // 다이얼로그 레이아웃 설정
-                dialog.show();
+//                RouteDetailAddDialog dialog = new RouteDetailAddDialog(RouteActivity.this, item.getRouteId());
+//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 제목 표시 비활성화
+//                dialog.setContentView(R.layout.dialog_route_detail_add); // 다이얼로그 레이아웃 설정
+//                dialog.show();
+                Log.d(TAG, "루트 상세 조회 시도==" + item.getRecordDetailId());
+                Intent intent = new Intent(RouteActivity.this, RouteAddMyActivity.class);
+                intent.putExtra("routeDetailId", item.getRecordDetailId());
+                startActivity(intent);
             }
         });
     }

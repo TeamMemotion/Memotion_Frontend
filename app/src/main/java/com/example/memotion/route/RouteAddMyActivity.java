@@ -30,6 +30,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.memotion.R;
 
 import com.example.memotion.databinding.ActivityRouteAddMyBinding;
@@ -58,8 +61,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -109,6 +114,7 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
             // intent로 routeId랑 날짜 받기
             date = intent.getStringExtra("selectDate");
             routeId = intent.getLongExtra("routeId", -1);
+            routeDetailId = intent.getLongExtra("routeDetailId", -1);
 
             if(date != null) {
 //                if(routeId != -1) {
@@ -120,9 +126,21 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
 //////                      routeAddMyBinding.spinnerBtn.setSelection(position);
 //                }
                 routeAddMyBinding.currentDate.setText(date);
-                if(routeDetailId != -1) {
-                    getRouteDetail();
-                }
+
+                // 권한 확인 후 mapLoad()
+                checkPermission();
+                mapLoad();
+
+                flpClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+                flpClient.requestLocationUpdates (
+                        getLocationRequest (),
+                        mLocCallback,
+                        Looper.getMainLooper ()
+                );
+            }
+            if(routeDetailId != -1) {
+                Log.d(TAG, "루트 상세 조회 시도");
+                getRouteDetail();
             }
         }
         //setUpSpinnerHandler();
@@ -180,17 +198,6 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
                     Toast.makeText(getApplicationContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
             }
         });
-
-        // 권한 확인 후 mapLoad()
-        checkPermission();
-        mapLoad();
-
-        flpClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-        flpClient.requestLocationUpdates (
-                getLocationRequest (),
-                mLocCallback,
-                Looper.getMainLooper ()
-        );
 
         // editText 내용 입력시 버튼 활성화
         routeAddMyBinding.addRouteTitle.addTextChangedListener(textWatcher);
@@ -260,17 +267,75 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
     private void getRouteDetail() {
         GetRouteDetailService getRouteDetailService = new GetRouteDetailService();
         getRouteDetailService.setGetRouteDetailResult(this);
-//        getRouteDetailService.getRouteDetail();
+        getRouteDetailService.getRouteDetail(routeDetailId);
     }
 
     @Override
     public void getRouteDetailSuccess(int code, GetRouteDetailResponse.Result result) {
+        Log.d(TAG, "루트 상세 조회 성공");
 
+        try {
+            mLat = result.getLatitude();
+            mLng = result.getLongitude();
+
+            // 권한 확인 후 mapLoad()
+            checkPermission();
+            mapLoad();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            Date startDate = dateFormat.parse(result.getStart_time());
+            Date endDate = dateFormat.parse(result.getEnd_time());
+
+            // Date 객체에서 시와 분을 추출
+            SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
+            SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
+
+            String startHour = hourFormat.format(startDate);
+            String startMinute = minuteFormat.format(startDate);
+            String endHour = hourFormat.format(endDate);
+            String endMinute = minuteFormat.format(endDate);
+            String[] selectDate = result.getSelect_date().split("-");
+
+            routeAddMyBinding.startHour.setText(startHour);
+            routeAddMyBinding.startMinute.setText(startMinute);
+            routeAddMyBinding.endHour.setText(endHour);
+            routeAddMyBinding.endMinute.setText(endMinute);
+            routeAddMyBinding.addRouteTitle.setText(result.getTitle());
+
+            if(Integer.parseInt(startHour) < 12) {
+                routeAddMyBinding.startAmPm.setText("오전");
+            } else {
+                routeAddMyBinding.startAmPm.setText("오후");
+            }
+
+            if(Integer.parseInt(endHour) < 12) {
+                routeAddMyBinding.endAmPm.setText("오전");
+            } else {
+                routeAddMyBinding.endAmPm.setText("오후");
+            }
+
+            routeAddMyBinding.currentDate.setText(selectDate[0] + "년 " + selectDate[1] + "월 " + selectDate[2] + "일");
+            routeAddMyBinding.writeMemo.setText(result.getContent());
+            routeAddMyBinding.rtGpsPlaceFullName.setText(result.getPlace());
+
+            Glide.with(this)
+                    .load(result.getUrl()) // 이미지 URL
+                    .apply(new RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE) // 캐시 사용 안 함 (선택 사항)
+                            .skipMemoryCache(true) // 메모리 캐시 사용 안 함 (선택 사항)
+                    )
+                    .into(routeAddMyBinding.rtImage);
+
+            if(result.getUrl() != null)
+                routeAddMyBinding.cameraBtnTxt.setVisibility(View.INVISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void getRouteDetailFailure(int code, String message) {
-
+        Log.d(TAG, "루트 상세 조회 실패");
     }
 
 

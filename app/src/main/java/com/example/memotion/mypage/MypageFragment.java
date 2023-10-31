@@ -100,7 +100,6 @@ public class MypageFragment extends Fragment implements GetProfileResult, Logout
         if(result.getImage() != null) {
             Glide.with(this)
                     .load(result.getImage())
-                    .apply(RequestOptions.circleCropTransform().centerCrop())
                     .into(mypageBinding.profileImage);
         }
     }

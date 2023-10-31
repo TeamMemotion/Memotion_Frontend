@@ -91,6 +91,13 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
         Log.d(TAG, "루트 상세 조회 성공");
 
         try {
+            latitude = result.getLatitude();
+            longitude = result.getLongitude();
+
+            // 권한 확인 후 mapLoad()
+            checkPermission();
+            mapLoad();
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             Date startDate = dateFormat.parse(result.getStart_time());
             Date endDate = dateFormat.parse(result.getEnd_time());
@@ -112,6 +119,7 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
             routeDetailAddBinding.rdaRouteTitle.setText(result.getTitle());
             routeDetailAddBinding.rdaSelectDate.setText(selectDate[0] + "년 " + selectDate[1] + "월 " + selectDate[2]);
             routeDetailAddBinding.rdaMemo.setText(result.getContent());
+            routeDetailAddBinding.rdaGpsPlaceFullName.setText(result.getPlace());
 
             Glide.with(getContext())
                     .load(result.getUrl()) // 이미지 URL
@@ -126,15 +134,6 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        latitude = result.getLatitude();
-        longitude = result.getLongitude();
-
-        // 권한 확인 후 mapLoad()
-        checkPermission();
-        mapLoad();
-
-        routeDetailAddBinding.rdaGpsPlaceFullName.setText(result.getPlace());
     }
 
     // 루트 상세 조회 실패
@@ -164,6 +163,8 @@ public class RouteDetailAddDialog extends Dialog implements GetRouteDetailResult
     }
 
     private void mapLoad() {
+        Log.d(TAG, "mapLoad 시작");
+
         // Google Maps 초기화
         MapsInitializer.initialize(context);
         // SupportMapFragment를 찾음

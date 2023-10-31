@@ -357,7 +357,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/rda_gpsMap"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+                class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="300dp"
                 android:layout_height="210dp"
                 app:cameraTargetLat="37.606537"

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.memotion.MainActivity;
 import com.example.memotion.R;
 import com.example.memotion.databinding.FragmentSearchBinding;
 import com.example.memotion.diary.DiaryDialog;

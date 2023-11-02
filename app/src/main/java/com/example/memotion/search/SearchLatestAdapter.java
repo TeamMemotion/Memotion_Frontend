@@ -82,9 +82,6 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
         }
 
         void bind(SearchGetResponse.Result result) {
-            LatLng location = new LatLng(result.getLatitude(), result.getLongitude());
-            executeGeocoding(location);
-
             if(result.getEmotion().equals("happy"))
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.happy);
             else if(result.getEmotion().equals("smile"))
@@ -97,6 +94,7 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
                 itemSearchBinding.emotion.setBackgroundResource(R.drawable.upset);
 
             itemSearchBinding.keyword.setText(result.getKeyWord());
+            itemSearchBinding.searchLocation.setText(result.getPlace());
 
             String date = result.getCreatedDate();
             String year = date.substring(0, 4);
@@ -115,39 +113,5 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
 
     interface OnItemClickListener {
         void onItemClick(SearchGetResponse.Result result);
-    }
-
-    private void executeGeocoding(LatLng latLng) {
-        if(Geocoder.isPresent() && latLng != null)
-            new GeoTask().execute(latLng);
-    }
-
-    class GeoTask extends AsyncTask<LatLng, Void, List<Address>> {
-        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-
-        @Override
-        protected List<Address> doInBackground(LatLng...latLngs) {
-            List<Address> address = null;
-
-            try{
-                address = geocoder.getFromLocation(latLngs[0].latitude, latLngs[0].longitude, 1);
-            } catch(IOException e){
-                e.printStackTrace();
-            }
-            return address;
-        }
-
-        @Override
-        protected void onPostExecute(List<Address> addresses) {
-            if (addresses != null) {
-                Address address = addresses.get(0);
-                String markerAddress = address.getAddressLine (0);
-
-                if(markerAddress.length() >= 15)
-                    markerAddress = markerAddress.substring(0, 14) + "...";
-
-                itemSearchBinding.searchLocation.setText(markerAddress);
-            }
-        }
     }
 }

@@ -126,17 +126,6 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
 //////                      routeAddMyBinding.spinnerBtn.setSelection(position);
 //                }
                 routeAddMyBinding.currentDate.setText(date);
-
-                // 권한 확인 후 mapLoad()
-                checkPermission();
-                mapLoad();
-
-                flpClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-                flpClient.requestLocationUpdates (
-                        getLocationRequest (),
-                        mLocCallback,
-                        Looper.getMainLooper ()
-                );
             }
             if(routeDetailId != -1) {
                 Log.d(TAG, "루트 상세 조회 시도");
@@ -145,6 +134,16 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
         }
         //setUpSpinnerHandler();
 
+        // 권한 확인 후 mapLoad()
+        checkPermission();
+        mapLoad();
+
+        flpClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+        flpClient.requestLocationUpdates (
+                getLocationRequest (),
+                mLocCallback,
+                Looper.getMainLooper ()
+        );
 
         // 저장
         routeAddMyBinding.btnSaveRouteDetail.setOnClickListener(new View.OnClickListener() {
@@ -188,12 +187,14 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
         routeAddMyBinding.btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String inputLocation = routeAddMyBinding.placeAdd.toString();
+                String inputLocation = routeAddMyBinding.placeAdd.getText().toString();
                 Log.d(TAG, "검색 위치: " + inputLocation);
 
                 // reverseGeocoding -> 위도 경도 추출 + 현재 위치 변경
-                if(inputLocation.getBytes().length > 0)
+                if(inputLocation.getBytes().length > 0) {
+                    routeAddMyBinding.gpsPlaceName.setText(inputLocation);
                     executeReverseGeocoding(inputLocation);
+                }
                 else
                     Toast.makeText(getApplicationContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
             }
@@ -444,7 +445,7 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
             mGoogleMap.setMyLocationEnabled(true);
 
             // 지도 초기 위치 이동 (초기위치  : 동덕여자대학교)
-            LatLng latLng = new LatLng (37.606320, 127.041808);
+            LatLng latLng = new LatLng (mLat, mLng);
             // 지정한 위치로 애니메이션 이동
             mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (latLng, 15));
 
@@ -477,11 +478,13 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
                     LatLng currentLoc = new LatLng (lat, lng);
 
                     // 지정한 위치로 애니메이션 이동
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom (currentLoc, 15));
-                    mCenterMarker.setPosition(currentLoc);
+                    if(loc != null && mGoogleMap != null) {
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLoc, 15));
+                        mCenterMarker.setPosition(currentLoc);
 
-                    // 위도 경도로 주소 획득
-                    executeGeocoding(currentLoc);
+                        // 위도 경도로 주소 획득
+                        executeGeocoding(currentLoc);
+                    }
                 }
             }
         }
@@ -566,7 +569,7 @@ public class RouteAddMyActivity extends AppCompatActivity implements PostRouteDe
 
                         // 장소 검색 주소 변경
                         String markerAddress = address.getAddressLine (0);
-                        routeAddMyBinding.placeAdd.setText(markerAddress);
+                        routeAddMyBinding.rtGpsPlaceFullName.setText(markerAddress);
 
                         // 마커 위치 변경
                         mCenterMarker.setPosition(new LatLng(mLat, mLng));

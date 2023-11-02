@@ -40,6 +40,7 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
 
     private List<Date> dateList = new ArrayList<>();
     private Long routeId;
+    private String startDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,12 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
     protected void onResume() {
         super.onResume();
         initActionBar();
+
+        if(selectedDate != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            getRouteDetailList(routeId, dateFormat.format(selectedDate));
+        } else
+            getRouteDetailList(routeId, startDate);
     }
 
     private void initActionBar() {
@@ -113,7 +120,7 @@ public class RouteActivity extends AppCompatActivity implements GetRouteResult, 
         Log.d(TAG, "루트 조회 성공");
 
         // "2023-10-12" -> "2023.10.12"
-        String startDate = result.getStartDate().replace("-", ".");
+        startDate = result.getStartDate().replace("-", ".");
         String endDate = result.getEndDate().replace("-", ".");
         routeBinding.routeStartDate.setText(startDate);
         routeBinding.routeEndDate.setText(endDate);

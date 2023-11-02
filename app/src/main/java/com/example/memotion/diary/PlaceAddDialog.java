@@ -305,7 +305,8 @@ public class PlaceAddDialog extends Dialog implements PostEmotionResult {
                     LatLng currentLoc = new LatLng (lat, lng);
 
                     // 지정한 위치로 애니메이션 이동
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom (currentLoc, 15));
+                    if(mGoogleMap != null)
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom (currentLoc, 15));
                     mCenterMarker.setPosition(currentLoc);
 
                     // 위도 경도로 주소 획득

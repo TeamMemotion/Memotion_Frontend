@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -19,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.memotion.R;
 import com.example.memotion.databinding.DialogDiaryBinding;
@@ -46,9 +48,8 @@ public class DiaryDialog extends Dialog {
     private Context context;
     private DialogDiaryBinding diaryBinding;
     private SearchGetResponse.Result result;
-
-    private GoogleMap mGoogleMap;    // 지도 객체
     private Marker mCenterMarker;
+    private GoogleMap mGoogleMap;
 
     private boolean mLastShare = true;
 
@@ -63,6 +64,10 @@ public class DiaryDialog extends Dialog {
         super.onCreate(savedInstanceState);
         diaryBinding = DialogDiaryBinding.inflate(getLayoutInflater());
         setContentView(diaryBinding.getRoot());
+
+        // 권한 확인 후 mapLoad()
+        checkPermission();
+        mapLoad();
 
         setCanceledOnTouchOutside(true);
         setCancelable(true);
@@ -96,10 +101,6 @@ public class DiaryDialog extends Dialog {
                 dismiss();
             }
         });
-
-        // 권한 확인 후 mapLoad()
-        checkPermission();
-        mapLoad();
     }
 
     // 권한 체크
@@ -121,40 +122,54 @@ public class DiaryDialog extends Dialog {
         }
     }
 
+    @Override
+    public void dismiss() {
+        super.dismiss();
+
+        // 여기에서 지도 초기화 및 리소스 해제 작업을 수행
+        if (mGoogleMap != null) {
+            mGoogleMap.clear(); // 마커 제거 등
+            mGoogleMap = null; // 지도 객체 해제
+        }
+    }
+
     private void mapLoad() {
-        // Google Maps 초기화
-        MapsInitializer.initialize(context);
         // SupportMapFragment를 찾음
         SupportMapFragment mapFragment = (SupportMapFragment) ((FragmentActivity) context).getSupportFragmentManager()
-                .findFragmentById(R.id.get_gpsMap);
-        mapFragment.getMapAsync (mapReadyCallback); // map 정보 가져오기 (Callback 호출)
+                    .findFragmentById(R.id.get_gpsMap);
+        mapFragment.getMapAsync(mapReadyCallback); // map 정보 가져오기 (Callback 호출)
     }
 
     // getMapAsync의 매개변수로 전달
     OnMapReadyCallback mapReadyCallback = new OnMapReadyCallback () {
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
-            mGoogleMap = googleMap;
-            checkPermission();
-            mGoogleMap.setMyLocationEnabled(true);
+            try {
+                checkPermission();
 
-            // 지도 초기 위치 이동
-            LatLng latLng = new LatLng (result.getLatitude(), result.getLongitude());
-            // 지정한 위치로 애니메이션 이동
-            mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (latLng, 15));
+                mGoogleMap = googleMap;
+                mGoogleMap.setMyLocationEnabled(true);
 
-            // 지도 중심 마커 추가
-            MarkerOptions markerOptions = new MarkerOptions ()
-                    .position (latLng) // LatLng 객체
-                    .title ("현재 위치") // infowindow : 터치 시 뜨는 정보
-                    .snippet ("이동중") // infowindow : 터치 시 뜨는 정보
-                    .icon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_BLUE));
+                // 지도 초기 위치 이동
+                LatLng latLng = new LatLng(result.getLatitude(), result.getLongitude());
+                // 지정한 위치로 애니메이션 이동
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
-            // 지도에 마커 추가 후 추가한 마커 정보 기록
-            mCenterMarker = mGoogleMap.addMarker(markerOptions); // addMarker : 구글맵 마커 만들어줘~ 요청
-            mCenterMarker.showInfoWindow();
+                // 지도 중심 마커 추가
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(latLng) // LatLng 객체
+                        .title("현재 위치") // infowindow : 터치 시 뜨는 정보
+                        .snippet("이동중") // infowindow : 터치 시 뜨는 정보
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
-            executeGeocoding(latLng);
+                // 지도에 마커 추가 후 추가한 마커 정보 기록
+                mCenterMarker = googleMap.addMarker(markerOptions); // addMarker : 구글맵 마커 만들어줘~ 요청
+                mCenterMarker.showInfoWindow();
+
+                executeGeocoding(latLng);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     };
 
